@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+    <meta http-equiv="Content-Script-Type" content="text/JavaScript" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/pwdRST.css">
+    <!-- <title>Password Reset</title> -->
+</head>
+<body>
+    <div class="wrapper">
+        <div class="pageColumns">
+            <div class='left-panel'>
+                <!-- <img src="img\logo_transparent.png"> -->
+            </div>
+            <div class='right-panel'>
+                <div class='right-column-container'>
+                    <div class="logo">
+                        <img src="img\logo_v2.png">
+                    </div>
+                    <div class='right-text'>
+                        <h1 class="Title"> Reiniciar la contraseña</h1>
+                        <p>
+                            Para modificar la contraseña debes capturar
+                            la nueva y confirmarla en el recuadro de 
+                            recaptura. 
+                        </p>
+                        <div>
+                            <input class="input-newPwd" type="text" id="NewPwd" placeholder='Nueva contraseña'>
+                        </div>
+                        <div>
+                            <input class="input-newPwd" type="text" id="ReNewPwd" placeholder='Reescribe nueva contraseña'>
+                        </div>
+
+                        <input class="btnSubmit" type="button" value="Reiniciar Contrasea" 
+                            onclick="pwdRSTAction()" ></input>
+                    </div>
+                
+                </div>
+            </div>
+    </div>
+    </div>
+
+    <script type="text/javascript">
+
+        // var id = '60c53a453371034c5ac6637c';
+        var id = '';
+        var pwd = '';
+        var Repwd = '';
+
+        window.onload = function(){
+            const qryString = window.location.search;
+            const urlParams = new URLSearchParams(qryString);
+            id = urlParams.get('req');
+            console.log('id param --> ', id);
+            pwdRSTConfirmation();
+        }
+
+        const pwdRSTAction = async () => {
+            pwd = document.getElementById("NewPwd");
+            Repwd = document.getElementById("ReNewPwd");
+            console.log('pwd --> ' +  pwd.value + ', Repwd --> ' + Repwd.value);
+
+            if (pwd.value == "" || Repwd.value == "")
+                {
+                    window.alert("Debes capturar la nueva contraseña.");
+                    pwd.focus();
+                    return false;
+                }else if(pwd.value != Repwd.value ){
+                    window.alert("Las contraseñas no coinciden.");
+                    pwd.focus();
+                    return false;
+                }
+
+            const response = await fetch('http://192.168.1.173:5000/api/pwdResetReq/apply/' + id + '/' + pwd.value + '/' + Repwd.value, {
+                method: 'POST',
+                body: '', 
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            });
+            const myJson = await response.json(); 
+            console.log('response --> ', myJson);
+        }
+
+        async function pwdRSTConfirmation(){
+            const response = await fetch('http://192.168.1.173:5000/api/pwdResetReq/confirm/' + id , {
+                method: 'POST',
+                body: '', 
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            });
+            const myJson = await response.json(); 
+            console.log('Confirm response --> ', myJson);
+        }
+    </script>
+</body>
+</html>
