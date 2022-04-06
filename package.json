@@ -10,7 +10,8 @@
   },
   "scripts": {
     "clean_modules": "rm -f ./package-lock.json && rm -rf node_modules && npm cache clean --force && npm install",
-    "clean": "rm -rf dist/ && npm run clean_modules",
+    "clean_": "rm -rf dist/ && npm run clean_modules",
+    "clean": "rm -rf dist/",
     "build": "npm run clean && babel src -d dist",
     "production": "npm run build && node bin/production",
     "build_bk": "babel src --out-dir build",
