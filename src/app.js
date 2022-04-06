@@ -3,7 +3,7 @@ import express from 'express';
 import morgan from 'morgan';
 // import multer from "multer";
 import pkg from '../package.json';
-import "./database";
+// import "./database";
 import {createRoles} from './libs/initialSetup';
 import path from 'path';
 import {v4 as uuid} from 'uuid';
