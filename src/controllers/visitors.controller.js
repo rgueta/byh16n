@@ -1,4 +1,4 @@
-import Visitors from "../models/Visitors";
+import Visitors from "../models/visitors";
 import { Types } from "mongoose";
 
 export const createVisitor = async (req,res) =>{
