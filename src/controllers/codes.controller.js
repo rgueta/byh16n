@@ -1,4 +1,4 @@
-import Codes  from "../models/codes";
+import Codes  from "../models/Codes";
 import { Types } from "mongoose";
 
 export const createCode = async (req,res) => {
