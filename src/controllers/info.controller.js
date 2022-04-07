@@ -73,7 +73,7 @@ export const createInfo = async(req, res) =>{
 };
 
 export const getInfo = async(req, res) =>{
-    console.log('Ojo fullpath ========> ' , fullPath)
+    console.log('Ojo getInfo ========> ')
     // const info = await information.find({enable : true}).sort({'createdAt':-1});
     const info = await information.aggregate([
         {
