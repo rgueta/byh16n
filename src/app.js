@@ -40,7 +40,8 @@ app.use('/img',express.static(__dirname + '/public/img'));
 //#region --- Settings  -----------------------
 // --- Set views  ----
 // app.set('views', __dirname + '/views');
-app.set('views', './views');
+app.set('views', __dirname + '/vistas');
+// app.set('views', './views');
 app.set('view engine','ejs');
 // app.engine('ejs', require('ejs').__express);
 
