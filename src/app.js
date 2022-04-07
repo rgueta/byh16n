@@ -39,6 +39,7 @@ app.use('/img',express.static(__dirname + '/public/img'));
 
 //#region --- Settings  -----------------------
 // --- Set views  ----
+console.log('===============> OJO check fail views --> ',  __dirname + '/views')
 app.set('views', __dirname + '/views');
 app.set('view engine','ejs');
 // app.engine('ejs', require('ejs').__express);
