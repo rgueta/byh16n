@@ -19,7 +19,7 @@ export const createInfo = async(req, res) =>{
 
         folder = await f.toString() + '/';
         const fullPath = path.join(__dirname,'../public/',imgsRoot, folder);
-        console.log('Ojo fullpath ========> ' , fullPath)
+        
         const imgPath = imgsRoot + folder;
         // Resize image ----------------------------------------
        console.log('resize file--> ',fullPath + req.file.filename);
@@ -73,6 +73,7 @@ export const createInfo = async(req, res) =>{
 };
 
 export const getInfo = async(req, res) =>{
+    console.log('Ojo fullpath ========> ' , fullPath)
     // const info = await information.find({enable : true}).sort({'createdAt':-1});
     const info = await information.aggregate([
         {
@@ -109,7 +110,7 @@ export const getInfo = async(req, res) =>{
         console.log('Error getting info -> ',err)
         res.status(402).json({'Error':'Error getting info' + err})
     }else{
-        console.log(info)
+        console.log('Ojo info ========> ' , info)
         res.status(201).json(info)
     }    
 }
