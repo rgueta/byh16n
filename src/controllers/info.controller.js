@@ -73,7 +73,6 @@ export const createInfo = async(req, res) =>{
 };
 
 export const getInfo = async(req, res) =>{
-    console.log('Ojo getInfo ========> ')
     // const info = await information.find({enable : true}).sort({'createdAt':-1});
     const info = await information.aggregate([
         {
@@ -110,7 +109,6 @@ export const getInfo = async(req, res) =>{
         console.log('Error getting info -> ',err)
         res.status(402).json({'Error':'Error getting info' + err})
     }else{
-        console.log('Ojo info ========> ' , info)
         res.status(201).json(info)
     }    
 }
