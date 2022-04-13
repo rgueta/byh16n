@@ -18,7 +18,7 @@ export const createInfo = async(req, res) =>{
         }
 
         folder = await f.toString() + '/';
-        const fullPath = path.join(__dirname,'../public/',imgsRoot, folder);
+        const fullPath = path.join(__dirname,'/public/',imgsRoot, folder);
         
         const imgPath = imgsRoot + folder;
         // Resize image ----------------------------------------
