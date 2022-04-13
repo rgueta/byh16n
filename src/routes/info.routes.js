@@ -21,6 +21,7 @@ let folder = '';
         folder = await f.toString() + '/';
 
         const fullPath = path.join(__dirname, '../public/img/uploads/', folder);
+        console.log('Info routes --> ',fullPath + ', folder --> ' +folder);
         const imgId = uuid();
 
         const storage = multer.diskStorage({
