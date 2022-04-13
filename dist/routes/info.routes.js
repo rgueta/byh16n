@@ -41,7 +41,7 @@ tools.monthlyFolder().then(async (f, fail) => {
 
     const fullPath = _path.default.join(__dirname, '../public/img/uploads/', folder);
 
-    console.log('info routes --> ',fullPath + ', folder --> ' +folder);
+    console.log('Info routes --> ',fullPath + ', folder --> ' +folder);
 
     const imgId = (0, _uuid.v4)();
 
