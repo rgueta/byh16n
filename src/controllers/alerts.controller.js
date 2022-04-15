@@ -23,9 +23,9 @@ export const getAlerts = async (req, res) => {
 export const createAlert = async (req, res) => {
     console.log(req.body.message);
     // socket.emit('alert',' - emmited')
-    // const { privada,item,message} = req.body;
+    // const { core,item,message} = req.body;
 
-    // const newAlert = new Alerts({privada,item,message});
+    // const newAlert = new Alerts({core,item,message});
     // const AlertSaved = await newAlert.save();
     
    

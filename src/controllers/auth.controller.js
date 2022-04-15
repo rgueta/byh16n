@@ -4,13 +4,13 @@ import config from '../config';
 import Roles from '../models/Roles';
 
 export const signUp = async (req, res) => {
-    const { name,email,username,pwd,privada,house,sim,gender,avatar,roles} = req.body;
+    const { name,email,username,pwd,core,house,sim,gender,avatar,roles} = req.body;
 
     const newUser = new Users({
         name,
         email,
         username,
-        privada,
+        core,
         house,
         sim,
         gender,

@@ -1,1 +1,1 @@
-This vresion has changes for herocu deployment
+This version has AWS S3 capability (information images)
