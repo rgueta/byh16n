@@ -45,15 +45,61 @@ export const signIn = async (req, res) => {
 
     await Users.aggregate([
         {
+            $match : {
+                email : String(req.body.email)
+            }
+        },
+         {
             $lookup : {
                     'from' : 'cores',
-                    'localField' : '_id',
-                    'foreignField' : 'Houses.detail.userId',
+                    'localField' : 'core',
+                    'foreignField' : '_id',
                     'as' : 'user_core'
                 }
         },
         {$unwind : '$user_core'},
+
         {
+            $lookup: {
+                    'from': 'cpus', 
+                    'localField': 'user_core.cpu', 
+                    'foreignField': '_id', 
+                    'as': 'user_cpu'
+                    }
+          }, { '$unwind': '$user_cpu' }, 
+          {
+            $lookup: {
+                    'from': 'states', 
+                    'localField': 'user_cpu.state', 
+                    'foreignField': '_id', 
+                    'as': 'cpu_state'
+                    }
+          },{'$unwind':  '$cpu_state'}, 
+          {
+            $lookup: {
+                    'from': 'countries', 
+                    'localField': 'user_cpu.country', 
+                    'foreignField': '_id', 
+                    'as': 'cpu_country'
+                    }
+          }, {'$unwind': '$cpu_country' }, 
+          {
+            $lookup: {
+                    'from': 'divisions', 
+                    'localField': 'user_core.divisionId', 
+                    'foreignField': '_id', 
+                    'as': 'user_division'
+                    }
+          }, {'$unwind': '$user_division' }, 
+          {
+            $lookup: {
+                    'from': 'cities', 
+                    'localField': 'user_cpu.city', 
+                    'foreignField': '_id', 
+                    'as': 'cpu_city'
+                    }
+          }, { '$unwind': '$cpu_city' },
+          {
             $lookup : {
                     'from' : 'roles',
                     'localField' : 'roles',
@@ -61,23 +107,29 @@ export const signIn = async (req, res) => {
                     'as' : 'user_roles'
                 } 
          },
-        //  {$unwind : '$user_roles'},
-        {
-            $match : {
-                email : String(req.body.email)
-            }
-        }
-        ,
-        {
-            $project : {
+          {
+            $project: {
                 _id : 1,
-                name : 1,
-                sim : 1,
-                coreName : '$user_core.Name',
-                coreSim : '$user_core.Sim',
-                email: 1,
-                pwd:1,
-                roles: '$user_roles'
+              name: 1,
+              sim : 1,
+              coreName : '$user_core.Name',
+              coreSim : '$user_core.Sim',
+              email: 1,
+              roles: '$user_roles',
+
+              country: '$cpu_country.shortName', 
+              state: '$cpu_state.state', 
+              city: '$cpu_city.shortName', 
+              div: '$user_division.id', 
+              cpu: '$user_cpu.shortName', 
+              core: '$user_core.shortName',
+              img_folder: {$concat : [ '$cpu_country.shortName', '.' ,
+                            '$cpu_state.state', '.' ,
+                            '$cpu_city.shortName', '.' ,
+                            {$toString : '$user_division.id'} , '.' ,
+                            '$user_cpu.shortName', '.' ,
+                            '$user_core.shortName']}
+        
             }
         }
         
