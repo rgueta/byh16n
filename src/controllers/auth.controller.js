@@ -38,7 +38,125 @@ export const signUp = async (req, res) => {
     res.status(200).json({'token':token});
 }
 
+
 export const signIn = async (req, res) => {
+
+    console.log('email:  --> ' + req.body.email + ', pwd : ' + req.body.pwd);
+    // const foundUser = await Users.findOne({email: req.body.email}).populate("roles");
+
+    await Users.aggregate([
+        {
+            $match : {
+                email : String(req.body.email)
+            }
+        },
+        {
+            $lookup : {
+                    'from' : 'cores',
+                    'localField' : 'core',
+                    'foreignField' : '_id',
+                    'as' : 'user_core'
+                }
+        },
+        {$unwind : '$user_core'},
+
+        {
+            $lookup: {
+                    'from': 'cpus', 
+                    'localField': 'user_core.cpu', 
+                    'foreignField': '_id', 
+                    'as': 'user_cpu'
+                    }
+          }, { '$unwind': '$user_cpu' }, 
+          {
+            $lookup: {
+                    'from': 'states', 
+                    'localField': 'user_cpu.state', 
+                    'foreignField': '_id', 
+                    'as': 'cpu_state'
+                    }
+          },{'$unwind':  '$cpu_state'}, 
+          {
+            $lookup: {
+                    'from': 'countries', 
+                    'localField': 'user_cpu.country', 
+                    'foreignField': '_id', 
+                    'as': 'cpu_country'
+                    }
+          }, {'$unwind': '$cpu_country' }, 
+          {
+            $lookup: {
+                    'from': 'divisions', 
+                    'localField': 'user_core.divisionId', 
+                    'foreignField': '_id', 
+                    'as': 'user_division'
+                    }
+          }, {'$unwind': '$user_division' }, 
+          {
+            $lookup: {
+                    'from': 'cities', 
+                    'localField': 'user_cpu.city', 
+                    'foreignField': '_id', 
+                    'as': 'cpu_city'
+                    }
+          }, { '$unwind': '$cpu_city' },
+          {
+            $lookup : {
+                    'from' : 'roles',
+                    'localField' : 'roles',
+                    'foreignField' : '_id',
+                    'as' : 'user_roles'
+                } 
+         },
+          {
+            $project: {
+                _id : 1,
+              name: 1,
+              sim : 1,
+              coreName : '$user_core.Name',
+              coreSim : '$user_core.Sim',
+              email: 1,
+              roles: '$user_roles',
+
+              country: '$cpu_country.shortName', 
+              state: '$cpu_state.state', 
+              city: '$cpu_city.shortName', 
+              div: '$user_division.id', 
+              cpu: '$user_cpu.shortName', 
+              core: '$user_core.shortName',
+              img_folder: {$concat : [ '$cpu_country.shortName', '.' ,
+                            '$cpu_state.state', '.' ,
+                            '$cpu_city.shortName', '.' ,
+                            {$toString : '$user_division.id'} , '.' ,
+                            '$user_cpu.shortName', '.' ,
+                            '$user_core.shortName']}
+        
+            }
+        }
+        
+    ],async function(err, foundUser) {
+        if(err || foundUser == '') return res.status(401).json({'errId':1,'ErrMsg':"Usuario no encontrado"});
+
+        console.log('Signin foundUser -- > ', foundUser)
+        const matchPwd =  await Users.comparePassword(req.body.pwd,foundUser[0].pwd);
+
+        if(!matchPwd) return res.status(401).json({token:'', ErrMsg:'Invalid password'});
+        const accessToken = jwt.sign({id:foundUser[0]._id}, config.auth.SECRET,{
+            expiresIn: "1m"
+        });
+
+        if(!accessToken) return res.status(401).json({refreshToken : '', message : 'Something goes wrong'});
+        const refreshToken = jwt.sign({id:foundUser[0]._id}, config.auth.SECRET_REFRESH,{
+            expiresIn: "1y"
+        });
+
+        res.status(201).json({'accessToken' : accessToken,'refreshToken': refreshToken,'userId' : foundUser[0]._id,
+            'roles': foundUser[0].roles,'sim':foundUser[0].sim,  'core_sim':foundUser[0].coreSim, 'coreName' : foundUser[0].coreName});
+    });
+    
+}
+
+export const signIn_bk = async (req, res) => {
 
     console.log('email:  --> ' + req.body.email + ', pwd : ' + req.body.pwd);
     // const foundUser = await Users.findOne({email: req.body.email}).populate("roles");
@@ -101,9 +219,6 @@ export const signIn = async (req, res) => {
             'roles': foundUser[0].roles,'sim':foundUser[0].sim,  'core_sim':foundUser[0].coreSim, 'coreName' : foundUser[0].coreName});
     });
     
-    
-
-   
 }
 
 export const refresh = async (req, res) =>{
