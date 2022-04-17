@@ -116,7 +116,7 @@ export const signIn = async (req, res) => {
               coreSim : '$user_core.Sim',
               email: 1,
               roles: '$user_roles',
-
+              pwd :1,
               country: '$cpu_country.shortName', 
               state: '$cpu_state.state', 
               city: '$cpu_city.shortName', 
