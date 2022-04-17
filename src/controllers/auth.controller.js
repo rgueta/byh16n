@@ -150,7 +150,8 @@ export const signIn = async (req, res) => {
         });
 
         res.status(201).json({'accessToken' : accessToken,'refreshToken': refreshToken,'userId' : foundUser[0]._id,
-            'roles': foundUser[0].roles,'sim':foundUser[0].sim,  'core_sim':foundUser[0].coreSim, 'coreName' : foundUser[0].coreName});
+            'roles': foundUser[0].roles,'sim':foundUser[0].sim,'core_sim':foundUser[0].coreSim,
+            'coreName' : foundUser[0].coreName, 'img_folder' : foundUser[0].img_folder});
     });
     
     
