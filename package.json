@@ -1,7 +1,7 @@
 {
   "cia": "Bytheg",
   "name": "byh16n",
-  "version": "2.4.1",
+  "version": "3.0.0",
   "description": "byh16 backend nodejs",
   "main": "dist/index.js",
   "engines": {
@@ -13,7 +13,7 @@
     "clean_": "rm -rf dist/ && npm run clean_modules",
     "clean": "rm -rf dist/",
     "build_": "babel src -d dist",
-    "build" : "npm run clean && babel src --out-dir dist --source-maps --copy-files",
+    "build": "npm run clean && babel src --out-dir dist --source-maps --copy-files",
     "production": "npm run build && node bin/production",
     "build_bk": "babel src --out-dir build",
     "dev": "nodemon --exec babel-node src/index.js",
@@ -26,12 +26,13 @@
   "author": "Ricardo Gueta",
   "license": "ISC",
   "dependencies": {
-    "@types/nodemailer": "^6.4.4",
     "@babel/cli": "^7.14.5",
     "@babel/core": "^7.14.5",
     "@babel/node": "^7.14.5",
     "@babel/preset-env": "^7.14.5",
     "@babel/register": "^7.17.7",
+    "@types/nodemailer": "^6.4.4",
+    "aws-sdk": "^2.1114.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",

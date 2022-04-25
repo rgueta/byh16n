@@ -2,12 +2,20 @@ import information from "../models/info.model";
 import  { Types } from "mongoose";
 import path from 'path'
 import sharp from "sharp";
-import fs, { stat } from "fs";
+import fs from 'fs';
 import config from "../config";
 import * as tools from "../tools";
+import { uploadFile } from "../public/js/s3";
+import AWS from "aws-sdk";
+
+const S3 = new AWS.S3({
+     bucketName : config.auth.AWS_BUCKET_NAME,
+     region : config.auth.AWS_BUCKET_REGION,
+     accessKeyId : config.auth.AWS_ACCESS_KEY,
+     secretAccessKey : config.auth.AWS_SECRET_KEY
+})
 
 export const createInfo = async(req, res) =>{
-    
     const imgsRoot = config.app.images_root;
     const prefix = config.app.Resized_prefix;
     let folder = '';
@@ -17,52 +25,75 @@ export const createInfo = async(req, res) =>{
             return;
         }
 
-        folder = await f.toString() + '/';
-        const fullPath = path.join(__dirname,'../public/',imgsRoot, folder);
-        
-        const imgPath = imgsRoot + folder;
-        // Resize image ----------------------------------------
-       console.log('resize file--> ',fullPath + req.file.filename);
+        folder = await f.toString();
+        const fullPath = path.join(__dirname,'../public/',imgsRoot, folder + '/');
+        const imgPath = imgsRoot + '/' + req.body.locationFolder + '/' + folder + '/';
 
+        // Resize image ----------------------------------------
+        //--------------------------------------------
         try{
+
+            //----- Add AWS S3  -----------------------
+            // const result = await uploadFile(req.file);
+            // console.log('AWS S3 testing --> ',result);
+
+            //---- Commented to rest aws s3--------
+
             await sharp(fullPath + req.file.filename)
             .resize(640,480, {
                 fit: sharp.fit.inside,
                 withoutEnlargement: true
             })
-            .jpeg({quality : 80})
-            .toFile(fullPath + prefix + req.file.filename);
+            // .jpeg({quality : 80})
+            .toBuffer()
+            .then(resized => S3.upload({
+                Bucket: config.auth.AWS_BUCKET_NAME,
+                Key: `${req.body.locationFolder}/${folder}/${req.file.filename}`,
+                Body:resized
+            }).promise());
 
-            fs.unlink(path.join(fullPath, req.file.filename),(e) =>{
-                if(e){
-                    console.log('error deleting file: ', error);
-                }else{
-                    console.log('file deleted');
-                }
-            });
+                //----- last version 2.5 -------------------
+            // await sharp(fullPath + req.file.filename)
+            // .resize(640,480, {
+            //     fit: sharp.fit.inside,
+            //     withoutEnlargement: true
+            // })
+            // .jpeg({quality : 80})
+            // .toFile(fullPath + prefix + req.file.filename);
+
+            // fs.unlink(path.join(fullPath, req.file.filename),(e) =>{
+            //     if(e){
+            //         console.log('error deleting file: ', error);
+            //     }else{
+            //         console.log('file deleted');
+            //     }
+            // });
+
+            //-------------------------------------------------------
 
             // -- Insert into Mongo  ---------------------
-            const {title,url, description} = req.body;
+                const {title,url, description, locationFolder} = req.body;
 
-            let stats = {};
-            try{
-                stats = await fileSize(path.join(fullPath , prefix +  req.file.filename));
-                console.log('file size --> ' + stats.size);
-            }catch(err){
-                console.log('Error multer --> ', err)
-            }
+                // let stats = {};
+                // try{
+                //     stats = await fileSize(path.join(fullPath , prefix +  req.file.filename));
+                //     console.log('file size --> ' + stats.size);
+                // }catch(err){
+                //     console.log('Error multer --> ', err)
+                // }
 
-            const image = prefix + req.file.filename;
-            const size = stats.size;
+                // const image = prefix + req.file.filename;
+                // const size = stats.size;
 
-            const newInfo = await information({title,url,description,
-            image,'path':imgPath,size});
-            console.log('newInfo', newInfo);
-            if(newInfo){
-                const InfoSaved = await newInfo.save();
-            }
-                      
-            res.status(201).json({'msg' : 'Information created'});
+                // const newInfo = await information({title,url,description,
+                // image,'path':imgPath,size});
+                // console.log('newInfo', newInfo);
+                // if(newInfo){
+                //     const InfoSaved = await newInfo.save();
+                // }
+                console.log('image uploaded..!!!')
+                res.status(201).json({'msg' : 'Information created'});
+                
         }
         catch(err){
             console.log('Error at the end', err)

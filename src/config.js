@@ -12,13 +12,18 @@ module.exports = {
         SECRET_PWD_RST: 'long-life-bytheg-project-password-rst',
         defaultRole : 'visitor',
         //24 hrs. in seconds
-        token_time:86400  
-        // token_time: 20 
+        token_time:86400,
+        // token_time: 20
+        // ------  AWS  ---------------------
+        AWS_BUCKET_NAME : "byh16n.imgs",
+        AWS_BUCKET_REGION : "us-west-2",
+        AWS_ACCESS_KEY : "AKIATRJO2V5LJHF45G2F",
+        AWS_SECRET_KEY : "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" 
     },
     db: {
         // url : "mongodb://bytheg:bytheg2021@localhost:27017/byh16"
         url : "mongodb+srv://admin:bytheg2021@cluster0.mkecl.mongodb.net/byh16"
-        //mongoose_url:'mongodb://localhost:27017/byh16',
+        // mongoose_url:'mongodb://localhost:27017/byh16',
    },
    twilio :{
     SID : "AC146ef36707a2906ff3aa37e934b56b53",
