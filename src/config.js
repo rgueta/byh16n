@@ -4,7 +4,11 @@ module.exports = {
         host:'',
         public_host : 'http://192.168.1.173:5000',
         images_root : 'img/uploads/',
-        Resized_prefix : 'S_'
+        Resized_prefix : 'S_',
+
+        // ------  AWS  ------------------------
+        webImgRoot: "https://s3.us-west-2.amazonaws.com/byh16n.imgs/"
+
     },
     auth:{
         SECRET: 'long-life-bytheg-project',
@@ -15,6 +19,7 @@ module.exports = {
         token_time:86400,
         // token_time: 20
         // ------  AWS  ---------------------
+
         AWS_BUCKET_NAME : "byh16n.imgs",
         AWS_BUCKET_REGION : "us-west-2",
         AWS_ACCESS_KEY : "AKIATRJO2V5LJHF45G2F",
