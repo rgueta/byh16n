@@ -24,7 +24,7 @@ export const createCore = async (req,res) => {
 
 }
 
-export const getCores = async (req, res) => {
+export const getCoresAdmin = async (req, res) => {
     Cores.find({}, (err, results) => {
         if (err) {
           console.log(err);
@@ -36,10 +36,31 @@ export const getCores = async (req, res) => {
 
 }
 
+export const getCores = async (req, res) => {
+  const NumDivision = parseInt(req.params.division)
+    Cores.find({country:req.params.country,
+      state:req.params.state, 
+      city:req.params.city,
+      division:NumDivision,
+      cpu:req.params.cpu}, (err, results) => {
+        if (err) {
+          console.log(err);
+          res.status(500).json({message: err});
+        } else {
+          res.status(200).json(results);
+        }
+      }); 
 
-export const getOnlyCores = async (req, res) => {
+}
 
-  Cores.find({},{_id:1,Name:1}, (err, results) => {
+
+export const getCoresLight = async (req, res) => {
+  const NumDivision = parseInt(req.params.division)
+  Cores.find({country:req.params.country,
+    state:req.params.state, 
+    city:req.params.city,
+    division:NumDivision,
+    cpu:req.params.cpu},{_id:1,name:1,shortName:1}, (err, results) => {
       if (err) {
         console.log(err);
         res.status(500).json({message: err});

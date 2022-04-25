@@ -24,6 +24,10 @@ import twilioRoutes from "./routes/twilio.routes";
 import housing_unitRoutes from "./routes/housing_unit.routes";
 import pwdRST from './models/pwdRST';
 import infoRoutes  from "./routes/info.routes";
+import countriesRoutes from "./routes/countries.routes";
+import statesRoutes from "./routes/states.routes";
+import citiesRoutes from "./routes/cities.routes";
+import cpusRoutes from "./routes/cpus.routes";
 
 
 const cors = require("cors");
@@ -83,5 +87,9 @@ app.use('/api/pwdResetReq',pwdRSTRoutes);
 app.use('/api/twilio',twilioRoutes);
 // app.use('/api/alerts',alertsRoutes)
 app.use('/api/info', infoRoutes);
+app.use('/api/countries', countriesRoutes);
+app.use('/api/states', statesRoutes);
+app.use('/api/cities', citiesRoutes);
+app.use('/api/cpus', cpusRoutes);
 
 export default app;

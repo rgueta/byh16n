@@ -27,7 +27,17 @@ const coresSchema = new Schema({
         Pedestrian_heigh : {type : Number, required: true},
     },
     housing_unit : {type : Schema.Types.ObjectId, required :true},
+    shortName : {type: String},
+    divisionId : {type: Schema.Types.ObjectId},
+    cpuId : {type: Schema.Types.ObjectId},
+    country : {type: String},
+    state : {type: String},
+    city : {type: String},
+    division : {type: Number},
+    cpu : {type: String},
+
     },
+    
 // });
     {
         timestamps:true,

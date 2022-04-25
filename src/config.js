@@ -23,7 +23,7 @@ module.exports = {
     db: {
         // url : "mongodb://bytheg:bytheg2021@localhost:27017/byh16"
         url : "mongodb+srv://admin:bytheg2021@cluster0.mkecl.mongodb.net/byh16"
-        //mongoose_url:'mongodb://localhost:27017/byh16',
+        // mongoose_url:'mongodb://localhost:27017/byh16',
    },
    twilio :{
     SID : "AC146ef36707a2906ff3aa37e934b56b53",

@@ -63,7 +63,7 @@ export const signIn = async (req, res) => {
         {
             $lookup: {
                     'from': 'cpus', 
-                    'localField': 'user_core.cpu', 
+                    'localField': 'user_core.cpuId', 
                     'foreignField': '_id', 
                     'as': 'user_cpu'
                     }
@@ -71,7 +71,7 @@ export const signIn = async (req, res) => {
           {
             $lookup: {
                     'from': 'states', 
-                    'localField': 'user_cpu.state', 
+                    'localField': 'user_cpu.stateId', 
                     'foreignField': '_id', 
                     'as': 'cpu_state'
                     }
@@ -79,7 +79,7 @@ export const signIn = async (req, res) => {
           {
             $lookup: {
                     'from': 'countries', 
-                    'localField': 'user_cpu.country', 
+                    'localField': 'user_cpu.countryId', 
                     'foreignField': '_id', 
                     'as': 'cpu_country'
                     }
@@ -95,7 +95,7 @@ export const signIn = async (req, res) => {
           {
             $lookup: {
                     'from': 'cities', 
-                    'localField': 'user_cpu.city', 
+                    'localField': 'user_cpu.cityId', 
                     'foreignField': '_id', 
                     'as': 'cpu_city'
                     }
@@ -113,11 +113,11 @@ export const signIn = async (req, res) => {
                 _id : 1,
               name: 1,
               sim : 1,
+              pwd:1,
               coreName : '$user_core.Name',
               coreSim : '$user_core.Sim',
               email: 1,
               roles: '$user_roles',
-
               country: '$cpu_country.shortName', 
               state: '$cpu_state.state', 
               city: '$cpu_city.shortName', 
@@ -125,7 +125,7 @@ export const signIn = async (req, res) => {
               cpu: '$user_cpu.shortName', 
               core: '$user_core.shortName',
               img_folder: {$concat : [ '$cpu_country.shortName', '.' ,
-                            '$cpu_state.state', '.' ,
+                            '$user_cpu.state', '.' ,
                             '$cpu_city.shortName', '.' ,
                             {$toString : '$user_division.id'} , '.' ,
                             '$user_cpu.shortName', '.' ,
@@ -135,7 +135,7 @@ export const signIn = async (req, res) => {
         }
         
     ],async function(err, foundUser) {
-        if(err || foundUser == '') return res.status(401).json({'errId':1,'ErrMsg':"Usuario no encontrado"});
+        if(err || foundUser == '') return res.status(401).json({'errId':1,'ErrMsg':"Usuario no encontrado","Error": err});
 
         console.log('Signin foundUser -- > ', foundUser)
         const matchPwd =  await Users.comparePassword(req.body.pwd,foundUser[0].pwd);
@@ -200,7 +200,7 @@ export const signIn_bk = async (req, res) => {
         }
         
     ],async function(err, foundUser) {
-        if(err || foundUser == '') return res.status(401).json({'errId':1,'ErrMsg':"Usuario no encontrado"});
+        if(err || foundUser == '') return res.status(401).json({'err Id':1,'ErrMsg':"Usuario no encontrado","Error": err.message});
 
         console.log('Signin foundUser -- > ', foundUser)
         const matchPwd =  await Users.comparePassword(req.body.pwd,foundUser[0].pwd);

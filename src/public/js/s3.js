@@ -1,5 +1,6 @@
-import { S3 } from "aws-sdk/clients/s3";
+import S3  from "aws-sdk/clients/s3";
 import config from "../../config";
+import fs from "fs";
 
 const bucketName = config.auth.AWS_BUCKET_NAME;
 const region = config.auth.AWS_BUCKET_REGION;
@@ -14,7 +15,7 @@ const s3 = new S3({
 
 // upload image to s3
 
-export function upload(file){
+export function uploadFile(file){
     const fileStream = fs.createReadStream(file.path)
 
     const uploadParams = {
