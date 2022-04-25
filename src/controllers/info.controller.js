@@ -52,6 +52,8 @@ export const createInfo = async(req, res) =>{
                 Body:resized
             }).promise());
 
+           
+
                 //----- last version 2.5 -------------------
             // await sharp(fullPath + req.file.filename)
             // .resize(640,480, {
@@ -73,24 +75,32 @@ export const createInfo = async(req, res) =>{
 
             // -- Insert into Mongo  ---------------------
                 const {title,url, description, locationFolder} = req.body;
+                const webImgRoot = path.join(config.app.webImgRoot,
+                    req.body.locationFolder, folder)
 
-                // let stats = {};
-                // try{
-                //     stats = await fileSize(path.join(fullPath , prefix +  req.file.filename));
-                //     console.log('file size --> ' + stats.size);
-                // }catch(err){
-                //     console.log('Error multer --> ', err)
-                // }
+                let stats = {};
+                try{
+                    stats = await fileSize(path.join(fullPath , prefix +  req.file.filename));
+                    console.log('file size --> ' + stats.size);
+                }catch(err){
+                    console.log('Error multer --> ', err)
+                }
 
-                // const image = prefix + req.file.filename;
-                // const size = stats.size;
+                const image = prefix + req.file.filename;
+                const size = stats.size;
 
                 // const newInfo = await information({title,url,description,
                 // image,'path':imgPath,size});
-                // console.log('newInfo', newInfo);
-                // if(newInfo){
-                //     const InfoSaved = await newInfo.save();
-                // }
+
+                const newInfo = await information({title,url,description,
+                    image,'path':webImgRoot,size});
+
+                console.log('newInfo', newInfo);
+                if(newInfo){
+                    const InfoSaved = await newInfo.save();
+                }
+
+
                 console.log('image uploaded..!!!')
                 res.status(201).json({'msg' : 'Information created'});
                 
