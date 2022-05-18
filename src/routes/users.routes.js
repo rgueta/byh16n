@@ -3,7 +3,8 @@ import * as usersCtrl from '../controllers/users.controller';
 import { authJwt, verifySignup } from "../middleware";
 const router = Router();
 
-router.post('/user',[authJwt.verifyToken],usersCtrl.createUser);
+// router.post('/user',[authJwt.verifyToken,authJwt.isAdmin],usersCtrl.createUser);
+router.post('/user',usersCtrl.createUser);
 router.post('/user/:userId',[authJwt.verifyToken,authJwt.isAdmin],usersCtrl.createUser);
 router.post('/register/',usersCtrl.RegisterUser);
 router.get('/',usersCtrl.getUsers);

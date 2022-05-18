@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 
 
 export const createCore = async (req,res) => {
-  const {Name, Address, webService, Sim, Location,qty, Motor, Gate_type, Gate_long, 
+  const {Name, Address, webService, Sim, coord, qty, Motor, Gate_type, Gate_long, 
        Gate_heigh, Pedestrian_type, Pedestrian_long, Pedestrian_heigh , housing_unit,
   enable, contact_name, contact_email, contact_phone} = await req.body;
 
@@ -11,7 +11,7 @@ export const createCore = async (req,res) => {
   const detail = {Motor, Gate_type, Gate_long, 
     Gate_heigh, Pedestrian_type, Pedestrian_long, Pedestrian_heigh};
 
-   const newCore = new Cores({Name, Address, webService, Sim, Location,Houses, detail, housing_unit,
+   const newCore = new Cores({Name, Address, webService, Sim, coord ,Houses, detail, housing_unit,
     enable, contact_name, contact_email, contact_phone});
 
   try{
@@ -25,7 +25,11 @@ export const createCore = async (req,res) => {
 }
 
 export const getCoresAdmin = async (req, res) => {
-    Cores.find({}, (err, results) => {
+    Cores.find({},{_id:1,name:1,Houses:1,Address:1,coord:1,
+      Sim:1,detail:1,
+      location:{$concat : ['$country', '.', '$state', '.', '$city',
+      '.', {$toString : '$division'}, '.', '$cpu', '.', '$shortName']}
+      }, (err, results) => {
         if (err) {
           console.log(err);
           res.status(500).json({message: err});

@@ -7,6 +7,7 @@ const infoSchema = new Schema({
     image : {type : String, required : true},
     path : {type : String, required : true},
     size : {type : Number, required : true},
+    location: {type : String, required : true},
     like : {type: Number, default: 0},
     disable : {type: Boolean, default : false}
 },

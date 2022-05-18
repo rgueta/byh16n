@@ -8,6 +8,7 @@ const cpusSchema = new Schema({
     state: {type: String},
     city: {type: String},
     division: {type: Number},
+    coord : {type : [String], required: true},
     },
     {
         timestamps:true,

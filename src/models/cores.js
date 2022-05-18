@@ -5,7 +5,7 @@ const coresSchema = new Schema({
     Name : {type : String, required: true},
     Address : {type : String, required: true},
     Sim : {type : String, required: true},
-    Location : {type : [String], required: true},
+    coord : {type : [String], required: true},
     Houses : {
         qty : {type : Number, required: true},
         detail : [

@@ -28,18 +28,18 @@ export const createInfo = async(req, res) =>{
         folder = await f.toString();
         const fullPath = path.join(__dirname,'../public/',imgsRoot, folder + '/');
         const imgPath = imgsRoot + '/' + req.body.locationFolder + '/' + folder + '/';
-
+        let resized = {} 
         // Resize image ----------------------------------------
         //--------------------------------------------
         try{
 
-            //----- Add AWS S3  -----------------------
+            //----- AWS S3 for non resize images -----------------------
             // const result = await uploadFile(req.file);
             // console.log('AWS S3 testing --> ',result);
 
-            //---- Commented to rest aws s3--------
+            //----  aws s3 for resize images  -------------------------
 
-            await sharp(fullPath + req.file.filename)
+            const resized_img = await sharp(fullPath + req.file.filename)
             .resize(640,480, {
                 fit: sharp.fit.inside,
                 withoutEnlargement: true
@@ -52,9 +52,11 @@ export const createInfo = async(req, res) =>{
                 Body:resized
             }).promise());
 
-           
 
-                //----- last version 2.5 -------------------
+            
+
+            //#region ----- last version 2.5 -------------------
+
             // await sharp(fullPath + req.file.filename)
             // .resize(640,480, {
             //     fit: sharp.fit.inside,
@@ -71,29 +73,34 @@ export const createInfo = async(req, res) =>{
             //     }
             // });
 
-            //-------------------------------------------------------
+            //#endregion -------------------------------------------------------
 
             // -- Insert into Mongo  ---------------------
                 const {title,url, description, locationFolder} = req.body;
-                const webImgRoot = path.join(config.app.webImgRoot,
-                    req.body.locationFolder, folder)
+                const webImgRoot = config.app.webImgRoot  + req.body.locationFolder 
+                    + '/' + folder + '/' 
 
-                let stats = {};
-                try{
-                    stats = await fileSize(path.join(fullPath , prefix +  req.file.filename));
-                    console.log('file size --> ' + stats.size);
-                }catch(err){
-                    console.log('Error multer --> ', err)
-                }
+                // let stats = {};
+                // try{
+                //     // stats = await fileSize(path.join(fullPath , req.file.filename));
+                //     // stats = await fileSize(webImgRoot);
+                //     console.log('file size --> ' + stats.size);
+                // }catch(err){
+                //     console.log('Error multer --> ', err)
+                // }
 
-                const image = prefix + req.file.filename;
-                const size = stats.size;
+                // const resized_img_meta = await resized_img.metadata();
+                console.log('Metadata size --> ', await resized_img)
+                const image = req.file.filename;
+                // const size = stats.size;
 
+                // const size = resized_img_meta.size;
                 // const newInfo = await information({title,url,description,
                 // image,'path':imgPath,size});
+                const size = 0;
 
                 const newInfo = await information({title,url,description,
-                    image,'path':webImgRoot,size});
+                    image,'path':webImgRoot,'location':req.body.locationFolder,size});
 
                 console.log('newInfo', newInfo);
                 if(newInfo){
@@ -114,13 +121,31 @@ export const createInfo = async(req, res) =>{
 };
 
 export const getInfo = async(req, res) =>{
+    const userID = Types.ObjectId(req.params.userId);
     // const info = await information.find({enable : true}).sort({'createdAt':-1});
     const info = await information.aggregate([
         {
-            $match : {disable : false}
+            $sort : {createdAt : -1}
         },
         {
-            $sort : {createdAt : -1}
+            $lookup : {
+                'from': 'users',
+                'localField' : 'location',
+                'foreignField' : 'location',
+                'as' : 'info_user'
+            }
+        },
+        {$unwind : '$info_user'},
+         {
+          '$match': {
+            '$and': [
+              {
+                'disable': false
+              }, {
+                'info_user._id': userID
+              }
+            ]
+          }
         },
         {
             $project: {

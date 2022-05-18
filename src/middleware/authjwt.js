@@ -46,14 +46,14 @@ export const verifyToken = async (req,res, next) =>{
 
         if(!token) return res.status(403).json({message:'Not token provided'})
         const decoded = jwt.verify(token,config.auth.SECRET);
-        console.log('decoded: ' + JSON.stringify(decoded))
+        console.log('jwt.verify decoded: ' + JSON.stringify(decoded))
         // req.paramss.userId = decoded.id;
         
+        console.log('findById req.params.userId --> ', req.params.userId);
         const user = await Users.findById(req.params.userId,{pwd:0});
         if(!user) return res.status(404).json({message:"no user found"});
-        console.log(decoded);
         next();
-        return;
+        // return;
 
     }catch(e){
         console.log('verifyToken Error --> ', e.message)

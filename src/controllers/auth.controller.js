@@ -41,7 +41,7 @@ export const signUp = async (req, res) => {
 
 export const signIn = async (req, res) => {
 
-    console.log('email:  --> ' + req.body.email + ', pwd : ' + req.body.pwd);
+    console.log('email:  --> ' + req.body.email + ', pwd : ' + req.body.pwd + ' encrypted -->  ' + await Users.encryptPassword(req.body.pwd));
     // const foundUser = await Users.findOne({email: req.body.email}).populate("roles");
 
     await Users.aggregate([
@@ -114,22 +114,23 @@ export const signIn = async (req, res) => {
               name: 1,
               sim : 1,
               pwd:1,
-              coreName : '$user_core.Name',
+              coreName : '$user_core.name',
               coreSim : '$user_core.Sim',
               email: 1,
               roles: '$user_roles',
+              location: 1,
               country: '$cpu_country.shortName', 
               state: '$cpu_state.state', 
               city: '$cpu_city.shortName', 
               div: '$user_division.id', 
               cpu: '$user_cpu.shortName', 
-              core: '$user_core.shortName',
-              img_folder: {$concat : [ '$cpu_country.shortName', '.' ,
-                            '$user_cpu.state', '.' ,
-                            '$cpu_city.shortName', '.' ,
-                            {$toString : '$user_division.id'} , '.' ,
-                            '$user_cpu.shortName', '.' ,
-                            '$user_core.shortName']}
+              core: '$user_core.shortName'
+            //   img_folder: {$concat : [ '$cpu_country.shortName', '.' ,
+            //                 '$user_cpu.state', '.' ,
+            //                 '$cpu_city.shortName', '.' ,
+            //                 {$toString : '$user_division.id'} , '.' ,
+            //                 '$user_cpu.shortName', '.' ,
+            //                 '$user_core.shortName']}
         
             }
         }
@@ -151,7 +152,8 @@ export const signIn = async (req, res) => {
         });
 
         res.status(201).json({'accessToken' : accessToken,'refreshToken': refreshToken,'userId' : foundUser[0]._id,
-            'roles': foundUser[0].roles,'sim':foundUser[0].sim,  'core_sim':foundUser[0].coreSim, 'coreName' : foundUser[0].coreName});
+            'roles': foundUser[0].roles,'sim':foundUser[0].sim,  'core_sim':foundUser[0].coreSim, 
+            'coreName' : foundUser[0].coreName, 'location':foundUser[0].location});
     });
     
 }

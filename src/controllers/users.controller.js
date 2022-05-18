@@ -3,25 +3,32 @@ import {Types} from 'mongoose';
 import { response } from "express";
 
 export const createUser = async (req,res) =>{
-    console.log('Create rUser -->', req.body);
+    console.log('Create User -->', req.body);
+    const roles = req.body.roles.map(Types.ObjectId);
+    const pwd = await Users.encryptPassword(req.body.pwd)
+    console.log('User encrypted pwd --> ', pwd)
+
 
     try{
-        const  {name,email,username,house,uuid,sim,gender,avatar,pwd,core} = await req.body;
-        const roles = req.body.roles.map(Types.ObjectId);
+        const  {name,email,username,house,uuid,sim,gender,
+            avatar,core,location} = await req.body;
 
-        const foundUser = await Users.findOne({email : req.body.email})
+        const foundUser = await Users.findOne({email : req.body.email});
         if(!foundUser){
-            // const newUser = new Users({name,email,username,house,uuid,sim,gender,avatar,pwd,core,roles});
+            const newUser = new Users({name,email,username,house,uuid,sim,gender,
+                avatar,roles,pwd,core,location});
 
-            // const userSaved = await newUser.save();
+            const userSaved = await newUser.save();
 
             res.status(200).send({'status' : 200,'msg' : 'User saved'});
         }else{
             console.log('User already exists -> ' + JSON.stringify(foundUser));
             res.status(200).send({'status' : 201, 'msg' : 'User already exists'});
         }
+            
+        
     }catch(err){
-        return res.status(200).send({'status' : 401, 'msg':err.message});
+        return res.status(401).send({'status' : 401, 'msg':err.message});
     }
 }
 

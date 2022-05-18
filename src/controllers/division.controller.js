@@ -2,9 +2,9 @@ import Divisions from "../models/divisions";
 import { Types } from "mongoose";
 
 export const createDivision = async (req, res) => {
-    const {Name,City,cityShortName,Location,Pc,Country,Description} = req.body;
+    const {Name,City,cityShortName,coord, Pc,Country,Description} = req.body;
     const newDivision = Divisions({Name,City,cityShortName,
-        Location,Pc,Country,id,Description});
+        coord, Pc,Country,id,Description});
     const divisionSaved = await newDivision.save();
 
     res.status(201).json(divisionSaved);

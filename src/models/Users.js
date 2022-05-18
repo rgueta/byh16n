@@ -17,7 +17,8 @@ const userSchema = new Schema({
         ref: 'Roles',
         type: Schema.Types.ObjectId
     }],
-    status : {type : Number}
+    status : {type : Number},
+    location : {type: String},
 },
 {
     timestamps:true,
