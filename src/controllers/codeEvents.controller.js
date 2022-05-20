@@ -2,15 +2,23 @@ import code_events  from "../models/code_events";
 import { Schema, Types } from "mongoose";
 import { RegisterUser } from "./users.controller";
 
+
 export const createCode_event = async (req,res) => {
-    const codeId = Types.ObjectId(req.params.codeId);
-    const picId = req.params.picId;
-    const CoreSim = req.params.CoreSim;
-
-    const newCode_event = new code_events({codeId,CoreSim,picId});
-    const eventSaved = await newCode_event.save();
-
-    res.status(201).json(eventSaved);
+    const {code, picId, CoreSim} = await req.params;
+    const codeId = Types.ObjectId(code);
+    console.log('at createCode_event parameters--> ' + codeId 
+    + ', ' + picId 
+    + ', ' + CoreSim )
+    try{
+        const newCode_event = new code_events({codeId,CoreSim,picId});
+        const eventSaved = await newCode_event.save();
+        res.status(201).json(eventSaved);
+    }catch(err){
+        console.log('Error --> ', err)
+        res.status(404).json({'Error':e.message});
+    }
+    
+    
 }
 
 export const getCode_events = async (req,res) => {
@@ -74,8 +82,23 @@ export const getCode_events = async (req,res) => {
     }
 }
 export const getCode_eventsByDate = async (req,res) => {
-    console.log('getCode_eventsByDate --> start ' , new Date(req.params.start));
-    
+    // console.log('getCode_eventsByDate --> start ' , new Date(req.params.start).setHours(0,0,0,0));
+    // console.log('getCode_eventsByDate --> end ' , new Date(req.params.end).setHours(23,59,59,999));
+
+    let start = await new Date(req.params.start);
+    let end = await new Date(req.params.end);
+
+    // var start = new Date(req.params.start).toISOString().split('T')[0];  // V3.0.3
+    // var end = new Date(req.params.end).toISOString().split('T')[0];  //V3.0.3
+
+
+    // start.setUTCHours(0,0,0,0);
+    // end.setUTCHours(23,59,59,0);
+
+    console.log('getCode_eventsByDate --> start ' , start);
+    console.log('getCode_eventsByDate --> end ' , end);
+
+
     if(req.params.CoreSim != null && req.params.start != null && req.params.end != null){
         const CoreSim = req.params.CoreSim;
         const date = req.params.date;
