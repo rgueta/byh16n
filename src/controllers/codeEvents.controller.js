@@ -2,8 +2,31 @@ import code_events  from "../models/code_events";
 import { Schema, Types } from "mongoose";
 import { RegisterUser } from "./users.controller";
 
-
 export const createCode_event = async (req,res) => {
+    try{
+        const {codeId, picId, CoreSim} = await req.body;
+        const code_Id = Types.ObjectId(codeId);
+        console.log('at createCode_event parameters--> ' + code_Id 
+        + ', ' + picId 
+        + ', ' + CoreSim )
+        res.status(201).json({'msg':'ok'})
+    }catch(err){
+        console.log('createCode_event Error --> ', err)
+        res.status(401).json({'msg':'Error' + err})
+    }
+    
+    // try{
+    //     const newCode_event = new code_events({codeId,CoreSim,picId});
+    //     const eventSaved = await newCode_event.save();
+    //     res.status(201).json(eventSaved);
+    // }catch(err){
+    //     console.log('Error --> ', err)
+    //     res.status(404).json({'Error':e.message});
+    // }    
+}
+
+
+export const createCode_event_ = async (req,res) => {
     const {code, picId, CoreSim} = await req.params;
     const codeId = Types.ObjectId(code);
     console.log('at createCode_event parameters--> ' + codeId 
@@ -16,9 +39,7 @@ export const createCode_event = async (req,res) => {
     }catch(err){
         console.log('Error --> ', err)
         res.status(404).json({'Error':e.message});
-    }
-    
-    
+    }    
 }
 
 export const getCode_events = async (req,res) => {

@@ -15,11 +15,11 @@ export const createCode = async (req,res) => {
     // return
     const newCode = new Codes({code,initial,expiry,comment,visitorId,
         source: {user,platform,id }});
-    const productSaved = await newCode.save();
+    const codeSaved = await newCode.save();
     
    
     // console.log(req.body);
-    res.status(201).json(productSaved);
+    res.status(201).json(codeSaved);
 }
 
 export const getCodes = async (req,res) => {
