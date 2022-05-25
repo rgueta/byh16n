@@ -9,9 +9,13 @@ export const createCode_event = async (req,res) => {
         console.log('at createCode_event parameters--> ' + code_Id 
         + ', ' + picId 
         + ', ' + CoreSim )
-        res.status(201).json({'msg':'ok'})
+
+        const newCode_event = new code_events({code_Id,CoreSim,picId});
+        const eventSaved = await newCode_event.save();
+        res.status(201).json(eventSaved);
+        // res.status(201).json({'msg':'ok'})
     }catch(err){
-        console.log('createCode_event Error --> ', err)
+        // console.log('createCode_event Error --> ', err)
         res.status(401).json({'msg':'Error' + err})
     }
     
