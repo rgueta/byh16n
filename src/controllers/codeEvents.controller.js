@@ -6,13 +6,13 @@ export const createCode_event = async (req,res) => {
     try{
         const code_Id = req.body.codeId;
         const picId = req.body.picId;
-        const CoreSim = req.body.coreSim;
+        const CoreSim = req.body.CoreSim;
         const codeId = Types.ObjectId(code_Id);
         console.log('at createCode_event parameters--> ' + codeId 
         + ', ' + picId 
         + ', ' + CoreSim )
 
-        const newCode_event = new code_events({codeId,CoreSim,picId});
+        const newCode_event = new code_events({codeId,picId,CoreSim});
         const eventSaved = await newCode_event.save();
         res.status(201).json(eventSaved);
         // res.status(201).json({'msg':'ok'})
