@@ -68,3 +68,9 @@ export const deleteUserById = async (req,res) => {
     const deletedUser = await Codes.findByIdAndDelete(req.params.userId);
     res.status(204).json(deletedUser)
 }
+
+export const blockUser = async (req,res) =>{
+    const userId = req.body.userId;
+    console.log(userId) 
+    res.status(200).json({'user receoved': userId})
+}
