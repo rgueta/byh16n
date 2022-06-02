@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+ import { Schema, model } from "mongoose";
 
 const codeSchema = new Schema({
     code : { type : String},

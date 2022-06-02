@@ -17,7 +17,7 @@ const userSchema = new Schema({
         ref: 'Roles',
         type: Schema.Types.ObjectId
     }],
-    status : {type : Number},
+    locked : {type : Boolean},
     location : {type: String},
 },
 {

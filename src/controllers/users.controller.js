@@ -69,8 +69,31 @@ export const deleteUserById = async (req,res) => {
     res.status(204).json(deletedUser)
 }
 
-export const blockUser = async (req,res) =>{
+export const lockedUser = async (req,res) =>{
     const userId = req.body.userId;
-    console.log(userId) 
-    res.status(200).json({'user receoved': userId})
+    try{
+        const updLocked = await Users.updateOne({_id : userId},{$set:{locked:true}})
+        if(updLocked)
+            res.status(200).json({'msg': updLocked})
+        else
+        res.status(400).json({'msg': 'Can not locked user [ ' + 
+        userId + ' ]'})
+    }catch(err){
+        res.status(400).json({'msg': err})
+    }
+    
+}
+
+export const unlockedUser = async (req,res) =>{
+    const userId = req.body.userId;
+    try{
+        const updUnlocked = await Users.updateOne({_id : Types.ObjectId(userId)},{$set:{locked:false}})
+        if(updUnlocked)
+            res.status(200).json({'msg': updUnlocked})
+        else
+            res.status(400).json({'msg': 'Can not unlocked user [ ' + 
+            userId + ' ]'})
+    }catch(err){
+        res.status(400).json({'msg': err})
+    }
 }

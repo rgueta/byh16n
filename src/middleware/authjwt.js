@@ -69,7 +69,7 @@ export const isAdmin = async(req, res, next) => {
     console.log('isAdmin params --> ', req.params)
     const user = await Users.findById(req.params.userId);
     const roles = await Roles.find({_id:{$in: user.roles}});
-    console.log(roles);
+    console.log('Roles --> ',roles);
     for(let i=0; i < roles.length; i++ ){
         if(roles[i].name === 'admin'){
             next();
