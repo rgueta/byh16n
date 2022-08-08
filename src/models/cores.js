@@ -1,7 +1,6 @@
 import { Schema, model } from "mongoose";
 
 const coresSchema = new Schema({
-    
     Name : {type : String, required: true},
     Address : {type : String, required: true},
     Sim : {type : String, required: true},
@@ -35,7 +34,7 @@ const coresSchema = new Schema({
     city : {type: String},
     division : {type: Number},
     cpu : {type: String},
-
+    enable : {type: Boolean}
     },
     
 // });

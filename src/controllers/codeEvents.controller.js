@@ -81,7 +81,7 @@ export const getCode_events = async (req,res) => {
             {$unwind : '$codes_users'},
             {
                 $match : {
-                        coreSim : req.params.CoreSim
+                        coreSim : CoreSim
                     }
                 },
             {$sort : { createdAt : -1 }},

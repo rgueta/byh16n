@@ -70,6 +70,7 @@ export const deleteUserById = async (req,res) => {
 }
 
 export const lockedUser = async (req,res) =>{
+    
     const userId = req.body.userId;
     try{
         const updLocked = await Users.updateOne({_id : userId},{$set:{locked:true}})

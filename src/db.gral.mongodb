@@ -1,0 +1,7 @@
+db.users.find({})
+db.code_events.find({})
+db.cores.find({})
+db.cores.find({},{_id : { '$in' : ['612c4a9e3229ad032c710bb0']}})
+db.cores.find({},{_id : {$in : 
+    [ObjectId('612c4a9e3229ad032c710bb0'),
+    ObjectId('612c4b923229ad032c710bb1')]}})
