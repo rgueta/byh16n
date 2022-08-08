@@ -1,6 +1,7 @@
 import code_events  from "../models/code_events";
 import { Schema, Types } from "mongoose";
 import { RegisterUser } from "./users.controller";
+import { query } from "express";
 
 export const createCode_event = async (req,res) => {
     try{
@@ -50,7 +51,6 @@ export const createCode_event_ = async (req,res) => {
 
 export const getCode_events = async (req,res) => {
     if(req.params.CoreSim != null){
-        const CoreSim = req.params.CoreSim;
         const codeEvents = await code_events.aggregate([
             {
                 $lookup:{
@@ -81,9 +81,9 @@ export const getCode_events = async (req,res) => {
             {$unwind : '$codes_users'},
             {
                 $match : {
-                        coreSim : CoreSim
+                        CoreSim : req.params.CoreSim
                     }
-                },
+            },
             {$sort : { createdAt : -1 }},
             {
                 $project : {
@@ -102,7 +102,6 @@ export const getCode_events = async (req,res) => {
                     }
             }
         ]);
-
         res.status(201).json(codeEvents);
     }else{
         res.status(401).json({'msg':'core_sim parameter not received'})
