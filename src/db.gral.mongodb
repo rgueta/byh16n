@@ -1,7 +1,64 @@
 db.users.find({})
-db.code_events.find({})
+db.code_events.find().sort({createdAt:-1})
 db.cores.find({})
-db.cores.find({},{_id : { '$in' : ['612c4a9e3229ad032c710bb0']}})
+db.cores.find({Sim : { $in : ['+526641942241','+526645205849']}})
 db.cores.find({},{_id : {$in : 
-    [ObjectId('612c4a9e3229ad032c710bb0'),
-    ObjectId('612c4b923229ad032c710bb1')]}})
+    [ObjectId('625c1d28cc5e1b626205064f'),
+    ObjectId('60afd3955d8280dc19460c3a')]}})
+
+db.codes.find().sort({createdAt:-1})
+
+/*
+
+
+db.code_events.aggregate([
+            {
+                $lookup:{
+                        'from' :  'codes',
+                        'localField' : 'codeId',
+                        'foreignField' : '_id',
+                        'as' : 'code_events_code'
+                    }
+            },
+            {$unwind : '$code_events_code'},
+                {
+                $lookup:{
+                        'from' :  'visitors',
+                        'localField' : 'code_events_code.visitorId',
+                        'foreignField' : '_id',
+                        'as' : 'code_visitors'
+                    }
+                },
+            {$unwind : '$code_visitors'},
+            {
+                $lookup : {
+                        'from' :  'users',
+                        'localField' : 'code_events_code.source.user',
+                        'foreignField' : '_id',
+                        'as' : 'codes_users'
+                    }   
+                },
+            {$unwind : '$codes_users'},
+            {
+                $match : {
+                        CoreSim: "+526645205849"
+                    }
+            },
+            {$sort : { createdAt : -1 }},
+            {
+                $project : {
+                        codeId : 1,
+                        CoreSim : 1,
+                        code : '$code_events_code.code',
+                        casa : '$codes_users.house',
+                        visitorname : '$code_visitors.name',
+                        createdAt : { 
+                            $dateToString: { 
+                              format: '%Y/%m/%d %H:%M:%S', 
+                              date: '$createdAt', 
+                              timezone: 'America/Los_Angeles' 
+                            } 
+                          }
+                    }
+            }
+        ])
