@@ -19,7 +19,7 @@ export const createCode_event = async (req,res) => {
         // res.status(201).json({'msg':'ok'})
     }catch(err){
         // console.log('createCode_event Error --> ', err)
-        res.status(401).json({'msg': err})
+        res.status(401).json({'msg..': err})
     }
     
     // try{
