@@ -6,7 +6,6 @@ import { query } from "express";
 export const createCode_event = async (req,res) => {
     try{
         console.log('req.body --> ',req.body)
-        console.log('req.params --> ',req.params)
         const code_Id = req.body.codeId;
         const picId = req.body.picId;
         const CoreSim = req.body.CoreSim;
