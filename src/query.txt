@@ -1,5 +1,6 @@
 db.users.find({})
 
+
 db.cores.find({})
 db.cores.find({Sim : { $in : ['+526641942241','+526645205849']}})
 db.cores.find({},{_id : {$in : 
