@@ -31,3 +31,4 @@ npm-debug.log*
 /www
 /android
 /src/public/img/uploads
+db.gral.mongodb
