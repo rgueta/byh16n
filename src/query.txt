@@ -13,7 +13,6 @@ db.codes.find({_id:ObjectId('62f34abc5d4a0a003a3090cc')})
 
 db.code_events.find().sort({createdAt:-1}).count()
 
-
 db.code_events.find({createdAt: { 
     $lte : new Date("2022/01/01 00:00:00")}}).count()
 
