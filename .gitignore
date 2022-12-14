@@ -33,3 +33,4 @@ npm-debug.log*
 /src/public/img/uploads
 /src/db.gral.mongodb
 /src/query.txt
+/src/config.js
