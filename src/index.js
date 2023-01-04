@@ -2,7 +2,8 @@
 import config from "./config";
 import app from './app';
 import fs from 'fs';
-
+import dotenv from "dotenv";
+dotenv.config()
 
 // index setup
 const PORT = config.app.port;
@@ -92,5 +93,5 @@ require('./routes/routes')(app,modelAlerts,io);
 
 // #endregion  --------------------------------------------------------------
 
-console.log('server listen on port', PORT)
+console.log('server listen on port', process.env.PORT || PORT)
 

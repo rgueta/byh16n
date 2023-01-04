@@ -1,7 +1,7 @@
 FROM node:14.17.5
 
 # Create app directory
-# WORKDIR /usr/src/app
+WORKDIR /usr/src/app
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
@@ -16,4 +16,5 @@ RUN npm install
 COPY . .
 
 EXPOSE 5000
-CMD [ "npm", "run", "dev" ]
+# CMD [ "npm", "run", "dev" ]
+CMD [ "node", "index.js" ]
