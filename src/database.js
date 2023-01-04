@@ -3,7 +3,7 @@ import config from "./config";
 
 
 mongoose.set('useCreateIndex', true);
-mongoose.connect(process.env.DB || config.db.url,
+mongoose.connect(process.env.DB || config.db.url || process.env.MONGO_URL,
     {useNewUrlParser:true, 
      useUnifiedTopology:true,
      useFindAndModify:false,
