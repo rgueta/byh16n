@@ -3,16 +3,16 @@ import  { Types } from "mongoose";
 import path from 'path'
 import sharp from "sharp";
 import fs from 'fs';
-import config from "../config";
 import * as tools from "../tools";
 import { uploadFile } from "../public/js/s3";
 import AWS from "aws-sdk";
 
+
 const S3 = new AWS.S3({
-     bucketName : config.auth.AWS_BUCKET_NAME,
-     region : config.auth.AWS_BUCKET_REGION,
-     accessKeyId : config.auth.AWS_ACCESS_KEY,
-     secretAccessKey : config.auth.AWS_SECRET_KEY
+     bucketName : process.env.AWS_BUCKET_NAME,
+     region : process.env.AWS_BUCKET_REGION,
+     accessKeyId : process.env.AWS_ACCESS_KEY,
+     secretAccessKey : process.env.AWS_SECRET_KEY
 })
 
 export const createInfo = async(req, res) =>{
@@ -47,7 +47,7 @@ export const createInfo = async(req, res) =>{
             // .jpeg({quality : 80})
             .toBuffer()
             .then(resized => S3.upload({
-                Bucket: config.auth.AWS_BUCKET_NAME,
+                Bucket: process.env.AWS_BUCKET_NAME,
                 Key: `${req.body.locationFolder}/${folder}/${req.file.filename}`,
                 Body:resized
             }).promise());

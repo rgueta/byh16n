@@ -1,5 +1,4 @@
 import Users from '../models/Users';
-import config from '../config';
 import pwdRST from "../models/pwdRST";
 import nodemailer from "nodemailer";
 import bcrypt from 'bcryptjs';

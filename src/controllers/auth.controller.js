@@ -1,6 +1,5 @@
 import Users from '../models/Users';
 import jwt from 'jsonwebtoken';
-import config from '../config';
 import Roles from '../models/Roles';
 
 export const signUp = async (req, res) => {
@@ -29,8 +28,8 @@ export const signUp = async (req, res) => {
     
 
     const savedUser = await newUser.save();
-    const token = jwt.sign({id : savedUser._id},config.auth.SECRET,{
-        expiresIn:config.auth.token_time
+    const token = jwt.sign({id : savedUser._id},process.env.SECRET,{
+        expiresIn:process.env.token_time
     });
 
 
@@ -142,12 +141,12 @@ export const signIn = async (req, res) => {
         const matchPwd =  await Users.comparePassword(req.body.pwd,foundUser[0].pwd);
 
         if(!matchPwd) return res.status(401).json({token:'', ErrMsg:'Invalid password'});
-        const accessToken = jwt.sign({id:foundUser[0]._id}, config.auth.SECRET,{
+        const accessToken = jwt.sign({id:foundUser[0]._id}, process.env.SECRET,{
             expiresIn: "1m"
         });
 
         if(!accessToken) return res.status(401).json({refreshToken : '', message : 'Something goes wrong'});
-        const refreshToken = jwt.sign({id:foundUser[0]._id}, config.auth.SECRET_REFRESH,{
+        const refreshToken = jwt.sign({id:foundUser[0]._id}, process.env.SECRET_REFRESH,{
             expiresIn: "1y"
         });
 
@@ -255,12 +254,12 @@ export const signIn_bk = async (req, res) => {
         const matchPwd =  await Users.comparePassword(req.body.pwd,foundUser[0].pwd);
 
         if(!matchPwd) return res.status(401).json({token:'', ErrMsg:'Invalid password'});
-        const accessToken = jwt.sign({id:foundUser[0]._id}, config.auth.SECRET,{
+        const accessToken = jwt.sign({id:foundUser[0]._id}, process.env.SECRET,{
             expiresIn: "1m"
         });
 
         if(!accessToken) return res.status(401).json({refreshToken : '', message : 'Something goes wrong'});
-        const refreshToken = jwt.sign({id:foundUser[0]._id}, config.auth.SECRET_REFRESH,{
+        const refreshToken = jwt.sign({id:foundUser[0]._id}, process.env.SECRET_REFRESH,{
             expiresIn: "1y"
         });
 
@@ -285,7 +284,7 @@ export const refresh = async (req, res) =>{
 
     try{
         console.log('----------------   Refresh token before erifyResult  ---> ');
-        const verifyResult = jwt.verify(token, config.auth.SECRET_REFRESH,{
+        const verifyResult = jwt.verify(token, process.env.SECRET_REFRESH,{
             ignoreExpiration: true
         });
         console.log('----------------   Refresh token after verifyResult  ---> ', verifyResult);
@@ -293,11 +292,11 @@ export const refresh = async (req, res) =>{
         const foundUser = Users.find({_id:verifyResult.id});
         if(foundUser){
             console.log('Refresh token foundUser yes ---');
-            const accessToken = jwt.sign({id:verifyResult.id}, config.auth.SECRET,{
+            const accessToken = jwt.sign({id:verifyResult.id}, process.env.SECRET,{
                 expiresIn: "1m"
             });
 
-            const refreshToken = jwt.sign({id:verifyResult.id}, config.auth.SECRET_REFRESH,{
+            const refreshToken = jwt.sign({id:verifyResult.id}, process.env.SECRET_REFRESH,{
                 expiresIn: "1m"
             });
 

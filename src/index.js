@@ -1,11 +1,9 @@
 //--- this file is just to run the app
-import config from "./config";
 import app from './app';
 import fs from 'fs';
 
-
 // index setup
-const PORT = config.app.port;
+const PORT = process.env.PORT;
 
 import { Server } from "socket.io";
 
@@ -44,7 +42,7 @@ const io = new Server(httpServer, {
   // ...
 });
 
-httpServer.listen(process.env.PORT || PORT);
+httpServer.listen(PORT);
 // #endregion ------ http  ---------
 
 

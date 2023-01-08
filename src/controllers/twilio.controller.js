@@ -1,9 +1,8 @@
 import { Twilio } from "twilio";
 import { NumberInstance } from "twilio/lib/rest/pricing/v2/number";
-import config from "../../src/config";
 import Users from "../models/Users";
 
-const client = new Twilio(config.twilio.SID, config.twilio.AUTH_TOKEN);
+const client = new Twilio(process.env.SID, process.env.AUTH_TOKEN);
 
 export const sendMsgOpen = async(req, res) => {
     

@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import config from '../config';
 import Users from '../models/Users';
 import Roles from "../models/Roles";
 
@@ -9,7 +8,7 @@ import Roles from "../models/Roles";
 //         console.log(token);
 
 //         if(!token) return res.status(403).json({message:'Not token provided'})
-//         const decoded = await jwt.verify(token,config.auth.SECRET,(err,decoded) => {
+//         const decoded = await jwt.verify(token,process.env.SECRET,(err,decoded) => {
 //             if(err){
 //                 console.log(err);
 //                 return res.status(401).json({message:'jwt verify',
@@ -45,7 +44,7 @@ export const verifyToken = async (req,res, next) =>{
         console.log('verifyToken header[Authorization] --> ', token);
 
         if(!token) return res.status(403).json({message:'Not token provided'})
-        const decoded = jwt.verify(token,config.auth.SECRET);
+        const decoded = jwt.verify(token,process.env.SECRET);
         console.log('jwt.verify decoded: ' + JSON.stringify(decoded))
         // req.paramss.userId = decoded.id;
         
