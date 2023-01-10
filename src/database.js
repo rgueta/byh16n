@@ -3,8 +3,6 @@ import dotenv from "dotenv";
 
 dotenv.config()
 
-console.log('cnn str: ',`${process.env.DB_HEAD_URL}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`)
-
 mongoose.set('useCreateIndex', true);
 mongoose.connect(`${process.env.DB_HEAD_URL}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`,
     {useNewUrlParser:true, 
