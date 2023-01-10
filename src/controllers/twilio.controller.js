@@ -10,7 +10,7 @@ export const sendMsgOpen = async(req, res) => {
         client.messages 
       .create({ 
          body: req.params.msg,  
-         messagingServiceSid: 'MGe8f3e7143c2962fbeac086f010615494',      
+         messagingServiceSid: process.env.MSG_SID,      
          to: req.params.phone 
        }) 
       .then(message => console.log(message.sid)) 
@@ -56,7 +56,7 @@ export const sendMsgAccess = async(req, res) => {
       client.messages 
     .create({ 
        body: req.params.msg,  
-       messagingServiceSid: 'MGe8f3e7143c2962fbeac086f010615494',      
+       messagingServiceSid: process.env.MSG_SID,      
        to: req.params.phone 
      }) 
     .then(message => console.log(message.sid)) 
