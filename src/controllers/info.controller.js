@@ -48,9 +48,6 @@ export const createInfo = async(req, res) =>{
         const imgPath = imgsRoot + req.body.locationFolder + '/' + folder + '/';
         let resized = {} 
 
-        console.log('imgPath --> ' + imgPath);
-        console.log('fullPath --> ' + fullPath);
-
         // Resize image ----------------------------------------
         //--------------------------------------------
         try{
@@ -72,7 +69,12 @@ export const createInfo = async(req, res) =>{
                 Bucket: process.env.AWS_BUCKET_NAME,
                 Key: `${req.body.locationFolder}/${folder}/${req.file.filename}`,
                 Body:resized
-            }).promise()
+            }).promise(function(err, data){
+                if (err){
+                    console.log('Error --> ',err)
+                }else{
+                    console.log('Data --> ', data)
+                }})
             );
 
             //#region ----- last version 2.5 -------------------
