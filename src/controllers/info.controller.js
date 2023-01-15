@@ -15,9 +15,27 @@ const S3 = new AWS.S3({
      secretAccessKey : process.env.AWS_SECRET_KEY
 })
 
+function getSection(string,section){
+    const last_pos =  string.lastIndexOf('/');
+    var str_section = ''
+    switch(section){
+        case 'path': 
+            str_section = string.substring(0, last_pos + 1);
+            break;
+        case 'image':
+            str_section = string.substring(last_pos + 1);
+            break;
+    }
+
+    return str_section;
+}
+
+
 export const createInfo = async(req, res) =>{
-    const imgsRoot = config.app.images_root;
-    const prefix = config.app.Resized_prefix;
+
+    S3.completeMultipartUpload()
+    const imgsRoot = process.env.images_root;
+    const prefix = process.env.Resized_prefix;
     let folder = '';
     tools.monthlyFolder().then(async (f,fail) => {
         if(fail){
@@ -27,8 +45,12 @@ export const createInfo = async(req, res) =>{
 
         folder = await f.toString();
         const fullPath = path.join(__dirname,'../public/',imgsRoot, folder + '/');
-        const imgPath = imgsRoot + '/' + req.body.locationFolder + '/' + folder + '/';
+        const imgPath = imgsRoot + req.body.locationFolder + '/' + folder + '/';
         let resized = {} 
+
+        console.log('imgPath --> ' + imgPath);
+        console.log('fullPath --> ' + fullPath);
+
         // Resize image ----------------------------------------
         //--------------------------------------------
         try{
@@ -50,10 +72,8 @@ export const createInfo = async(req, res) =>{
                 Bucket: process.env.AWS_BUCKET_NAME,
                 Key: `${req.body.locationFolder}/${folder}/${req.file.filename}`,
                 Body:resized
-            }).promise());
-
-
-            
+            }).promise()
+            );
 
             //#region ----- last version 2.5 -------------------
 
@@ -77,7 +97,7 @@ export const createInfo = async(req, res) =>{
 
             // -- Insert into Mongo  ---------------------
                 const {title,url, description, locationFolder} = req.body;
-                const webImgRoot = config.app.webImgRoot  + req.body.locationFolder 
+                const webImgRoot = process.env.webImgRoot  + req.body.locationFolder 
                     + '/' + folder + '/' 
 
                 // let stats = {};
@@ -90,7 +110,6 @@ export const createInfo = async(req, res) =>{
                 // }
 
                 // const resized_img_meta = await resized_img.metadata();
-                console.log('Metadata size --> ', await resized_img)
                 const image = req.file.filename;
                 // const size = stats.size;
 
@@ -100,13 +119,11 @@ export const createInfo = async(req, res) =>{
                 const size = 0;
 
                 const newInfo = await information({title,url,description,
-                    image,'path':webImgRoot,'location':req.body.locationFolder,size});
+                    image,'path':getSection(resized_img.Location,'path'),'location':req.body.locationFolder,size});
 
-                console.log('newInfo', newInfo);
                 if(newInfo){
                     const InfoSaved = await newInfo.save();
                 }
-
 
                 console.log('image uploaded..!!!')
                 res.status(201).json({'msg' : 'Information created'});
