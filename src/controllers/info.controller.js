@@ -12,7 +12,9 @@ const S3 = new AWS.S3({
      bucketName : process.env.AWS_BUCKET_NAME,
      region : process.env.AWS_BUCKET_REGION,
      accessKeyId : process.env.AWS_ACCESS_KEY,
-     secretAccessKey : process.env.AWS_SECRET_KEY
+     secretAccessKey : process.env.AWS_SECRET_KEY,
+     maxRetries:3,
+     httpOptions:{timeout: 30000, connectTimeout:5000}
 })
 
 function getSection(string,section){
