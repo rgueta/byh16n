@@ -34,13 +34,7 @@ function getSection(string,section){
 
 
 export const createInfo = async(req, res) =>{
-    // fileUpload()
-    S3.completeMultipartUpload()
-    const file = req.files
-    console.log('req.body --> ',req.body)
-    console.log('req.params --> ',req.params)
-    console.log('req.file --> ',file)
-    let folder = '';
+    // S3.completeMultipartUpload()
 
     tools.monthlyFolder().then(async (f,fail) => {
         if(fail){
@@ -48,7 +42,7 @@ export const createInfo = async(req, res) =>{
             return;
         }
         
-        folder = await f.toString();
+        const folder = await f.toString();
         const image = uuid() + path.extname(req.files.image.name);
         console.log('s3 path --> ',`${req.body.locationFolder}/${folder}/${image}`)
         
