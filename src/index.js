@@ -1,11 +1,12 @@
 //--- this file is just to run the app
 import app from './app';
-import fs from 'fs';
+// import fs from 'fs';
 
 // index setup
 const PORT = process.env.PORT;
 
 import { Server } from "socket.io";
+
 
 //#region ---- https --------------------------------------
 // import { createServer } from "https";
@@ -87,6 +88,7 @@ io.sockets.on('connection', (socket) => {
   import modelAlerts from './models/alerts';
 
 require('./routes/routes')(app,modelAlerts,io);
+
 
 // #endregion  --------------------------------------------------------------
 

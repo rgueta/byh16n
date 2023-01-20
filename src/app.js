@@ -1,12 +1,10 @@
 //--- this file is to configure express 
 import express from 'express';
 import morgan from 'morgan';
-// import multer from "multer";
 import pkg from '../package.json';
 import "./database";
 import {createRoles} from './libs/initialSetup';
 import path from 'path';
-import {v4 as uuid} from 'uuid';
 
 
 //-- router imports  -----
@@ -28,7 +26,6 @@ import countriesRoutes from "./routes/countries.routes";
 import statesRoutes from "./routes/states.routes";
 import citiesRoutes from "./routes/cities.routes";
 import cpusRoutes from "./routes/cpus.routes";
-
 
 const cors = require("cors");
 

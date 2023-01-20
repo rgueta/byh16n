@@ -4,9 +4,9 @@ import path from 'path'
 import sharp from "sharp";
 import fs from 'fs';
 import * as tools from "../tools";
-import { uploadFile } from "../public/js/s3";
+// import { uploadFile } from "../public/js/s3";
 import AWS from "aws-sdk";
-
+import {v4 as uuid} from 'uuid';
 
 const S3 = new AWS.S3({
      bucketName : process.env.AWS_BUCKET_NAME,
@@ -34,104 +34,60 @@ function getSection(string,section){
 
 
 export const createInfo = async(req, res) =>{
-
+    // fileUpload()
     S3.completeMultipartUpload()
-    const imgsRoot = process.env.images_root;
-    const prefix = process.env.Resized_prefix;
+    const file = req.files
+    console.log('req.body --> ',req.body)
+    console.log('req.params --> ',req.params)
+    console.log('req.file --> ',file)
     let folder = '';
+
     tools.monthlyFolder().then(async (f,fail) => {
         if(fail){
             res.status(400).json({'msg':'Error to generate folder'})
             return;
         }
-
+        
         folder = await f.toString();
-        const fullPath = path.join(__dirname,'../public/',imgsRoot, folder + '/');
-        const imgPath = imgsRoot + req.body.locationFolder + '/' + folder + '/';
-        let resized = {} 
-
-        // Resize image ----------------------------------------
-        //--------------------------------------------
+        const image = uuid() + path.extname(req.files.image.name);
+        console.log('s3 path --> ',`${req.body.locationFolder}/${folder}/${image}`)
+        
         try{
 
-            //----- AWS S3 for non resize images -----------------------
-            // const result = await uploadFile(req.file);
-            // console.log('AWS S3 testing --> ',result);
-
-            //----  aws s3 for resize images  -------------------------
-
-            const resized_img = await sharp(fullPath + req.file.filename)
-            .resize(640,480, {
-                fit: sharp.fit.inside,
-                withoutEnlargement: true
-            })
-            // .jpeg({quality : 80})
-            .toBuffer()
-            .then(resized => S3.upload({
+            //#region ------ upload image to AWS.S3     --------------------------------------
+            const fileContent = Buffer.from(req.files.image.data,'binary');
+            S3.upload({
                 Bucket: process.env.AWS_BUCKET_NAME,
-                Key: `${req.body.locationFolder}/${folder}/${req.file.filename}`,
-                Body:resized
-            }).promise(function(err, data){
+                Key: `${req.body.locationFolder}/${folder}/${image}`,
+                Body:fileContent
+            }).promise( async (err, data) => {
                 if (err){
-                    console.log('Error --> ',err)
+                    console.log('aws Error --> ',err)
+                    // res.status(401).json({'Error' : 'AWS Error: ' + err})
                 }else{
-                    console.log('Data --> ', data)
-                }})
-            );
-
-            //#region ----- last version 2.5 -------------------
-
-            // await sharp(fullPath + req.file.filename)
-            // .resize(640,480, {
-            //     fit: sharp.fit.inside,
-            //     withoutEnlargement: true
-            // })
-            // .jpeg({quality : 80})
-            // .toFile(fullPath + prefix + req.file.filename);
-
-            // fs.unlink(path.join(fullPath, req.file.filename),(e) =>{
-            //     if(e){
-            //         console.log('error deleting file: ', error);
-            //     }else{
-            //         console.log('file deleted');
-            //     }
-            // });
-
-            //#endregion -------------------------------------------------------
-
-            // -- Insert into Mongo  ---------------------
-                const {title,url, description, locationFolder} = req.body;
-                const webImgRoot = process.env.webImgRoot  + req.body.locationFolder 
+                    console.log('aws Data --> ', data)
+                    const {title,url, description, locationFolder} = req.body;
+                    const webImgRoot = process.env.AWS_BUCKET_NAME  + req.body.locationFolder 
                     + '/' + folder + '/' 
+                    const location = locationFolder;
+                    const size = req.files.image.size;
+                    const path =  getSection(data.Location,'path');
+            // #endregion -------------------------
 
-                // let stats = {};
-                // try{
-                //     // stats = await fileSize(path.join(fullPath , req.file.filename));
-                //     // stats = await fileSize(webImgRoot);
-                //     console.log('file size --> ' + stats.size);
-                // }catch(err){
-                //     console.log('Error multer --> ', err)
-                // }
-
-                // const resized_img_meta = await resized_img.metadata();
-                const image = req.file.filename;
-                // const size = stats.size;
-
-                // const size = resized_img_meta.size;
-                // const newInfo = await information({title,url,description,
-                // image,'path':imgPath,size});
-                const size = 0;
-
-                const newInfo = await information({title,url,description,
-                    image,'path':getSection(resized_img.Location,'path'),'location':req.body.locationFolder,size});
+            // #region  Insert into Mongo  ---------------------
+                
+                const newInfo = await information({title, url, description,
+                    image, path, location, size});
 
                 if(newInfo){
                     const InfoSaved = await newInfo.save();
                 }
-
+            // #endregion -------------------------
                 console.log('image uploaded..!!!')
                 res.status(201).json({'msg' : 'Information created'});
-                
+
+            }})
+           
         }
         catch(err){
             console.log('Error at the end', err)
