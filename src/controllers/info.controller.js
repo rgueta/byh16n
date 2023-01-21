@@ -14,6 +14,10 @@ const S3 = new AWS.S3({
      accessKeyId : process.env.AWS_ACCESS_KEY,
      secretAccessKey : process.env.AWS_SECRET_KEY,
      maxRetries:3,
+     credentials:{
+        accessKeyId : process.env.AWS_ACCESS_KEY,
+        secretAccessKey : process.env.AWS_SECRET_KEY
+     },
      httpOptions:{timeout: 300000, connectTimeout:5000}
 })
 
