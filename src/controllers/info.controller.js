@@ -19,22 +19,6 @@ const S3 = new AWS.S3({
     httpOptions:{timeout: 300000, connectTimeout:5000}
 })
 
-function getSection(string,section){
-    const last_pos =  string.lastIndexOf('/');
-    var str_section = ''
-    switch(section){
-        case 'path': 
-            str_section = string.substring(0, last_pos + 1);
-            break;
-        case 'image':
-            str_section = string.substring(last_pos + 1);
-            break;
-    }
-
-    return str_section;
-}
-
-
 export const createInfo = async(req, res) =>{
     // S3.completeMultipartUpload()
 
@@ -66,20 +50,30 @@ export const createInfo = async(req, res) =>{
                     + '/' + folder + '/' 
                     const location = locationFolder;
                     const size = req.files.image.size;
-                    const path =  getSection(data.Location,'path');
-            // #endregion -------------------------
+                     await tools.getSection(data.Location,'path').then(async (section, fail) => {
+                        if(fail){
+                            res.status(400).json({'msg':'Error to generate s3 path'})
+                            return;
+                        }
+                        const path = section;
+                        console.log('s3 path --> ', section)
 
-            // #region  Insert into Mongo  ---------------------
+                    // #region  Insert into Mongo  ---------------------
                 
-                const newInfo = await information({title, url, description,
-                    image, path, location, size});
+                        const newInfo = await information({title, url, description,
+                            image, path, location, size});
 
-                if(newInfo){
-                    const InfoSaved = await newInfo.save();
-                }
+                        if(newInfo){
+                            const InfoSaved = await newInfo.save();
+                        }
+                    // #endregion -------------------------
+                    
+                        console.log('image uploaded..!!!')
+                        res.status(201).json({'msg' : 'Information created'});
+                    });
             // #endregion -------------------------
-                console.log('image uploaded..!!!')
-                res.status(201).json({'msg' : 'Information created'});
+
+            
 
             }})
            
