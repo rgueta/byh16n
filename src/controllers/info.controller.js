@@ -9,12 +9,12 @@ import AWS from "aws-sdk";
 import {v4 as uuid} from 'uuid';
 
 const S3 = new AWS.S3({
-    bucketName : process.AWS_BUCKET_NAME,
-    region : process.AWS_BUCKET_REGION,
+    bucketName : process.env.AWS_BUCKET_NAME,
+    region : process.env.AWS_BUCKET_REGION,
     maxRetries:3,
     credentials:{
-       accessKeyId : process.AWS_ACCESS_KEY,
-       secretAccessKey : process.AWS_SECRET_KEY
+       accessKeyId : process.env.AWS_ACCESS_KEY,
+       secretAccessKey : process.env.AWS_SECRET_KEY
     },
     httpOptions:{timeout: 300000, connectTimeout:5000}
 })
