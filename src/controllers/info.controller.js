@@ -14,7 +14,7 @@ const S3 = new AWS.S3({
      accessKeyId : process.env.AWS_ACCESS_KEY,
      secretAccessKey : process.env.AWS_SECRET_KEY,
      maxRetries:3,
-     httpOptions:{timeout: 30000, connectTimeout:5000}
+     httpOptions:{timeout: 300000, connectTimeout:5000}
 })
 
 function getSection(string,section){
@@ -44,7 +44,6 @@ export const createInfo = async(req, res) =>{
         
         const folder = await f.toString();
         const image = uuid() + path.extname(req.files.image.name);
-        console.log('s3 path --> ',`${req.body.locationFolder}/${folder}/${image}`)
         
         try{
 
