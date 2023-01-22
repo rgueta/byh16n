@@ -11,21 +11,13 @@ import {v4 as uuid} from 'uuid';
 const S3 = new AWS.S3({
     bucketName : process.env.AWS_BUCKET_NAME,
     region : process.env.AWS_BUCKET_REGION,
+    endpoint: process.env.endpoint,
     maxRetries:3,
     credentials:{
        accessKeyId : process.env.AWS_ACCESS_KEY,
        secretAccessKey : process.env.AWS_SECRET_KEY
     },
     httpOptions:{timeout: 300000, connectTimeout:5000}
-})
-
-AWS.config.update({
-    region:  process.env.AWS_BUCKET_REGION,
-    apiVersion: 'latest',
-    credentials:{
-        accessKeyId : process.env.AWS_ACCESS_KEY,
-        secretAccessKey : process.env.AWS_SECRET_KEY
-     }
 })
 
 export const createInfo = async(req, res) =>{
