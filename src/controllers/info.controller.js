@@ -19,6 +19,15 @@ const S3 = new AWS.S3({
     httpOptions:{timeout: 300000, connectTimeout:5000}
 })
 
+AWS.config.update({
+    region:  process.env.AWS_BUCKET_REGION,
+    apiVersion: 'latest',
+    credentials:{
+        accessKeyId : process.env.AWS_ACCESS_KEY,
+        secretAccessKey : process.env.AWS_SECRET_KEY
+     }
+})
+
 export const createInfo = async(req, res) =>{
     // S3.completeMultipartUpload()
 
@@ -56,7 +65,6 @@ export const createInfo = async(req, res) =>{
                             return;
                         }
                         const path = section;
-                        console.log('s3 path --> ', section)
 
                     // #region  Insert into Mongo  ---------------------
                 
