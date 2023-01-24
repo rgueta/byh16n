@@ -11,7 +11,6 @@ import {v4 as uuid} from 'uuid';
 const S3 = new AWS.S3({
     bucketName : process.env.AWS_BUCKET_NAME,
     region : process.env.AWS_BUCKET_REGION,
-    endpoint: process.env.endpoint,
     maxRetries:3,
     credentials:{
        accessKeyId : process.env.AWS_ACCESS_KEY,
