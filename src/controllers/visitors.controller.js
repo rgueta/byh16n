@@ -6,19 +6,19 @@ export const createVisitor = async (req,res) =>{
     try{
         const  {userId, name,email,username,pwd,address,sim,gender,avatar} = req.body;
         
-        const newVisitor = new Visitors({userId, name,email,username,pwd,address,sim,gender,avatar});
-        console.log('newVisitor -> ',newVisitor);
-        return;
-
+        const newVisitor = await new Visitors({userId, name,email,username,pwd,address,sim,gender,avatar});
         const visitorSaved = await newVisitor.save();
-
-        // console.log('visitors --> ' + JSON.stringify(req.body));
+        if(visitorSaved){
+            
+        }else{
+            res.status(404).json({'Error DataBasa adding visitor' : err})
+            return
+        }
     
         res.status(201).json({'visitorSaved':visitorSaved});
-        // res.json('creating visistor')
     }catch(err){
-        console.log(err);
-        res.status(404).json(err)
+        console.log('Error adding visitor --> ',err);
+        res.status(404).json({'Error adding visitor ': err})
     }
 }
 
