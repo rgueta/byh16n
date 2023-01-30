@@ -58,6 +58,7 @@
         }
 
         const pwdRSTAction = async () => {
+            console.log('env --> ', `${process.env.public_host}`)
             pwd = document.getElementById("NewPwd");
             Repwd = document.getElementById("ReNewPwd");
             console.log('pwd --> ' +  pwd.value + ', Repwd --> ' + Repwd.value);
@@ -83,8 +84,10 @@
             const myJson = await response.json(); 
             console.log('response --> ', myJson);
         }
+        
 
         async function pwdRSTConfirmation(){
+            console.log('env --> ', `${process.env.public_host}`)
             const response = await fetch('http://ec2-52-55-153-194.compute-1.amazonaws.com/api/pwdResetReq/confirm/' + id , {
                 method: 'POST',
                 body: '', 
