@@ -17,7 +17,7 @@
             <div class='right-panel'>
                 <div class='right-column-container'>
                     <div class="logo">
-                        <img src="img\logo_v2.png">
+                        <img src="\img\logo_v2.png" alt="">
                     </div>
                     <div class='right-text'>
                         <h1 class="Title"> Reiniciar la contraseña</h1>
@@ -74,7 +74,7 @@
                     return false;
                 }
 
-            const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/apply/' + id + '/' + pwd.value + '/' + Repwd.value, {
+            const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/apply' + id + '/' + pwd.value + '/' + Repwd.value, {
                 method: 'POST',
                 body: '', 
                 headers: {
