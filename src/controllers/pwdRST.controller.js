@@ -184,7 +184,7 @@ async function createHTML(){
                 con gusto te ayudaremos con tu solicitud, para continuar con este proceso haz click 
                 en el siguiente boton
             </p>
-            <a href=${process.env.public_host}pwdResetReq?req=${pwdRST_id}&url=${process.env.public_host} target='#'>
+            <a href=${process.env.public_host}pwdResetReq?req=${pwdRST_id} target='#'>
                 <input type="button" value="RESET PASSWORD">
             </a>
             <p>
