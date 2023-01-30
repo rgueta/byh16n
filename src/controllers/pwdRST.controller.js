@@ -174,7 +174,7 @@ async function createHTML(){
         <body>
             <div class="head">
                 <div class="logo">
-                    <img src="${process.env.public_host}/img/logo_v2.png">
+                    <img src="${process.env.images_root}logo_v2.png">
                 </div>
             </div>
             <h3>Reinicio de contraseña</h3>
