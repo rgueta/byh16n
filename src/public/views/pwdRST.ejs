@@ -58,7 +58,7 @@
         }
 
         const pwdRSTAction = async () => {
-            console.log('env --> ', `${process.env.public_host}`)
+            console.log('env --> ', location.protocol + '//' + location.host)
             pwd = document.getElementById("NewPwd");
             Repwd = document.getElementById("ReNewPwd");
             console.log('pwd --> ' +  pwd.value + ', Repwd --> ' + Repwd.value);
@@ -87,7 +87,7 @@
         
 
         async function pwdRSTConfirmation(){
-            console.log('env --> ', `${process.env.public_host}`)
+            console.log('env --> ', location.protocol + '//' + location.host)
             const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/confirm/' + id , {
                 method: 'POST',
                 body: '', 
