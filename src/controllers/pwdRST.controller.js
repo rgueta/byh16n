@@ -92,7 +92,7 @@ export const pwdRSTReq = async (req,res) => {
 
 export const pwdRSTConfirm = async (req, res) => {
 
-    const foundpwdRST  = await pwdRST.find({_id : req.params.id,reseted:true});
+    const foundpwdRST  = await pwdRST.find({_id : req.params.id});
     if(!foundpwdRST.length) return res.status(400).json({'error' : 'No hay solicitud para este usuario'});
 
     const foundUser = await Users.findOne({email : foundpwdRST[0].email});
@@ -112,7 +112,7 @@ export const pwdRSTConfirm = async (req, res) => {
 export const pwdRSTApply = async (req, res) => {
     console.log('Password RST confirmed..! ', req.params);
 
-   const foundpwdRST  = await pwdRST.find({_id : req.params.id});
+   const foundpwdRST  = await pwdRST.find({_id : req.params.id,reseted:false});
    if(!foundpwdRST.length) return res.status(400).json({'error' : 'No hay solicitud para este usuario'});
 
    try{
