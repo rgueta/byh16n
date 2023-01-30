@@ -73,7 +73,7 @@
                     return false;
                 }
 
-            const response = await fetch(`${process.env.public_host}` + 'api/pwdResetReq/apply/' + id + '/' + pwd.value + '/' + Repwd.value, {
+            const response = await fetch('http://ec2-52-55-153-194.compute-1.amazonaws.com/api/pwdResetReq/apply/' + id + '/' + pwd.value + '/' + Repwd.value, {
                 method: 'POST',
                 body: '', 
                 headers: {
@@ -85,7 +85,7 @@
         }
 
         async function pwdRSTConfirmation(){
-            const response = await fetch(`${process.env.public_host}` + 'api/pwdResetReq/confirm/' + id , {
+            const response = await fetch('http://ec2-52-55-153-194.compute-1.amazonaws.com/api/pwdResetReq/confirm/' + id , {
                 method: 'POST',
                 body: '', 
                 headers: {
