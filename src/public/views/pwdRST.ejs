@@ -74,7 +74,7 @@
                     return false;
                 }
 
-            const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/apply' + id + '/' + pwd.value + '/' + Repwd.value, {
+            const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/apply/' + this.id + '/' + pwd.value + '/' + Repwd.value, {
                 method: 'POST',
                 body: '', 
                 headers: {
@@ -88,7 +88,7 @@
 
         async function pwdRSTConfirmation(){
             console.log('env --> ', location.protocol + '//' + location.host)
-            const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/confirm/' + id , {
+            const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/confirm/' + this.id , {
                 method: 'POST',
                 body: '', 
                 headers: {
