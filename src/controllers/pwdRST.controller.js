@@ -58,10 +58,10 @@ export const pwdRSTReq = async (req,res) => {
         await transporter.sendMail(mailOption, (err, info) =>{
             if(err){
                 console.log(err)
-                res.status('201').json({'pwd rst error': err})
+                res.status(201).json({'pwd rst error': err})
             }else{
                 console.log('Email sent: ', info.response);
-                res.status('201').json({'email sent': info.response})
+                res.status(201).json({'email sent': info.response})
             }
         });
 
