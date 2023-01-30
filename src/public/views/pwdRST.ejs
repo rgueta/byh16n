@@ -59,7 +59,7 @@
 
         // const pwdRSTAction = async () => {
             async function pwdRSTAction(){
-            console.log('env --> ', location.protocol + '//' + location.host)
+            console.log('pwdRSTAction env --> ', location.protocol + '//' + location.host)
             pwd = document.getElementById("NewPwd");
             Repwd = document.getElementById("ReNewPwd");
             console.log('pwd --> ' +  pwd.value + ', Repwd --> ' + Repwd.value);
@@ -88,7 +88,7 @@
         
 
         async function pwdRSTConfirmation(){
-            console.log('env --> ', location.protocol + '//' + location.host)
+            console.log('pwdRSTConfirmation env --> ', location.protocol + '//' + location.host)
             const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/confirm/' + this.id , {
                 method: 'POST',
                 body: '', 
