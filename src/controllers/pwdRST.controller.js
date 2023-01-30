@@ -174,7 +174,7 @@ async function createHTML(){
         <body>
             <div class="head">
                 <div class="logo">
-                    <img src="${config.app.public_host}/img/logo_v2.png">
+                    <img src="${process.env.public_host}/img/logo_v2.png">
                 </div>
             </div>
             <h3>Reinicio de contraseña</h3>
@@ -183,7 +183,7 @@ async function createHTML(){
                 con gusto te ayudaremos con tu solicitud, para continuar con este proceso haz click 
                 en el siguiiente boton
             </p>
-            <a href='${config.app.public_host}/pwdResetReq?req=${pwdRST_id}' target='#'>
+            <a href='${process.env.public_host}/pwdResetReq?req=${pwdRST_id}' target='#'>
                 <input type="button" value="RESET PASSWORD">
             </a>
             <p>
