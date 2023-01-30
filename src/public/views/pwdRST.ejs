@@ -73,7 +73,7 @@
                     return false;
                 }
 
-            const response = await fetch('http://192.168.1.173:5000/api/pwdResetReq/apply/' + id + '/' + pwd.value + '/' + Repwd.value, {
+            const response = await fetch(`${process.env.public_host}` + 'api/pwdResetReq/apply/' + id + '/' + pwd.value + '/' + Repwd.value, {
                 method: 'POST',
                 body: '', 
                 headers: {
