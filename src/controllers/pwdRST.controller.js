@@ -27,6 +27,7 @@ let html_call = '';
 
 export const pwdRSTReq = async (req,res) => {
     console.log('pwdRSTReq params ---> ', req.params);
+    console.log('images_root -->',`${process.env.images_root}`)
 
     let foundUser = await Users.find({email : req.params.email});
 
@@ -174,16 +175,16 @@ async function createHTML(){
         <body>
             <div class="head">
                 <div class="logo">
-                    <img src="${process.env.images_root}logo_v2.png">
+                    <img src=${process.env.images_root}logo_v2.png>
                 </div>
             </div>
             <h3>Reinicio de contraseña</h3>
             <p>Hola !</p>
             <p>Hemos recibido una solicitud de reinicio de contraseña para tu cuenta, 
                 con gusto te ayudaremos con tu solicitud, para continuar con este proceso haz click 
-                en el siguiiente boton
+                en el siguiente boton
             </p>
-            <a href='${process.env.public_host}/pwdResetReq?req=${pwdRST_id}' target='#'>
+            <a href=${process.env.public_host}/pwdResetReq?req=${pwdRST_id} target='#'>
                 <input type="button" value="RESET PASSWORD">
             </a>
             <p>
