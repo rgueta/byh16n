@@ -169,7 +169,7 @@ async function createHTML(){
                     width: 200px;text-decoration: none;}
                 a input {cursor: pointer; display:inline;background-color:#6599CE;border:0;color:white; margin-left: auto;
                     margin-right: auto;height: 30px; width: 200px; border-radius: 10px}
-                .logo img {height: 90px; width: 100px; border-radius: 50%;}
+                .logo img {height: 90px; width: 100px; border-radius: 50%; margin-left: 20px;}
             </style>
         </head>
         <body>
@@ -185,10 +185,10 @@ async function createHTML(){
                 en el siguiente boton
             </p>
             <a href=${process.env.public_host}pwdResetReq?req=${pwdRST_id} target='#'>
-                <input type="button" value="RESET PASSWORD">
+                <input type="button" value="RECUPERAR CLAVE">
             </a>
             <p>
-                Si no quieres reiniciar tu contraseña, tan solo ignora este correo y accesa a nuestros aervicios 
+                Si no quieres reiniciar tu contraseña, tan solo ignora este correo y accesa a nuestros servicios 
                 como usualmente lo haces.
             </p>
         </body>
