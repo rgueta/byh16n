@@ -34,7 +34,8 @@ const coresSchema = new Schema({
     city : {type: String},
     division : {type: Number},
     cpu : {type: String},
-    enable : {type: Boolean}
+    enable : {type: Boolean},
+    code_expiry : {type: Number}
     },
     
 // });
