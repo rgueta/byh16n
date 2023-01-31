@@ -123,7 +123,8 @@ export const signIn = async (req, res) => {
               city: '$cpu_city.shortName', 
               div: '$user_division.id', 
               cpu: '$user_cpu.shortName', 
-              core: '$user_core.shortName'
+              core: '$user_core.shortName',
+              code_expiry: '$user_core.code_expiry'
             //   img_folder: {$concat : [ '$cpu_country.shortName', '.' ,
             //                 '$user_cpu.state', '.' ,
             //                 '$cpu_city.shortName', '.' ,
