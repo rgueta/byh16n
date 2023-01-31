@@ -20,7 +20,8 @@
     "start_as_dev": "node --exec babel-node build/index.js",
     "start_build": "npm run build && node dist/index.js",
     "start_simple": "node dist/index.js",
-    "start": "npm run build && node dist/index.js"
+    "start": "npm run build && node dist/index.js",
+    "aws" : "node index.js"
   },
   "keywords": [],
   "author": "Ricardo Gueta",
