@@ -59,10 +59,8 @@
 
         // const pwdRSTAction = async () => {
             async function pwdRSTAction(){
-            console.log('pwdRSTAction env --> ', location.protocol + '//' + location.host)
             pwd = document.getElementById("NewPwd");
             Repwd = document.getElementById("ReNewPwd");
-            console.log('pwd --> ' +  pwd.value + ', Repwd --> ' + Repwd.value);
 
             if (pwd.value == "" || Repwd.value == "")
                 {
@@ -88,7 +86,7 @@
         
 
         async function pwdRSTConfirmation(){
-            console.log('pwdRSTConfirmation env --> ', location.protocol + '//' + location.host)
+
             const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/confirm/' + this.id , {
                 method: 'POST',
                 body: '', 
@@ -97,7 +95,6 @@
                 }
             });
             const myJson = await response.json(); 
-            console.log('Confirm response --> ', myJson);
         }
     </script>
 </body>
