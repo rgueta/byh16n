@@ -1,0 +1,36 @@
+.horizon_line{
+    width: 100%;
+    border-color: orange;
+    background-color: brown;
+    top:50%;
+    margin: 0px;
+}
+
+.loader{
+    font-size: large;
+    margin-top:29%;
+    margin-left: 50%;
+    /* margin-right: 25%; */
+    width: 100%;
+}
+
+@keyframes blink {50% { color: transparent }}
+.loader__dot { 
+    color: navy;
+    animation: 1s blink infinite 
+}
+.loader__dot:nth-child(2) { 
+    animation-delay: 250ms 
+}
+.loader__dot:nth-child(3) { 
+    animation-delay: 500ms 
+}
+.loader__dot:nth-child(4) { 
+    animation-delay: 750ms 
+}
+.loader__dot:nth-child(5) { 
+    animation-delay: 1000ms 
+}
+.loader__dot:nth-child(6) { 
+    animation-delay: 1250ms 
+}
