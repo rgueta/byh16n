@@ -1,3 +1,7 @@
+*{
+    background-color: rgb(210, 207, 207);
+}
+
 .horizon_line{
     width: 100%;
     border-color: orange;
@@ -9,7 +13,8 @@
 .loader{
     font-size: large;
     margin-top:29%;
-    margin-left: 50%;
+    /* left: 50%; */
+    text-align: center;
     width: 100%;
 }
 
@@ -32,4 +37,13 @@
 }
 .loader__dot:nth-child(6) { 
     animation-delay: 1250ms 
+}
+.loader__dot:nth-child(7) { 
+    animation-delay: 1500ms 
+}
+.loader__dot:nth-child(8) { 
+    animation-delay: 1750ms 
+}
+.loader__dot:nth-child(9) { 
+    animation-delay: 2000ms 
 }
