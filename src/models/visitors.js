@@ -5,11 +5,11 @@ import bcrypt from 'bcryptjs';
 const visitorSchema = new Schema({
     userId: {type: Schema.Types.ObjectId},
     name : {type : String, required: true},
-    email : {type : String, unique : true,required: true, lowercase:true, trim:true},
+    email : {type : String, lowercase:true, trim:true},
     username : {type : String},
     pwd : {type : String, trim: true},
     address : {type : String},
-    sim : {type : String, required: true},
+    sim : {type : String, unique:true, required: true},
     gender : {type : String},
     avatar : {type : String},
 },

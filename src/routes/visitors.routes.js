@@ -4,6 +4,7 @@ import { authJwt, verifySignup } from "../middleware";
 const router = Router();
 
 router.post('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],visitorCtrl.createVisitor);
+// router.post('/:userId',visitorCtrl.createVisitor);
 router.get('/',visitorCtrl.getVisitors);
 router.get('/user/:userId',visitorCtrl.getVisitorsByUser);
 router.get('/:visitorId',visitorCtrl.getVisitorById);

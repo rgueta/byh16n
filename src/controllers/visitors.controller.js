@@ -1,24 +1,25 @@
 import Visitors from "../models/visitors";
 import { Types } from "mongoose";
 
-export const createVisitor = async (req,res) =>{
-    console.log('createVisitor --> ' + JSON.stringify(req.body))
+export const createVisitor = async (req,res,next) =>{
+    await console.log('createVisitor --> ' + JSON.stringify(req.body));
     try{
         const  {userId, name,email,username,pwd,address,sim,gender,avatar} = req.body;
+        
+        // return res.status(404).json({'msg':'Testing refesh token..!'});
         
         const newVisitor = await new Visitors({userId, name,email,username,pwd,address,sim,gender,avatar});
         const visitorSaved = await newVisitor.save();
         if(visitorSaved){
-            
+            console.log('Visitor added OK---------------');
+            return res.status(201).json({'visitorSaved':visitorSaved});
         }else{
-            res.status(404).json({'Error DataBasa adding visitor' : err})
-            return
+            return res.status(404).json({'Error DataBasa adding visitor' : err});
         }
     
-        res.status(201).json({'visitorSaved':visitorSaved});
     }catch(err){
-        console.log('Error adding visitor --> ',err);
-        res.status(404).json({'Error adding visitor ': err})
+        // console.log('Error adding visitor --> ',err);
+        return res.status(404).json({'Error adding visitor ': err});
     }
 }
 
@@ -67,7 +68,7 @@ export const updateVisitorById = async (req,res) => {
 export const updateSimpleVisitorById = async (req,res) => {
     console.log('updateSimpleVisitorById params -->', req.body) 
     await Visitors.findByIdAndUpdate(req.params.visitorId,req.body,{new:false},(err,result) =>{
-        if(err) return res.status(401).json({'msg':'can not update visitor ' + err})
+        if(err) return res.status(405).json({'msg':'can not update visitor ' + err})
         console.log('updated Ok ' + result)
     });
     // if(!updatedVisitor) return res.status(401).json({'msg':'can not update visitor '}); 

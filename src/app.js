@@ -57,7 +57,7 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({extended:true}));
 app.use(cors());
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(morgan(':date[iso] :method :url :status (:response-time ms'));
 
 // #endregion --------------------------------------
 
