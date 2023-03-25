@@ -21,7 +21,8 @@ export const verifyToken = async (req,res, next) =>{
                 return res.status(401).json({'verify token error ': err.message});
             }else{
                 //--- Decode, Dates Access token
-                return res.status(201).json({'msg':'verify token Ok '});
+                res.status(201).json({'msg':'verify token Ok '});
+                return next();
             }
         }));
         
@@ -57,7 +58,8 @@ export const isNeighbor = async(req, res, next) => {
         console.log('isNeighbor role found --> ',found_roles);
         for(let i=0; i < found_roles.length; i++ ){
             if(found_roles[i].name === 'neighbor'){
-                return res.status(200).json({'message':"Is neighbor, Ok"});
+                // res.status(200).json({'message':"Is neighbor OK"});
+                return next();
             }
         }
         return res.status(400).json({'message':"Is Not a neighbor"});
@@ -65,7 +67,5 @@ export const isNeighbor = async(req, res, next) => {
     }catch(err){
         return res.status(400).json({'message':"Require neighbor role"});
     }
-    
-    
     
 }

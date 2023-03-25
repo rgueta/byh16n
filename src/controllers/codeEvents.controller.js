@@ -115,6 +115,9 @@ export const getCode_eventsByDate = async (req,res) => {
     let start = await new Date(req.params.start);
     let end = await new Date(req.params.end);
 
+    start.setMinutes(start.getMinutes() - start.getTimezoneOffset());
+    end.setMinutes(end.getMinutes() - end.getTimezoneOffset());
+
     // var start = new Date(req.params.start).toISOString().split('T')[0];  // V3.0.3
     // var end = new Date(req.params.end).toISOString().split('T')[0];  //V3.0.3
 
@@ -162,8 +165,8 @@ export const getCode_eventsByDate = async (req,res) => {
                 $match : {
                         'code_events_code.source.user'  : Types.ObjectId(req.params.userId),
                         createdAt :  {
-                            $gt : new Date(req.params.start),
-                            $lt : new Date(req.params.end)
+                            $gte : new Date(start),
+                            $lte : new Date(end)
                         }
                     }
                 },
@@ -178,8 +181,7 @@ export const getCode_eventsByDate = async (req,res) => {
                         createdAt : { 
                             $dateToString: { 
                                 format: '%Y/%m/%d %H:%M:%S', 
-                                date: '$createdAt', 
-                                timezone: 'America/Los_Angeles' 
+                                date: '$createdAt' 
                             } 
                             }
                     }
@@ -188,7 +190,7 @@ export const getCode_eventsByDate = async (req,res) => {
     if(codeEvents){
         res.status(201).json(codeEvents);
     }else{
-        res.status(204).json({'msg':'No data found'})
+        res.status(403).json({'msg':'No data found'})
     }
     }
 }

@@ -244,9 +244,11 @@ export const refresh = async (req, res, next) =>{
         
                         await expDate.setMinutes(expDate.getMinutes() - expDate.getTimezoneOffset());
                         await iatDate.setMinutes(iatDate.getMinutes() - iatDate.getTimezoneOffset());
-        
-                        return res.status(200).json({'userId': refTokenDecode.id,'accessToken' : token, 
+                        
+                        
+                        res.status(200).json({'userId': refTokenDecode.id,'accessToken' : token, 
                         'refreshToken' : refToken, 'iatDate':iatDate, 'expDate': expDate});
+                        next();
                     });
 
             });
