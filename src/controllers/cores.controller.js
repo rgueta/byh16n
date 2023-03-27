@@ -25,19 +25,72 @@ export const createCore = async (req,res) => {
 }
 
 export const getCoresAdmin = async (req, res) => {
+  try{
     Cores.find({},{_id:1,name:1,Houses:1,Address:1,coord:1,
       Sim:1,detail:1,enable:1,
       location:{$concat : ['$country', '.', '$state', '.', '$city',
       '.', {$toString : '$division'}, '.', '$cpu', '.', '$shortName']}
-      }, (err, results) => {
+      },async (err, results) => {
         if (err) {
-          console.log(err);
-          res.status(500).json({message: err});
+          return res.status(301).json({'msg': err});
         } else {
-          res.status(200).json(results);
+
+         return res.status(200).json(results);
+          // return next();// Fail both sides conbined two lines
+
+          // await res.setHeader('Content-Type', 'application/json');
+          // await res.send(results);
+          // next(); Fail both sides conbined three lines
+          
+
+          // next();// Fail both sides conbined two lines
+          // return await res.status(200).json(results);
+
+          // await res.status(200).json(results);
+          // return;// Fail both sides conbined two lines
+
+          // await res.status(200).json(results);
+          // await next(); // Fail both sides conbined three lines
+          // return;
+
+          // await res.status(200).json(results);
+          // await next(); // Fail both sides conbined two lines
+
+          // await res.status(200).json(results);
+          // return await next(); // Fail both sides conbined two lines
+
+          // await res.status(200).json(results);
+          // return next(); // Fail both sides conbined two lines
+
+          // await res.status(200).json(results);
+          // return; // Fail both sides conbined two lines
+
+          // await res.status(200).json(results);
+          // next();// Fail both sides conbined two lines
+
+          // next();// Fail both sides conbined two lines
+          // await res.status(200).json(results);
+
+          // next();
+          // return res.status(200).json(results); // Fail both sides conbined two lines
+
+          // next();
+          // res.status(200).json(results); // Fail both sides conbined two lines
+
+          // res.send(results) // Fail both sides conbined two lines
+          // next()
+
+        // res.status(200).json(results); //Fail both sides
+        // await res.status(200).json(results); //Fail both sides
+        // return await res.status(200).json(results); //Fail both sides
+        // return next(results); //Ok server side, no data response
+        // return next();//OK server side, no data response
         }
       }); 
-
+  }catch(err){
+    console.log('Error correcto -->', err)
+    return res.status(301).json({'error': err});
+  }
 }
 
 export const getCores = async (req, res) => {

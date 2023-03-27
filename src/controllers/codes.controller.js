@@ -3,37 +3,20 @@ import { Types } from "mongoose";
 import { response } from "express";
 
 export const createCode = async (req, res, next) => {
-    console.log('createCode req body --> ',req.body);
-
     try{
+        const { code,initial,expiry,comment,visitorId,source :{user,platform, id}} =  await req.body;
 
+        const newCode = new Codes({code,initial,expiry,comment,visitorId,
+            source: {user,platform,id }});
+        const codeSaved = await newCode.save();
         
-        // const { code,initial,expiry,comment,visitorId,source :{user,platform, id}} =  await req.body;
-
-
-        //  console.log('body -->', 
-        // JSON.stringify({'code ':code,'initial':initial, 'expiry':expiry, 'comment':comment, 'visitorId':visitorId, 'source': {'user':user,'platform':platform,'id':id}}));
-
-        // const parameters = req.body
-        // console.log('parameters --> ',parameters.source.user);
+        if(codeSaved) {
+            // res.send(codeSaved);
+            return next(codeSaved);
+        }else{
+            return res.status(304).json({'msg':'No created code'});
+        }
         
-        
-        // const userId = Types.ObjectId(req.body.source.user);
-        // const visitorId = Types.ObjectId(req.body.visitorId);
-        // console.log('params --> ',userId,visitorId)
-        // return
-
-
-        // const newCode = new Codes({code,initial,expiry,comment,visitorId,
-        //     source: {user,platform,id }});
-        // const codeSaved = await newCode.save();
-        
-
-
-        // return res.json({'msg':'created code'});
-        console.log('Before response');
-        // res.status(200).json({'msg':'code created'});
-        return next();
     }catch(err){
         res.status(304).json({'msg':'Not created code'});
     }

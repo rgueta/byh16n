@@ -11,8 +11,8 @@ export const verifyToken = async (req,res, next) =>{
 
         if(!token || typeof token === 'undefined' || token === '') 
         {
-            console.log('verifyToken no se detecta token -->', token )
-            return res.status(400).json({message:'Not token provided'})
+            console.log('verify Token no se detecta token -->', token )
+            return res.status(400).json({'msg':'Not token provided'})
         }
 
         token = await token.replace('Bearer ','');
@@ -21,8 +21,9 @@ export const verifyToken = async (req,res, next) =>{
                 return res.status(401).json({'verify token error ': err.message});
             }else{
                 //--- Decode, Dates Access token
-                res.status(201).json({'msg':'verify token Ok '});
-                return next();
+                // res.status(201).json({'msg':'verify token Ok '});
+                // res.status(201);
+                next();
             }
         }));
         
@@ -59,7 +60,9 @@ export const isNeighbor = async(req, res, next) => {
         for(let i=0; i < found_roles.length; i++ ){
             if(found_roles[i].name === 'neighbor'){
                 // res.status(200).json({'message':"Is neighbor OK"});
-                return next();
+
+                // return next(); //working ok, until testing response json data
+                next(); //tesing now for response json data
             }
         }
         return res.status(400).json({'message':"Is Not a neighbor"});

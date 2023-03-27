@@ -60,20 +60,34 @@ export const getVisitorById = async (req,res) => {
 }
 
 
-export const updateVisitorById = async (req,res) => {
+export const updateVisitorById = async (req,res, next) => {
+    try{
     const updatedVisitor = await Visitors.findByIdAndUpdate(req.params.visitorId,req.body,{new:true});
-    res.status(200).json(updatedVisitor);    
+    
+    if(updatedVisitor){
+       return res.status(200).json(updatedVisitor);
+    }else{
+        return //res.status(301).json({'msg':'fail to update visitor'})
+    }
+
+    }catch(err){
+        return res.status(301).json({'msg':'fail to update visitor','error': err})
+    }
 }
 
-export const updateSimpleVisitorById = async (req,res) => {
-    console.log('updateSimpleVisitorById params -->', req.body) 
-    await Visitors.findByIdAndUpdate(req.params.visitorId,req.body,{new:false},(err,result) =>{
-        if(err) return res.status(405).json({'msg':'can not update visitor ' + err})
+export const updateSimpleVisitorById = async (req, res, next) => {
+    try{
+        await Visitors.findByIdAndUpdate(req.params.visitorId,req.body,{new:false},(err,result) =>{
+        if(err) return res.status(301).json({'msg':'can not update visitor ' + err})
+
         console.log('updated Ok ' + result)
+        // res.status(200).json(JSON.stringify(result));
+        return next(result)
     });
-    // if(!updatedVisitor) return res.status(401).json({'msg':'can not update visitor '}); 
-    res.status(200).json(updatedVisitor);    
-    // res.status(200).json({'msg':'testing'});
+          
+    }catch(err){
+        return res.status(301).json({'msg':'fail to update visitor' + err});  
+    }
 }
 
 
