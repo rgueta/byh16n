@@ -35,22 +35,30 @@ export const verifyToken = async (req,res, next) =>{
 
 export const isAdmin = async(req, res, next) => {
     console.log('isAdmin params --> ', req.params)
-    const user = await Users.findById(req.params.userId);
-    const roles = await Roles.find({_id:{$in: user.roles}});
-    console.log('Roles --> ',roles);
-    for(let i=0; i < roles.length; i++ ){
-        if(roles[i].name === 'admin'){
-            next();
-            return;
+    try{
+        const user = await Users.findById(req.params.userId);
+        const roles = await Roles.find({_id:{$in: user.roles}});
+        console.log('Roles --> ',roles);
+        for(let i=0; i < roles.length; i++ ){
+            if(roles[i].name === 'admin'){
+                next();
+                return res.status(200);
+            }
+        console.log('is Not isAdmin  --> ');
+        return res.status(400).json({'message':"Is Not admin"});
+            
         }
-        
+    }catch(err){
+        return res.status(400).json({'msg':"Require admin role"});
     }
+   
 
-    return res.status(403).json({message:"Require admin role"});
+    
 }
 
 export const isNeighbor = async(req, res, next) => {
     console.log('isNeighbor req.params', req.params);
+
     const founduser = await Users.findById(req.params.userId);
     try{
         if(!founduser) return res.status(400).json({'error':'isNeighbor user not found'})
@@ -59,16 +67,16 @@ export const isNeighbor = async(req, res, next) => {
         console.log('isNeighbor role found --> ',found_roles);
         for(let i=0; i < found_roles.length; i++ ){
             if(found_roles[i].name === 'neighbor'){
-                // res.status(200).json({'message':"Is neighbor OK"});
-
-                // return next(); //working ok, until testing response json data
-                next(); //tesing now for response json data
+                next();
+                return res.status(200);
             }
         }
+        console.log('is Not isNeighbor  --> ');
         return res.status(400).json({'message':"Is Not a neighbor"});
 
     }catch(err){
-        return res.status(400).json({'message':"Require neighbor role"});
+        console.log('Error catch isNeighbor  --> ', err);
+        res.status(400).json({'message':"Require neighbor role"});
     }
     
 }

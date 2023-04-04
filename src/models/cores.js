@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const coresSchema = new Schema({
-    Name : {type : String, required: true},
+    name : {type : String, required: true},
     Address : {type : String, required: true},
     Sim : {type : String, required: true},
     coord : {type : [String], required: true},
@@ -20,10 +20,10 @@ const coresSchema = new Schema({
         Motor : {type : String, required: true},
         Gate_type :{type : String, required: true},
         Gate_long : {type : Number, required: true},
-        Gate_heigh : {type : Number, required: true},
+        Gate_height : {type : Number, required: true},
         Pedestrian_type : {type : String, required: true},
         Pedestrian_long : {type : Number, required: true},
-        Pedestrian_heigh : {type : Number, required: true},
+        Pedestrian_height : {type : Number, required: true},
     },
     housing_unit : {type : Schema.Types.ObjectId, required :true},
     shortName : {type: String},
@@ -35,7 +35,8 @@ const coresSchema = new Schema({
     division : {type: Number},
     cpu : {type: String},
     enable : {type: Boolean},
-    code_expiry : {type: Number}
+    code_expiry : {type: Number},
+    webService : {type: Boolean}
     },
     
 // });

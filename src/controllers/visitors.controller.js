@@ -11,14 +11,12 @@ export const createVisitor = async (req,res,next) =>{
         const newVisitor = await new Visitors({userId, name,email,username,pwd,address,sim,gender,avatar});
         const visitorSaved = await newVisitor.save();
         if(visitorSaved){
-            console.log('Visitor added OK---------------');
-            return res.status(201).json({'visitorSaved':visitorSaved});
+            res.status(200);
         }else{
-            return res.status(404).json({'Error DataBasa adding visitor' : err});
+            res.status(404).json({'Error DataBasa adding visitor' : err});
         }
     
     }catch(err){
-        // console.log('Error adding visitor --> ',err);
         return res.status(404).json({'Error adding visitor ': err});
     }
 }

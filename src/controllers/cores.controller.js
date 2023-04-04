@@ -3,15 +3,18 @@ import { Types } from "mongoose";
 
 
 export const createCore = async (req,res) => {
-  const {Name, Address, webService, Sim, coord, qty, Motor, Gate_type, Gate_long, 
-       Gate_heigh, Pedestrian_type, Pedestrian_long, Pedestrian_heigh , housing_unit,
+  console.log('Core pkg body--> ',req.body );
+
+
+  const {name, Address, webService, Sim, coord, qty, Motor, Gate_type, Gate_long, 
+       Gate_height, Pedestrian_type, Pedestrian_long, Pedestrian_height, housing_unit,
   enable, contact_name, contact_email, contact_phone} = await req.body;
 
   const Houses = {qty,detail:[]};
   const detail = {Motor, Gate_type, Gate_long, 
-    Gate_heigh, Pedestrian_type, Pedestrian_long, Pedestrian_heigh};
+    Gate_height, Pedestrian_type, Pedestrian_long, Pedestrian_height};
 
-   const newCore = new Cores({Name, Address, webService, Sim, coord ,Houses, detail, housing_unit,
+   const newCore = new Cores({name, Address, webService, Sim, coord ,Houses, detail, housing_unit,
     enable, contact_name, contact_email, contact_phone});
 
   try{
@@ -35,56 +38,8 @@ export const getCoresAdmin = async (req, res) => {
           return res.status(301).json({'msg': err});
         } else {
 
-         return res.status(200).json(results);
-          // return next();// Fail both sides conbined two lines
-
-          // await res.setHeader('Content-Type', 'application/json');
-          // await res.send(results);
-          // next(); Fail both sides conbined three lines
+        return res.status(200).json(results);
           
-
-          // next();// Fail both sides conbined two lines
-          // return await res.status(200).json(results);
-
-          // await res.status(200).json(results);
-          // return;// Fail both sides conbined two lines
-
-          // await res.status(200).json(results);
-          // await next(); // Fail both sides conbined three lines
-          // return;
-
-          // await res.status(200).json(results);
-          // await next(); // Fail both sides conbined two lines
-
-          // await res.status(200).json(results);
-          // return await next(); // Fail both sides conbined two lines
-
-          // await res.status(200).json(results);
-          // return next(); // Fail both sides conbined two lines
-
-          // await res.status(200).json(results);
-          // return; // Fail both sides conbined two lines
-
-          // await res.status(200).json(results);
-          // next();// Fail both sides conbined two lines
-
-          // next();// Fail both sides conbined two lines
-          // await res.status(200).json(results);
-
-          // next();
-          // return res.status(200).json(results); // Fail both sides conbined two lines
-
-          // next();
-          // res.status(200).json(results); // Fail both sides conbined two lines
-
-          // res.send(results) // Fail both sides conbined two lines
-          // next()
-
-        // res.status(200).json(results); //Fail both sides
-        // await res.status(200).json(results); //Fail both sides
-        // return await res.status(200).json(results); //Fail both sides
-        // return next(results); //Ok server side, no data response
-        // return next();//OK server side, no data response
         }
       }); 
   }catch(err){

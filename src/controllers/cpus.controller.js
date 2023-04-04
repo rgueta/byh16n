@@ -17,7 +17,7 @@ export const createCpu = async (req,res) => {
 
 }
 
-export const getCpus = async (req, res) => {
+export const getCpusFull = async (req, res) => {
     const NumDivision = parseInt(req.params.division)
    await Cpus.find({country:req.params.country,
                 state:req.params.state, 
@@ -33,6 +33,21 @@ export const getCpus = async (req, res) => {
 
 }
 
+export const getCpusBasic = async (req, res) => {
+  const NumDivision = parseInt(req.params.division)
+ await Cpus.find({country:req.params.country,
+              state:req.params.state, 
+              city:req.params.city,
+              division:NumDivision},{name:1}, (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json({message: err});
+      } else {
+        res.status(200).json(results);
+      }
+    }); 
+
+}
 
 
 export const deleteCpuById = async (req,res) => {
