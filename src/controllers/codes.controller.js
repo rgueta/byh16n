@@ -4,20 +4,21 @@ import { response } from "express";
 
 export const createCode = async (req, res, next) => {
     try{
-        const { code,initial,expiry,comment,visitorId,source :{user,platform, id}} =  await req.body;
+        const { code,initial,expiry,comment,visitorSim,visitorName,source :{user,platform, id}} =  await req.body;
 
-        const newCode = new Codes({code,initial,expiry,comment,visitorId,
+        const newCode = new Codes({code,initial,expiry,comment,visitorSim,visitorName,
             source: {user,platform,id }});
         const codeSaved = await newCode.save();
         
         if(codeSaved) {
-            // res.send(codeSaved);
-            return next(codeSaved);
+            res.status(200).json(codeSaved);
+            // return next(codeSaved);
         }else{
             return res.status(304).json({'msg':'No created code'});
         }
         
     }catch(err){
+        console.log('Error: ', err)
         res.status(304).json({'msg':'Not created code'});
     }
 
@@ -57,8 +58,8 @@ export const getCodes = async (req,res) => {
                        userName : '$code_users.name',
                        email : '$code_users.email',
                        avatar : '$code_users.Avatar',
-                       visitorname: '$codes_visitors.name',
-                       visitorsim: '$codes_visitors.sim'
+                       visitorname: 1,
+                       visitorSim: 1
                        }
                }
     ])
@@ -66,7 +67,6 @@ export const getCodes = async (req,res) => {
 }
 
 export const getCodesByUser = async (req,res) => {
-    console.log('get Code events');
     if(req.params.userId != 'null'){
         console.log('get Code by user: ' + req.params.userId);
         // const user = new ObjectId(req.params.userId);
@@ -80,16 +80,7 @@ export const getCodesByUser = async (req,res) => {
                         as :  'code_users'
                         }
                 },
-                {
-                $lookup:{
-                        from : 'visitors',
-                        localField : 'visitorId',
-                        foreignField : '_id',
-                        as :  'codes_visitors'
-                        }
-                },
                 {'$unwind' : '$code_users'},
-                {'$unwind' : '$codes_visitors'},
                 {
                     $match:{
                         'code_users._id' : { $eq : Types.ObjectId(req.params.userId)}
@@ -107,8 +98,9 @@ export const getCodesByUser = async (req,res) => {
                         userName : '$code_users.name',
                         email : '$code_users.email',
                         avatar : '$code_users.Avatar',
-                        visitorName: '$codes_visitors.name',
-                        visitorSim: '$codes_visitors.sim'
+                        visitorSim: 1,
+                        visitorName: 1,
+                        sim: 1
                         }
                 }
         ])
@@ -120,6 +112,7 @@ export const getCodesByUser = async (req,res) => {
         res.status(201).json({'Error':'userId missing '});
     }
 }
+
 
 export const getCodeById = async (req,res) => {
     const code = await Codes.findById(req.params.codeId);

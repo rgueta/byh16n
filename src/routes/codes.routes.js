@@ -4,14 +4,12 @@ import {authJwt}  from "../middleware";
 const router = Router();
 
 router.post('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.createCode );
-// router.post('/:userId',authJwt.isNeighbor,codesCtrl.createCode );
-// router.post('/:userId',codesCtrl.createCode );
 
 router.get('/',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCodes);
-// router.get('/',codesCtrl.getCodes);
-// router.get('/user/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCodesByUser);
 
-router.get('/user/:userId',codesCtrl.getCodesByUser);
+router.get('/user/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCodesByUser);
+
+// router.get('/user/:userId',codesCtrl.getCodesByUser);
 
 // router.get('/user/:userId',codesCtrl.getCodesByUser);
 router.get('/:codeId',codesCtrl.getCodeById);

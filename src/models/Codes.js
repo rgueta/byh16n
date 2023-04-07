@@ -10,7 +10,8 @@ const codeSchema = new Schema({
         id : { type : String, required : true}
     },
     comment : {type : String},
-    visitorId : {type : Schema.Types.ObjectId, required :true},
+    visitorSim : {type : String, required :true},
+    visitorName : {type : String, required :true},
     enable : {type : Number, default:true}
     },
     {

@@ -109,25 +109,12 @@ export const getCode_events = async (req,res) => {
     }
 }
 export const getCode_eventsByDate = async (req,res) => {
-    // console.log('getCode_eventsByDate --> start ' , new Date(req.params.start).setHours(0,0,0,0));
-    // console.log('getCode_eventsByDate --> end ' , new Date(req.params.end).setHours(23,59,59,999));
 
     let start = await new Date(req.params.start);
     let end = await new Date(req.params.end);
 
     start.setMinutes(start.getMinutes() - start.getTimezoneOffset());
     end.setMinutes(end.getMinutes() - end.getTimezoneOffset());
-
-    // var start = new Date(req.params.start).toISOString().split('T')[0];  // V3.0.3
-    // var end = new Date(req.params.end).toISOString().split('T')[0];  //V3.0.3
-
-
-    // start.setUTCHours(0,0,0,0);
-    // end.setUTCHours(23,59,59,0);
-
-    console.log('getCode_eventsByDate --> start ' , start);
-    console.log('getCode_eventsByDate --> end ' , end);
-
 
     if(req.params.CoreSim != null && req.params.start != null && req.params.end != null){
         const CoreSim = req.params.CoreSim;
@@ -139,23 +126,14 @@ export const getCode_eventsByDate = async (req,res) => {
                         'from' :  'codes',
                         'localField' : 'codeId',
                         'foreignField' : '_id',
-                        'as' : 'code_events_code'
+                        'as' : 'codes'
                     }
             },
-            {$unwind : '$code_events_code'},
-                {
-                $lookup:{
-                        'from' :  'visitors',
-                        'localField' : 'code_events_code.visitorId',
-                        'foreignField' : '_id',
-                        'as' : 'code_visitors'
-                    }
-                },
-            {$unwind : '$code_visitors'},
+            {$unwind : '$codes'},
             {
                 $lookup : {
                         'from' :  'users',
-                        'localField' : 'code_events_code.source.user',
+                        'localField' : 'codes.source.user',
                         'foreignField' : '_id',
                         'as' : 'codes_users'
                     }   
@@ -163,7 +141,7 @@ export const getCode_eventsByDate = async (req,res) => {
             {$unwind : '$codes_users'},
             {
                 $match : {
-                        'code_events_code.source.user'  : Types.ObjectId(req.params.userId),
+                        'codes.source.user'  : Types.ObjectId(req.params.userId),
                         createdAt :  {
                             $gte : new Date(start),
                             $lte : new Date(end)
@@ -175,9 +153,9 @@ export const getCode_eventsByDate = async (req,res) => {
                 $project : {
                         codeId : 1,
                         coreSim : 1,
-                        code : '$code_events_code.code',
+                        code : '$codes.code',
                         casa : '$codes_users.house',
-                        visitorname : '$code_visitors.name',
+                        visitorName : '$codes.visitorName',
                         createdAt : { 
                             $dateToString: { 
                                 format: '%Y/%m/%d %H:%M:%S', 
