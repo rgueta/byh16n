@@ -18,6 +18,11 @@
     width: 100%;
 }
 
+.version{
+    position: absolute;
+    float: left;
+}
+
 @keyframes blink {50% { color: transparent }}
 .loader__dot { 
     color: navy;
