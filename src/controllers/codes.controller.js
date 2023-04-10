@@ -105,7 +105,7 @@ export const getCodesByUser = async (req,res) => {
                 }
         ])
 
-
+        console.log(codes);
         res.json(codes);
     }else{
         console.log({'Error':'userId missing '});
