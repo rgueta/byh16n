@@ -139,9 +139,7 @@ export const signIn = async (req, res) => {
         ],async function(err, foundUser) {
             if(err || foundUser == '') return res.status(400).json({'errId':1,'ErrMsg':"Usuario no encontrado","Error": err});
 
-            console.log('Signin foundUser -- > ', foundUser)
             const matchPwd =  await Users.comparePassword(req.body.pwd,foundUser[0].pwd);
-
 
             if(!matchPwd) return res.status(400).json({token:'', ErrMsg:'Invalid password'});
 
@@ -153,8 +151,6 @@ export const signIn = async (req, res) => {
 
                 // Error manage
                 if(err){
-                    console.log('Error --> ',err)
-                    
                     return res.status(400).json(err.message)
                 }
 
