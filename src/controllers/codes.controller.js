@@ -68,7 +68,7 @@ export const getCodes = async (req,res) => {
 
 export const getCodesByUser = async (req,res) => {
     if(req.params.userId != 'null'){
-        console.log('get Code by user: ' + req.params.userId);
+        console.log('get Code by user --> ' + req.params.userId);
         // const user = new ObjectId(req.params.userId);
         const codes = await await Codes.aggregate([
             {$sort : {expiry : -1}},
