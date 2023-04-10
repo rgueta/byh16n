@@ -153,7 +153,7 @@ export const signIn = async (req, res) => {
 
                 // Error manage
                 if(err){
-                    return res.status(400).json('Error to login',err.message)
+                    return res.status(400).json(err.message)
                 }
 
                 const decode = jwt.decode(token,process.env.SECRET)
