@@ -70,7 +70,7 @@ export const getCodesByUser = async (req,res) => {
     if(req.params.userId != 'null'){
         console.log('get Code by user: ' + req.params.userId);
         // const user = new ObjectId(req.params.userId);
-        const codes = await Codes.aggregate([
+        const codes = await await Codes.aggregate([
             {$sort : {expiry : -1}},
             {
                 $lookup:{
@@ -105,7 +105,7 @@ export const getCodesByUser = async (req,res) => {
                 }
         ])
 
-        console.log('Codes --> ', codes);
+        await console.log('Codes --> ', codes);
         res.json(codes);
     }else{
         console.log({'Error':'userId missing '});
