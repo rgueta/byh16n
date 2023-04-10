@@ -105,7 +105,6 @@ export const getCodesByUser = async (req,res) => {
                 }
         ])
 
-        await console.log('Codes --> ', codes);
         res.status(200).json(codes);
     }else{
         console.log({'Error':'userId missing '});
