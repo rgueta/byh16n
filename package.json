@@ -1,7 +1,7 @@
 {
   "cia": "Bytheg",
   "name": "byh16n",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "byh16 backend nodejs",
   "main": "dist/index.js",
   "engines": {

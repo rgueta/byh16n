@@ -6,5 +6,4 @@ router.post('/:email',pwdRSTCtrl.pwdRSTReq);
 router.post('/confirm/:id',pwdRSTCtrl.pwdRSTConfirm);
 router.post('/apply/:id/:pwd/:repwd',pwdRSTCtrl.pwdRSTApply);
 
-
 export default router;

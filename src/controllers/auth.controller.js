@@ -112,6 +112,7 @@ export const signIn = async (req, res) => {
                 $project: {
                     _id : 1,
                 name: 1,
+                pwd:1,
                 sim : 1,
                 pwd:1,
                 coreName : '$user_core.name',

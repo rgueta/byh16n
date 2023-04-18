@@ -146,12 +146,16 @@ export const pwdRSTApply = async (req, res) => {
     res.status(401).json({'Error': e});
     }
 }
+
 // #region create HTML layout   -------------------------------------------------------
 
 async function encryptPassword(pwd){
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt();
     return await bcrypt.hash(pwd,salt);
 }
+
+
+
 
 async function createHTML(){
    html_call =

@@ -32,7 +32,6 @@ userSchema.statics.encryptPassword = async (pwd) =>{
 
 
 userSchema.statics.comparePassword = async(password, receivedPassword) => {
-    console.log('receivedPassword --> ' + receivedPassword)
     return await bcrypt.compare(password, receivedPassword);
 }
 
