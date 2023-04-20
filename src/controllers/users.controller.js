@@ -98,3 +98,37 @@ export const unlockedUser = async (req,res) =>{
         res.status(400).json({'msg': err})
     }
 }
+
+export const getFamily = async (req,res) => {
+
+    const user = await Users.findById(req.params.userId);
+    if (user) {
+        try{
+            await Users.aggregate([
+                {
+                    $match: { 
+                        house : user.house, 
+                        core: Types.ObjectId(user.core)
+                    }
+                },
+                {
+                    $project : { 
+                        name: 1,
+                        sim: 1 
+                    }
+                }
+            ], async function(err, result){
+    
+                if(err || result == '') return res.status(301).json({'ErrMsg':"Usuarios no encontrados","Error": err});
+                return res.status(200).json(result);
+            });
+        }catch(ex){
+            res.status(301).json({'error':ex});
+    
+        }
+
+    }else{
+        res.status(301).json({'msg':'El usario no se encuentra'});
+    }
+
+}
