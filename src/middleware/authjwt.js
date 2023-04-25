@@ -34,11 +34,11 @@ export const verifyToken = async (req,res, next) =>{
 };
 
 export const isAdmin = async(req, res, next) => {
+    console.log('---------------  Is Admin   ---------------------')
     console.log('isAdmin params --> ', req.params)
     try{
         const user = await Users.findById(req.params.userId);
         const roles = await Roles.find({_id:{$in: user.roles}});
-        console.log('Roles --> ',roles);
         for(let i=0; i < roles.length; i++ ){
             if(roles[i].name === 'admin'){
                 next();
@@ -51,9 +51,7 @@ export const isAdmin = async(req, res, next) => {
     }catch(err){
         return res.status(400).json({'msg':"Require admin role"});
     }
-   
 
-    
 }
 
 export const isNeighbor = async(req, res, next) => {

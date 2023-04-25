@@ -111,30 +111,32 @@ export const signIn = async (req, res) => {
             {
                 $project: {
                     _id : 1,
-                name: 1,
-                pwd:1,
-                sim : 1,
-                pwd:1,
-                coreName : '$user_core.name',
-                coreSim : '$user_core.Sim',
-                email: 1,
-                roles: '$user_roles',
-                location: 1,
-                country: '$cpu_country.shortName', 
-                state: '$cpu_state.state', 
-                city: '$cpu_city.shortName', 
-                div: '$user_division.id', 
-                cpu: '$user_cpu.shortName', 
-                core: '$user_core.shortName',
-                code_expiry: '$user_core.code_expiry'
-                //   img_folder: {$concat : [ '$cpu_country.shortName', '.' ,
-                //                 '$user_cpu.state', '.' ,
-                //                 '$cpu_city.shortName', '.' ,
-                //                 {$toString : '$user_division.id'} , '.' ,
-                //                 '$user_cpu.shortName', '.' ,
-                //                 '$user_core.shortName']}
-            
-                }
+                    name: 1,
+                    pwd:1,
+                    sim : 1,
+                    pwd:1,
+                    coreName : '$user_core.name',
+                    coreSim : '$user_core.Sim',
+                    email: 1,
+                    roles: '$user_roles',
+                    location: 1,
+                    country: '$cpu_country.shortName', 
+                    state: '$cpu_state.state', 
+                    city: '$cpu_city.shortName', 
+                    div: '$user_division.id', 
+                    cpu: '$user_cpu.shortName', 
+                    coreShortName: '$user_core.shortName',
+                    core: 1,
+                    code_expiry: '$user_core.code_expiry',
+                    locked:1
+                    //   img_folder: {$concat : [ '$cpu_country.shortName', '.' ,
+                    //                 '$user_cpu.state', '.' ,
+                    //                 '$cpu_city.shortName', '.' ,
+                    //                 {$toString : '$user_division.id'} , '.' ,
+                    //                 '$user_cpu.shortName', '.' ,
+                    //                 '$user_core.shortName']}
+                
+                    }
             }
             
         ],async function(err, foundUser) {
@@ -170,9 +172,7 @@ export const signIn = async (req, res) => {
 
                 if(!token) return res.status(401).json({'token' : '', message : 'Something goes wrong'});
 
-                return res.status(201).json({'accessToken' : token ,'refreshToken': refreshToken,'userId' : foundUser[0]._id,
-                'roles': foundUser[0].roles,'sim':foundUser[0].sim,  'core_sim':foundUser[0].coreSim, 'pwd': foundUser[0].pwd,
-                'coreName' : foundUser[0].coreName, 'location':foundUser[0].location, 'code_expiry': foundUser[0].code_expiry,'iatDate': iatDate, 'expDate': expDate});
+                return res.status(201).json({'accessToken' : token ,'refreshToken': refreshToken,'userId' : foundUser[0]._id, 'roles': foundUser[0].roles,'sim':foundUser[0].sim,  'core_sim':foundUser[0].coreSim, 'pwd': foundUser[0].pwd,'locked':foundUser[0].locked,'core_id': foundUser[0].core, 'coreName' : foundUser[0].coreName, 'location':foundUser[0].location, 'code_expiry': foundUser[0].code_expiry,'iatDate': iatDate, 'expDate': expDate});
 
             });
 

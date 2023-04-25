@@ -1,6 +1,7 @@
 import Users  from "../models/Users";
 import {Types} from 'mongoose';
 import { response } from "express";
+import { Resiliencehub } from "aws-sdk";
 
 export const createUser = async (req,res) =>{
     console.log('Create User -->', req.body);
@@ -48,14 +49,22 @@ export const getUserById = async (req,res) => {
 }
 
 export const getUserByCore = async(req, res) =>{
-    Users.find({'core' : Types.ObjectId(req.params.coreId)}, (err,result) => {
-        if(err){
-            console.log(err);
-            res.status(500).json(err);
+
+    const query = {'core' : Types.ObjectId(req.params.coreId)};
+    const fields = {};
+    const mySort = await { 'house' : 1};
+
+    try{
+        const result = await Users.find(query, fields).sort(mySort);
+        if(result.length > 0){
+            return res.status(200).json(result);
         }else{
-            res.status(200).json(result);
+            return res.status(300).json({'msg':'NO data found'});
         }
-    });
+    }catch(ex){
+        return res.status(501).json(ex);
+    }
+    
 
 }
 
@@ -69,9 +78,10 @@ export const deleteUserById = async (req,res) => {
     res.status(204).json(deletedUser)
 }
 
-export const lockedUser = async (req,res) =>{
-    
-    const userId = req.body.userId;
+export const lockUser = async (req,res) =>{
+    console.log('neighbor  to lock--> ', req.body.neighborId);
+
+    const userId = Types.ObjectId(req.body.neighborId);
     try{
         const updLocked = await Users.updateOne({_id : userId},{$set:{locked:true}})
         if(updLocked)
@@ -85,8 +95,8 @@ export const lockedUser = async (req,res) =>{
     
 }
 
-export const unlockedUser = async (req,res) =>{
-    const userId = req.body.userId;
+export const unlockUser = async (req,res) =>{
+    const userId = req.body.neighborId;
     try{
         const updUnlocked = await Users.updateOne({_id : Types.ObjectId(userId)},{$set:{locked:false}})
         if(updUnlocked)
@@ -108,7 +118,8 @@ export const getFamily = async (req,res) => {
                 {
                     $match: { 
                         house : user.house, 
-                        core: Types.ObjectId(user.core)
+                        core: Types.ObjectId(user.core),
+                        _id: {$ne : Types.ObjectId(user._id)}
                     }
                 },
                 {
