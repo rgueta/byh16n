@@ -56,7 +56,7 @@ io.sockets.on('connection', (socket) => {
     // io.sockets.in(room).emit('event', data);
 
 
-    socket.on('create',(room) => {
+    socket.on('join',(room) => {
       console.log('user joined to room: ', room);
       socket.join(room);
     });

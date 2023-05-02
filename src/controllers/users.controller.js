@@ -55,7 +55,40 @@ export const getUserByCore = async(req, res) =>{
     const mySort = await { 'house' : 1};
 
     try{
-        const result = await Users.find(query, fields).sort(mySort);
+
+        const result = await Users.aggregate([
+            {
+                $match : {
+                    core : Types.ObjectId(req.params.coreId)
+                }
+            },
+            {$sort : { house : 1 }},
+            {
+                $lookup:{
+                    'from' : 'roles',
+                    'localField' : 'roles',
+                    'foreignField' : '_id',
+                    'as' : 'roles_user'
+                }
+            },
+            {
+                $project: {
+                    core : 1,
+                    email : 1,
+                    gender : 1, 
+                    house : 1,
+                    location : 1,
+                    locked : 1,
+                    name : 1 ,
+                    open : 1,
+                    roles: '$roles_user.name',
+                    sim : 1,
+                    username : 1,
+                    uuid : 1
+                }
+            }
+        ]);
+        
         if(result.length > 0){
             return res.status(200).json(result);
         }else{
@@ -64,8 +97,6 @@ export const getUserByCore = async(req, res) =>{
     }catch(ex){
         return res.status(501).json(ex);
     }
-    
-
 }
 
 export const updateUserById = async (req,res) => {
