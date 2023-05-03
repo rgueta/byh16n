@@ -48,10 +48,29 @@ httpServer.listen(PORT);
 
 
 //#region ----- sockets -------------------------------------------------------
+io.use((socket, next) => {
+  const sessionID = socket.handshake.auth.sessionID;
+  if (sessionID) {
+    // find existing session
+    const session = sessionStore.findSession(sessionID);
+    if (session) {
+      socket.sessionID = sessionID;
+      socket.userID = session.userID;
+      socket.username = session.username;
+      return next();
+    }
+  }
+  const username = socket.handshake.auth.username;
+  if (!username) {
+    return next(new Error("invalid username"));
+  }
+  // create new session
+  socket.sessionID = randomId();
+  socket.userID = randomId();
+  socket.username = username;
+  next();
+});
 
-const socketRouter = require('./routes/socketRouter')();
-
-// app.use("/api/alert", socketRouter);
 
 
 io.sockets.on("connect_error", (err) => {
@@ -62,6 +81,11 @@ io.sockets.on('connection', async (socket) => {
   await console.log('-------------------------- sockets  ------------------------')
 
   console.log('New connection: ', socket.id + ' ' + new Date().toLocaleString());
+
+  socket.emit("session", {
+    sessionID: socket.sessionID,
+    userID: socket.userID,
+  });
 
   app.use("/api/alert/:room/:title/:msg", async (req, res) => {
     console.log('Si entro al router de alertas..!');
