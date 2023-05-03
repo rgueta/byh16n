@@ -82,7 +82,7 @@ app.use('/api/divisions',divisionsRoutes);
 app.use('/api/housing_unit',housing_unitRoutes);
 app.use('/api/pwdResetReq',pwdRSTRoutes);
 app.use('/api/twilio',twilioRoutes);
-// app.use('/api/alerts',alertsRoutes)
+// app.use('/api/alerts',alertsRoutes);
 app.use('/api/info', infoRoutes);
 app.use('/api/countries', countriesRoutes);
 app.use('/api/states', statesRoutes);
