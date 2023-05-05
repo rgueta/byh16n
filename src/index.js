@@ -66,33 +66,40 @@ io.sockets.on('connection', async (socket) => {
     var roster = await socket.in(req.params.room).fetchSockets();
     console.table(roster)
 
-    // socket.emit('Door open');
   });
 
-    // setInterval(() =>{
-    //   console.log('emitted to room 60afd3955d8280dc19460c3a');
-    //   socket.in('60afd3955d8280dc19460c3a').emit('Alert','Door open');
-    // },3000)
-
     
-    //sample to emit with rooms
-    // io.sockets.in(room).emit('event', data);
-
-    // socket.to(socket.id).emit('join');
-
-    socket.on('join',(room) => {
-      console.log('user joined to room: ', room);
-      socket.join(room);
-      socket.in(room).emit('joined','user joined to room ' + room)
+    socket.on('join', async (room) => {
+      try{
+        await socket.join(room);
+        await console.log('user joined to room: ', room);
+        await socket.to(room).emit('joined','user joined to room ' + room)
+      }catch(ex){
+        console.log('error join room: ', room + '\nError: '+ ex);
+      }
+      
     });
+
+  
+    // socket.on('join', async (room) => {
+    //   try{
+    //     await socket.join(room,() =>{
+    //       console.log('user joined to room: ', room);
+    //     });
+    //   }catch(ex){
+    //     console.log('error join to room: ', room, '\nError:' + ex);
+    //   }
+      
+    //   await socket.in(room).emit('joined','user joined to room ' + room)
+    // });
      
-    await socket.on('set-name', (name) => {
-      let now = new Date();
-      console.log('socket set-name user: ' + JSON.stringify(name) +  ` at ${now.toLocaleString()}`);
+    // await socket.on('set-name', (name) => {
+    //   let now = new Date();
+    //   console.log('socket set-name user: ' + JSON.stringify(name) +  ` at ${now.toLocaleString()}`);
 
-      socket.username = name;
-      io.emit('users-changed', {user: name, event: 'joined'});    
-    });
+    //   socket.username = name;
+    //   io.emit('users-changed', {user: name, event: 'joined'});    
+    // });
     
     socket.on('send-message', (message) => {
       io.emit('message', {msg: message.text, user: socket.username, createdAt: new Date()});    
@@ -102,9 +109,7 @@ io.sockets.on('connection', async (socket) => {
       console.log(`connect_error due to ${err.message}`);
     });
 
-    socket.on('disconnect', function(){
-      io.emit('users-changed', {user: socket.username, event: 'left'});   
-    });
+    
 
     // console.log('a user connected, socket -> ' +socket.id + ' - ' + socket.handshake.headers['user-agent']);
     // console.log(socket.handshake.headers['user-agent']);
