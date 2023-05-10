@@ -58,6 +58,15 @@ io.sockets.on('connection', async (socket) => {
 
   console.log('New connection: ', socket.id + ' ' + new Date().toLocaleString());
 
+// List sockets available  --------------
+  app.use("/api/sockets", async (req, res) => {
+    let clients = await io.local.fetchSockets();
+    res.status(200).json({'msg':'sockets clients listed'});
+    console.log('--- Socket clients -->');
+    console.table(clients);
+
+  });
+
   app.use("/api/alert/:room/:title/:msg", async (req, res) => {
     console.log('Si entro al router de alertas..!');
     res.send({'Alert room ': req.params.room});
