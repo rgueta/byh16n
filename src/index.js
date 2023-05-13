@@ -56,7 +56,11 @@ io.sockets.on("connect_error", (err) => {
 io.sockets.on('connection', async (socket) => {
   await console.log('-------------------------- sockets  ------------------------')
 
-  console.log('New connection: ' + socket.handshake + ' \n\r' + new Date().toLocaleString());
+  console.log('New connection id: ' + socket.id + ', ' + new Date().toLocaleString());
+  console.log(socket.handshake);
+
+  // join event
+  await socket.to(room).emit('joined','user joined to room ' + room)
 
 // List sockets available  --------------
   app.use("/api/sockets", async (req, res) => {
@@ -67,6 +71,7 @@ io.sockets.on('connection', async (socket) => {
 
   });
 
+  // List room available  --------------
   app.use("/api/alert/:room/:title/:msg", async (req, res) => {
     console.log('Si entro al router de alertas..!');
     res.send({'Alert room ': req.params.room});
