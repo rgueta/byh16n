@@ -56,7 +56,7 @@ io.sockets.on("connect_error", (err) => {
 io.sockets.on('connection', async (socket) => {
   await console.log('-------------------------- sockets  ------------------------')
 
-  console.log('New connection: ', socket.id + ' ' + new Date().toLocaleString());
+  console.log('New connection: ' + socket.handshake + ' \n\r' + new Date().toLocaleString());
 
 // List sockets available  --------------
   app.use("/api/sockets", async (req, res) => {
@@ -89,7 +89,11 @@ io.sockets.on('connection', async (socket) => {
       
     });
 
-  
+    socket.on('check',(msg) => {
+      console.log(msg + ', id: ' + socket.id + ', ' + new Date().toLocaleString());
+    })
+    
+    
     // socket.on('join', async (room) => {
     //   try{
     //     await socket.join(room,() =>{
