@@ -9,13 +9,13 @@ let hash_pwdRST = '';
 let pwdRST_id = '';
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
+    host: process.env.smtp_server,
         port: 587,
         secure:false,
         requireTLS:true,
         auth: {
-          user: 'ricardogueta@gmail.com',
-          pass : 'rzisnbjgkysuwksc'
+          user: process.env.sourceEmailAddress,
+          pass : process.env.smtp_pwd
         }
 });
 

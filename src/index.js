@@ -49,18 +49,17 @@ httpServer.listen(PORT);
 
 //#region ----- sockets -------------------------------------------------------
 
-io.sockets.on("connect_error", (err) => {
-  console.log(`connect_error due to ${err.message}`);
-});
 
 io.sockets.on('connection', async (socket) => {
   await console.log('-------------------------- sockets  ------------------------')
 
   console.log('New connection id: ' + socket.id + ', ' + new Date().toLocaleString());
   console.log(socket.handshake);
+  console.log('Core ID --> ' + socket.handshake.headers['coreid']);
+
 
   // join event
-  await socket.to(room).emit('joined','user joined to room ' + room)
+  await socket.to(socket.handshake.headers['coreid']).emit('joined','user joined to room ' + socket.handshake.headers['coreid'])
 
 // List sockets available  --------------
   app.use("/api/sockets", async (req, res) => {
@@ -73,7 +72,7 @@ io.sockets.on('connection', async (socket) => {
 
   // List room available  --------------
   app.use("/api/alert/:room/:title/:msg", async (req, res) => {
-    console.log('Si entro al router de alertas..!');
+    console.log('Si entro al router de alertas..! ' + new Date().toLocaleString());
     res.send({'Alert room ': req.params.room});
     socket.to(req.params.room).emit('Alert',{title: req.params.title,msg:req.params.msg});
 
@@ -123,16 +122,16 @@ io.sockets.on('connection', async (socket) => {
       io.emit('message', {msg: message.text, user: socket.username, createdAt: new Date()});    
     });
 
-    socket.on("connect_error", (err) => {
-      console.log(`connect_error due to ${err.message}`);
-    });
-
-    
+   
 
     // console.log('a user connected, socket -> ' +socket.id + ' - ' + socket.handshake.headers['user-agent']);
     // console.log(socket.handshake.headers['user-agent']);
 
     await console.log('-------------------------------------------------------------')
+  });
+
+  io.sockets.on("connect_error", (err) => {
+    console.log(`connect_error due to ${err.message}`);
   });
 
   io.sockets.on('disconnect', () => {
