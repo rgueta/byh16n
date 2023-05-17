@@ -54,93 +54,71 @@ io.sockets.on('connection', async (socket) => {
   await console.log('-------------------------- sockets  ------------------------')
 
   console.log('New connection id: ' + socket.id + ', ' + new Date().toLocaleString());
+
   console.log(socket.handshake);
   console.log('Core ID --> ' + socket.handshake.headers['coreid']);
 
 
+  socket.on('join', async (room) => {
+    try{
+      await socket.join(room);
+      await console.log('user joined to room: ', room);
+      await socket.to(room).emit('joined','user joined to room ' + room)
+    }catch(ex){
+      console.log('error join room: ', room + '\nError: '+ ex);
+    }
+    
+  });
+
   // join event
-  await socket.to(socket.handshake.headers['coreid']).emit('joined','user joined to room ' + socket.handshake.headers['coreid'])
+  // await socket.to(socket.handshake.headers['coreid']).emit('joined','user joined to room ' + socket.handshake.headers['coreid'])
 
-// List sockets available  --------------
-  app.use("/api/sockets", async (req, res) => {
-    let clients = await io.local.fetchSockets();
-    res.status(200).json({'msg':'sockets clients listed'});
-    console.log('--- Socket clients -->');
-    console.table(clients);
 
+
+  
+
+    socket.on('check',(msg) => {
+      console.log(msg + ', id: ' + socket.id + ', ' + new Date().toLocaleString());
+    })
+        
+    socket.on('send-message', (message) => {
+      io.emit('message', {msg: message.text, user: socket.username, createdAt: new Date()});    
+    });
+
+    socket.on('disconnect', () => {
+     console.log('Disconnection [ '+ socket.id + ' ], ' + new Date().toLocaleString())
+    });
+
+    await console.log('-------------------------------------------------------------')
   });
 
   // List room available  --------------
   app.use("/api/alert/:room/:title/:msg", async (req, res) => {
     console.log('Si entro al router de alertas..! ' + new Date().toLocaleString());
     res.send({'Alert room ': req.params.room});
-    socket.to(req.params.room).emit('Alert',{title: req.params.title,msg:req.params.msg});
+    io.sockets.to(req.params.room).emit('Alert',{title: req.params.title,msg:req.params.msg});
 
-    var roster = await socket.in(req.params.room).fetchSockets();
+    var roster = await io.sockets.in(req.params.room).fetchSockets();
     console.table(roster)
 
   });
 
-    
-    socket.on('join', async (room) => {
-      try{
-        await socket.join(room);
-        await console.log('user joined to room: ', room);
-        await socket.to(room).emit('joined','user joined to room ' + room)
-      }catch(ex){
-        console.log('error join room: ', room + '\nError: '+ ex);
-      }
-      
-    });
+  // List sockets available  --------------
+  app.use("/api/sockets", async (req, res) => {
+    let clients = await io.local.fetchSockets();
+    res.status(200).json({'msg':'sockets clients listed'});
+    console.log('--- Socket clients -->');
+    console.table(clients);
+    console.log('--- Socket rooms -->');
+    console.table(io.sockets.adapter.rooms);
 
-    socket.on('check',(msg) => {
-      console.log(msg + ', id: ' + socket.id + ', ' + new Date().toLocaleString());
-    })
-    
-    
-    // socket.on('join', async (room) => {
-    //   try{
-    //     await socket.join(room,() =>{
-    //       console.log('user joined to room: ', room);
-    //     });
-    //   }catch(ex){
-    //     console.log('error join to room: ', room, '\nError:' + ex);
-    //   }
-      
-    //   await socket.in(room).emit('joined','user joined to room ' + room)
-    // });
-     
-    // await socket.on('set-name', (name) => {
-    //   let now = new Date();
-    //   console.log('socket set-name user: ' + JSON.stringify(name) +  ` at ${now.toLocaleString()}`);
-
-    //   socket.username = name;
-    //   io.emit('users-changed', {user: name, event: 'joined'});    
-    // });
-    
-    socket.on('send-message', (message) => {
-      io.emit('message', {msg: message.text, user: socket.username, createdAt: new Date()});    
-    });
-
-   
-
-    // console.log('a user connected, socket -> ' +socket.id + ' - ' + socket.handshake.headers['user-agent']);
-    // console.log(socket.handshake.headers['user-agent']);
-
-    await console.log('-------------------------------------------------------------')
   });
 
   io.sockets.on("connect_error", (err) => {
     console.log(`connect_error due to ${err.message}`);
   });
 
-  io.sockets.on('disconnect', () => {
-    /*
-      socket.rooms is empty here 
-      leaveAll() has already been called
-    */
-   console.log('Disconnection '+ new Date().toLocaleString())
-  });
+  
 
   // import modelAlerts from './models/alerts';
 

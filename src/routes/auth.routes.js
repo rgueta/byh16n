@@ -10,7 +10,7 @@ const router = Router();
 router.post('/signup',[verifyToken,  verifySignup.checkDuplicateUsernameEmail,verifySignup.checkRolesExists],authCtrl.signUp);
 router.post('/signin',authCtrl.signIn);
 router.get('/refresh',authCtrl.refresh);
-
+router.post('/logout',authCtrl.logout);
 
 
 

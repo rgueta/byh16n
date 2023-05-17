@@ -258,3 +258,7 @@ export const refresh = async (req, res, next) =>{
         }
      }
 }
+
+export const logout = async (req,res) =>{
+    res.status(200);
+}
