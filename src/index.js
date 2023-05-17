@@ -70,13 +70,6 @@ io.sockets.on('connection', async (socket) => {
     
   });
 
-  // join event
-  // await socket.to(socket.handshake.headers['coreid']).emit('joined','user joined to room ' + socket.handshake.headers['coreid'])
-
-
-
-  
-
     socket.on('check',(msg) => {
       console.log(msg + ', id: ' + socket.id + ', ' + new Date().toLocaleString());
     })
