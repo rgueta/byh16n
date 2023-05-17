@@ -55,7 +55,7 @@ io.sockets.on('connection', async (socket) => {
 
   console.log('New connection id: ' + socket.id + ', ' + new Date().toLocaleString());
 
-  console.log(socket.handshake);
+  console.info(socket.handshake);
   console.log('Core ID --> ' + socket.handshake.headers['coreid']);
 
 
@@ -70,8 +70,8 @@ io.sockets.on('connection', async (socket) => {
     
   });
 
-    socket.on('check',(msg) => {
-      console.log(msg + ', id: ' + socket.id + ', ' + new Date().toLocaleString());
+    socket.on('ping',(msg) => {
+      console.log('ping ' + `${socket.id}, `+ new Date().toLocaleString());
     })
         
     socket.on('send-message', (message) => {
@@ -80,6 +80,7 @@ io.sockets.on('connection', async (socket) => {
 
     socket.on('disconnect', () => {
      console.log('Disconnection [ '+ socket.id + ' ], ' + new Date().toLocaleString())
+     socket.emit('desconexion');
     });
 
     await console.log('-------------------------------------------------------------')
