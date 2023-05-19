@@ -6,28 +6,6 @@ const PORT = process.env.PORT;
 
 import { Server } from "socket.io";
 
-
-//#region ---- https --------------------------------------
-// import { createServer } from "https";
-
-// const httpsServer = createServer({
-//   key : fs.readFileSync('key.pem'),
-//   cert : fs.readFileSync('cert.pem')
-// },app);
-
-
-// const io = new Server(httpsServer, {
-//     cors:{
-//         origin: '*',
-//         methods:['GET','POST']
-//     }
-//   // ...
-// });
-
-// httpsServer.listen(PORT);
-//#endregion ------- hhtps  ------
-
-
 // #region   -------- http  -----------------------------
 import { createServer } from "http";
 import { emit } from 'process';
@@ -63,20 +41,17 @@ io.sockets.on('connection', async (socket) => {
 
 
   socket.on('join', async (room) => {
-    try{
       await socket.join(room);
       await console.log('user joined to room: ', room);
       await io.to(room).emit('joined',{title: 'Joined',msg: 'user joined to room ' + room })
-    }catch(ex){
-      console.log('error join room: ', room + '\nError: '+ ex);
-    }
-    
   });
 
-    socket.on('ping',() => {
-      console.log('ping ' + `${socket.id}, `+ new Date().toLocaleString());
-      io.sockets.to(socket.id).emit('pong');
-    })
+    // socket.on('ping',() => {
+    //   console.log('ping ' + `${socket.id}, `+ new Date().toLocaleString());
+
+    //   // emit to single socket
+    //   io.sockets.to(socket.id).emit('pong');
+    // })
         
     socket.on('send-message', (message) => {
       io.emit('message', {msg: message.text, user: socket.username, createdAt: new Date()});    
@@ -85,7 +60,8 @@ io.sockets.on('connection', async (socket) => {
     socket.on('disconnect', (reason) => {
      console.log('Disconnection [ '+ socket.id + ' ], ' + new Date().toLocaleString());
      console.info(reason);
-    //  socket.emit('desconexion');
+     socket.leave();
+     console.table(io.sockets.adapter.rooms);
     });
 
     await console.log('-------------------------------------------------------------')
