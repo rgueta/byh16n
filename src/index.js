@@ -50,21 +50,23 @@ httpServer.listen(PORT);
 
 //#region ----- sockets -------------------------------------------------------
 
-
 io.sockets.on('connection', async (socket) => {
   await console.log('-------------------------- sockets  ------------------------')
 
   console.log('New connection id: ' + socket.id + ', ' + new Date().toLocaleString());
 
+
+
   console.info(socket.handshake);
   console.log('Core ID --> ' + socket.handshake.headers['coreid']);
+  console.info('data --> ' + socket.data);
 
 
   socket.on('join', async (room) => {
     try{
       await socket.join(room);
       await console.log('user joined to room: ', room);
-      await socket.to(room).emit('joined','user joined to room ' + room)
+      await io.to(room).emit('joined',{title: 'Joined',msg: 'user joined to room ' + room })
     }catch(ex){
       console.log('error join room: ', room + '\nError: '+ ex);
     }
@@ -108,6 +110,7 @@ io.sockets.on('connection', async (socket) => {
     console.table(clients);
     console.log('--- Socket rooms -->');
     console.table(io.sockets.adapter.rooms);
+    io.sockets.emit('hello');
 
   });
 
