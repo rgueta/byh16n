@@ -30,12 +30,13 @@ import { Server } from "socket.io";
 
 // #region   -------- http  -----------------------------
 import { createServer } from "http";
+import { emit } from 'process';
 
 const httpServer = createServer(app);
 
 
 const io = new Server(httpServer, {
-    cors:{
+  cors:{
         origin: '*',
         methods:['GET','POST']
     }
@@ -70,17 +71,19 @@ io.sockets.on('connection', async (socket) => {
     
   });
 
-    socket.on('ping',(msg) => {
+    socket.on('ping',() => {
       console.log('ping ' + `${socket.id}, `+ new Date().toLocaleString());
+      io.sockets.to(socket.id).emit('pong');
     })
         
     socket.on('send-message', (message) => {
       io.emit('message', {msg: message.text, user: socket.username, createdAt: new Date()});    
     });
 
-    socket.on('disconnect', () => {
-     console.log('Disconnection [ '+ socket.id + ' ], ' + new Date().toLocaleString())
-     socket.emit('desconexion');
+    socket.on('disconnect', (reason) => {
+     console.log('Disconnection [ '+ socket.id + ' ], ' + new Date().toLocaleString());
+     console.info(reason);
+    //  socket.emit('desconexion');
     });
 
     await console.log('-------------------------------------------------------------')
