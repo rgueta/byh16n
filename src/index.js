@@ -13,7 +13,7 @@ import { emit } from 'process';
 const httpServer = createServer(app);
 
 
-const io = new Server(httpServer, {
+const io = new Server(httpServer, {pingTimeout:60000,pingInterval:65000,
   cors:{
         origin: '*',
         methods:['GET','POST']
@@ -33,8 +33,6 @@ io.sockets.on('connection', async (socket) => {
 
   console.log('New connection id: ' + socket.id + ', ' + new Date().toLocaleString());
 
-
-
   console.info(socket.handshake);
   console.log('Core ID --> ' + socket.handshake.headers['coreid']);
   console.info('data --> ' + socket.data);
@@ -46,12 +44,9 @@ io.sockets.on('connection', async (socket) => {
       await io.to(room).emit('joined',{title: 'Joined',msg: 'user joined to room ' + room })
   });
 
-    // socket.on('ping',() => {
-    //   console.log('ping ' + `${socket.id}, `+ new Date().toLocaleString());
-
-    //   // emit to single socket
-    //   io.sockets.to(socket.id).emit('pong');
-    // })
+    socket.on('ping',()=>{
+      console.log('ping ' + new Date().toLocaleString());
+    });
         
     socket.on('send-message', (message) => {
       io.emit('message', {msg: message.text, user: socket.username, createdAt: new Date()});    
@@ -60,6 +55,7 @@ io.sockets.on('connection', async (socket) => {
     socket.on('disconnect', (reason) => {
      console.log('Disconnection [ '+ socket.id + ' ], ' + new Date().toLocaleString());
      console.info(reason);
+    //  remove socket from room
      socket.leave();
      console.table(io.sockets.adapter.rooms);
     });
