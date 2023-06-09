@@ -15,7 +15,7 @@ httpServer.listen(PORT);
 console.log('Server listen on port: ', PORT);
 
 // Firebase ALerts  -----------------
-app.use("/api/alerts/:core/:msg", async (req, res, next) => {
+app.use("/api/alerts/:core/:msg/?title/?subtitle", async (req, res, next) => {
 
     const config = {
         method: 'POST',
@@ -26,8 +26,8 @@ app.use("/api/alerts/:core/:msg", async (req, res, next) => {
         },
         data:  JSON.stringify({to: `/topics/${req.params.core}`, notification: {
             body: req.params.msg,
-            title: 'Firebase-postman title',
-            subtitle: 'Firebase-postman subtitle'
+            title: req.params.title,
+            subtitle: req.params.subtitle
         }})
     }
 
