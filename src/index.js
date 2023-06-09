@@ -1,6 +1,5 @@
 //--- this file is just to run the app
 import app from './app';
-import request from "request";
 
 // index setup
 const PORT = process.env.PORT;
