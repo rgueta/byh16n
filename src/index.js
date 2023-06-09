@@ -15,7 +15,7 @@ httpServer.listen(PORT);
 console.log('Server listen on port: ', PORT);
 
 // Firebase ALerts  -----------------
-app.use("/api/alerts/:core/:msg/?title/?subtitle", async (req, res, next) => {
+app.use("/api/alerts/:core/:msg/:title?/:subtitle?", async (req, res, next) => {
 
     const config = {
         method: 'POST',
@@ -35,7 +35,6 @@ app.use("/api/alerts/:core/:msg/?title/?subtitle", async (req, res, next) => {
     await axios(config)
     .then((result) => {
         resp = result.data
-        // console.log('OK: ', result)
     })
     .catch((err) => console.log('axios error: ', err));
 
