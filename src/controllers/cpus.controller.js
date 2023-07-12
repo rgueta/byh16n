@@ -14,6 +14,21 @@ export const createCpu = async (req,res) => {
     console.log({'Error saving Cpu ' : e});
     res.status(500).json({'error saving Cpu ': e});
   }
+}
+
+export const updateCpu = async (req,res) => {
+  const {_id, cores, entry, coord, houses, sim, school } = await req.body;
+
+  try{
+    const updCpu = await Cpus.updateOne({_id : _id},{$set:{cores:cores, entry:entry, coord:coord, houses:houses, sim:sim, school:school}});
+
+    if(updCpu)
+      res.status(200).json({'msg': updCpu})
+    else
+      return res.status(400).json({'msg': 'Can not update cpu'})    
+  }catch(e){
+    return res.status(500).json({'error saving Cpu ': e});
+  }
 
 }
 
