@@ -15,8 +15,8 @@ router.post('/enable/',coresCtrl.enableCore);
 // router.post('/disable/',[authJwt.verifyToken,authJwt.isAdmin],coresCtrl.disableCore);
 router.post('/disable/',coresCtrl.disableCore);
 
-// router.get('/admin/:userId',coresCtrl.getCoresAdmin);
-router.get('/admin/:userId',[authJwt.verifyToken],coresCtrl.getCoresAdmin);
+router.get('/admin/:userId',coresCtrl.getCoresAdmin);
+// router.get('/admin/:userId',[authJwt.verifyToken, authJwt.isAdmin],coresCtrl.getCoresAdmin);
 
 router.get('/:country,:state,:city,:division,:cpu',coresCtrl.getCores);
 router.get('/light/:country,:state,:city,:division,:cpu',coresCtrl.getCoresLight);
