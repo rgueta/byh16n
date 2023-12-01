@@ -104,6 +104,19 @@ export const disableCore = async (req,res) => {
     res.status(204).json({'Msg':'Core disabled Ok '})
     // res.status(204).json(updatedCore)
   }else{
+    res.status(404).json({'Msg' : 'Error core disable'})
+  }
+}
+
+export const chgSim = async (req,res) => {
+  console.log('coreId: ',req.body.coreId + ', new sim: ' + req.body.newSim)
+  const updatedCore = await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},
+    {$set:{Sim:req.body.newSim}})
+  if(updatedCore){
+    console.log('Core sim changed OK')
+    res.status(204).json({'Msg':'Core disabled Ok '})
+    // res.status(204).json(updatedCore)
+  }else{
     res.status(404).json({'Msg' : 'Error core not disabled'})
   }
 }

@@ -41,8 +41,6 @@ export const signUp = async (req, res) => {
 
 export const signIn = async (req, res) => {
 
-    console.log('email:  --> ' + req.body.email + ', pwd : ' + req.body.pwd + ' encrypted -->  ' + await Users.encryptPassword(req.body.pwd));
-
     try{
         await Users.aggregate([
             {
@@ -146,6 +144,7 @@ export const signIn = async (req, res) => {
 
             if(!matchPwd) return res.status(400).json({token:'', ErrMsg:'Invalid password'});
 
+
             // Create tokens  ------------------------
            jwt.sign({id:foundUser[0]._id}, process.env.SECRET,
             {
@@ -156,6 +155,9 @@ export const signIn = async (req, res) => {
                 if(err){
                     return res.status(400).json(err.message)
                 }
+
+                console.log('email: ' + req.body.email + ', pwd : ' + req.body.pwd + 
+            ', encrypted: ' + await Users.encryptPassword(req.body.pwd));
 
                 const decode = jwt.decode(token,process.env.SECRET)
 
@@ -172,7 +174,12 @@ export const signIn = async (req, res) => {
 
                 if(!token) return res.status(401).json({'token' : '', message : 'Something goes wrong'});
 
-                return res.status(201).json({'accessToken' : token ,'refreshToken': refreshToken,'userId' : foundUser[0]._id, 'roles': foundUser[0].roles,'sim':foundUser[0].sim,  'core_sim':foundUser[0].coreSim, 'pwd': foundUser[0].pwd,'locked':foundUser[0].locked,'core_id': foundUser[0].core, 'coreName' : foundUser[0].coreName, 'location':foundUser[0].location, 'code_expiry': foundUser[0].code_expiry,'iatDate': iatDate, 'expDate': expDate});
+                return res.status(201).json({'accessToken' : token ,'refreshToken': refreshToken,
+                    'userId' : foundUser[0]._id, 'roles': foundUser[0].roles,'sim':foundUser[0].sim, 
+                    'core_sim':foundUser[0].coreSim, 'pwd': foundUser[0].pwd,'locked':foundUser[0].locked,
+                    'core_id': foundUser[0].core, 'coreName' : foundUser[0].coreName, 
+                    'location':foundUser[0].location, 'code_expiry': foundUser[0].code_expiry,
+                    'iatDate': iatDate, 'expDate': expDate});
 
             });
 

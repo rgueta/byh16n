@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 dotenv.config()
-
 mongoose.set('useCreateIndex', true);
-mongoose.connect(`${process.env.DB_HEAD_URL}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`,
+// mongoose.connect(`${process.env.DB_HEAD_URL}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`,
+mongoose.connect(`${process.env.DB_HEAD_URL}://${process.env.DB_URI}`,
     {useNewUrlParser:true, 
      useUnifiedTopology:true,
      useFindAndModify:false,

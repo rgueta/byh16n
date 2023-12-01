@@ -5,8 +5,8 @@ import { authJwt, verifySignup } from "../middleware";
 const router = Router();
 
 router.post('/',[authJwt.verifyToken,authJwt.isAdmin],housing_unitCtrl.createHousing_unit);
-router.get('/',housing_unitCtrl.getHousing_unit);
-router.get('/onlyHousing_unit',housing_unitCtrl.getOnlyHousing_unit);
+router.get('/',[authJwt.verifyToken,authJwt.isAdmin],housing_unitCtrl.getHousing_unit);
+router.get('/onlyHousing_unit',[authJwt.verifyToken,authJwt.isNeighbor],housing_unitCtrl.getOnlyHousing_unit);
 router.delete('/:housing_unitId',[authJwt.verifyToken,authJwt.isAdmin],housing_unitCtrl.deleteHousing_unitById);
 
 export default router;

@@ -4,16 +4,10 @@ import { authJwt, verifySignup } from "../middleware";
 const router = Router();
 
 router.post('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],visitorCtrl.createVisitor);
-
-// router.post('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],visitorCtrl.createVisitor);
-
-// router.post('/:userId',visitorCtrl.createVisitor);
-router.get('/',visitorCtrl.getVisitors);
-router.get('/user/:userId',visitorCtrl.getVisitorsByUser);
-router.get('/:visitorId',visitorCtrl.getVisitorById);
-router.put('/:visitorId',[authJwt.verifyToken,authJwt.isAdmin,authJwt.isNeighbor],visitorCtrl.updateVisitorById);
-// router.put('/simple/:visitorId/',[authJwt.verifyToken,authJwt.isNeighbor],
-//     visitorCtrl.updateSimpleVisitorById);
+router.get('/',[authJwt.verifyToken,authJwt.isNeighbor],visitorCtrl.getVisitors);
+router.get('/user/:userId',[authJwt.verifyToken,authJwt.isNeighbor],visitorCtrl.getVisitorsByUser);
+router.get('/:visitorId',[authJwt.verifyToken,authJwt.isNeighbor],visitorCtrl.getVisitorById);
+router.put('/:visitorId',[authJwt.verifyToken,authJwt.isNeighbor],visitorCtrl.updateVisitorById);
 router.put('/simple/:userId/:visitorId',[authJwt.verifyToken,authJwt.isNeighbor],visitorCtrl.updateSimpleVisitorById);
 router.delete('/:visitorId',[authJwt.verifyToken,authJwt.isAdmin],visitorCtrl.deleteVisitorById);
 
