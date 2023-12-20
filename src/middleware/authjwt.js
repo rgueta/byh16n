@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import Users from '../models/Users';
 import Roles from "../models/Roles";
+import node from "@babel/register/lib/node";
+import { Mongoose } from "mongoose";
 
 export const verifyToken = async (req,res, next) =>{
     console.log('\r\n---------------  Verify token   ---------------------');
@@ -56,22 +58,56 @@ export const isAdmin = async(req, res, next) => {
 }
 
 export const isNeighbor = async(req, res, next) => {
-    console.log('isNeighbor req.params', req.params);
+    let founduser;
+    console.log('userId --> ', req.params.userId);
 
-    const founduser = await Users.findById(req.params.userId);
+    // VERify if user exists
+    if(req.params.userId){
+        founduser = await Users.findById(req.params.userId);
+    }
+    else if(req.params.email){
+        founduser = await Users.findOne({email:req.params.email});
+    }
+
+
     try{
-        if(!founduser) return res.status(400).json({'error':'isNeighbor user not found'})
-        const found_roles = await Roles.find({_id:{$in: founduser.roles}});
-        if(!found_roles) return res.status(400).json({'error':'roles not found for user'})
-        console.log('isNeighbor role found --> ',found_roles);
-        for(let i=0; i < found_roles.length; i++ ){
-            if(found_roles[i].name === 'neighbor'){
-                next();
-                return res.status(200);
-            }
+        // user NOT FOUND  -----------------
+        if(req.params.userId){
+            if(!founduser) return res.status(400).json({'error':'isNeighbor user not found'});
+        }else if(req.params.email){
+            if(!founduser) return res.status(405).json({'status':'405','msg':'email not found'});
         }
-        console.log('is Not isNeighbor  --> ');
-        return res.status(400).json({'message':"Is Not a neighbor"});
+
+        // user FOUND -----------------
+        if(req.params.email){  //verifying for PwdRST  -------------------
+
+            if(founduser.locked){ // Verifying user is locked
+                console.log('Neighbor is locked --> ');
+                return res.status(200).json({'status':'200','msg':'Locked'});
+            }else{
+                console.log('Neighbor active --> ');
+                next();
+                return res.status(200).json({'status':'200','msg':'Neighbor active'});
+            }
+
+        }else{
+
+            const found_roles = await Roles.find({_id:{$in: founduser.roles}});
+            if(!found_roles) return res.status(400).json({'error':'roles not found for user'})
+            console.log('isNeighbor role found --> ',found_roles);
+            for(let i=0; i < found_roles.length; i++ ){
+                if(found_roles[i].name === 'neighbor'){
+                    next();
+                    return res.status(200).json({'msg':'Si es Neighbor'});
+                }else{
+                    console.log('is Not isNeighbor  --> ');
+                    return res.status(400).json({'message':"Is Not a neighbor"});
+                }
+            }
+            
+        }
+
+        
 
     }catch(err){
         console.log('Error catch isNeighbor  --> ', err);

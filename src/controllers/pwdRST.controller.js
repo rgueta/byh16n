@@ -26,14 +26,14 @@ let html_call = '';
 // #endregion html layout ---------------------------------------
 
 export const pwdRSTReq = async (req,res) => {
-    console.log('pwdRSTReq params ---> ', req.params);
-    console.log('images_root -->',`${process.env.images_root}`)
+    console.log('req.body.model --> ', req.body);
+    console.log('');
+
 
     let foundUser = await Users.find({email : req.params.email});
+    return;
 
     try{
-
-        console.log('foundUser ---->  ',foundUser);
         
         if(!foundUser.length) return res.status(400).json({'message': 'User not found'});
 
@@ -43,27 +43,28 @@ export const pwdRSTReq = async (req,res) => {
         newPwdRST.save(async (err, pwdRST_saved) => {
             if(err) return res.status(400).json({'message': 'Error can not saved pwdRST'});
             pwdRST_id = await pwdRST_saved._id;
+
+            createHTML();
+
             console.log('pwdRST_saved id -->', pwdRST_saved._id);
 
-
-         createHTML();
-
-        const mailOption = await {
-            from : 'byh16@gmail.com',
-            to : req.params.email,
-            subject : 'Pssword reset',
-            html : html_call
-        }
-        
-        await transporter.sendMail(mailOption, (err, info) =>{
-            if(err){
-                console.log(err)
-                res.status(201).json({'pwd rst error': err})
-            }else{
-                console.log('Email sent: ', info.response);
-                res.status(201).json({'email sent': info.response})
+            const mailOption = await {
+                from : 'byh16@gmail.com',
+                to : req.params.email,
+                subject : 'Pssword reset',
+                html : html_call
             }
-        });
+            
+
+            // await transporter.sendMail(mailOption, (err, info) =>{
+            //     if(err){
+            //         console.log('error send email: ',err)
+            //         res.status(201).json({'pwd rst error': err})
+            //     }else{
+            //         console.log('Email sent: ', info.response);
+            //         res.status(201).json({'email sent': info.response})
+            //     }
+            // });
 
         });
 

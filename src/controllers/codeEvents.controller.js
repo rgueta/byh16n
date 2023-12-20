@@ -113,8 +113,14 @@ export const getCode_eventsByDate = async (req,res) => {
     let start = await new Date(req.params.start);
     let end = await new Date(req.params.end);
 
+    
+
     start.setMinutes(start.getMinutes() - start.getTimezoneOffset());
-    end.setMinutes(end.getMinutes() - end.getTimezoneOffset());
+    end.setMinutes(end.getMinutes() - start.getTimezoneOffset());
+
+    console.log('start --> ', start);
+    console.log('end --> ', end)
+
 
     if(req.params.CoreSim != null && req.params.start != null && req.params.end != null){
         const CoreSim = req.params.CoreSim;
