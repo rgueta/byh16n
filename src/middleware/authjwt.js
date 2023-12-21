@@ -94,7 +94,7 @@ export const isNeighbor = async(req, res, next) => {
 
             const found_roles = await Roles.find({_id:{$in: founduser.roles}});
             if(!found_roles) return res.status(400).json({'error':'roles not found for user'})
-            console.log('isNeighbor role found --> ',found_roles);
+            // console.log('isNeighbor role found --> ',found_roles);
             let neighbor_role = found_roles.find(el => el.name == 'neighbor');
 
                 if(neighbor_role){
