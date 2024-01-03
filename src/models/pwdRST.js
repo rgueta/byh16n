@@ -12,7 +12,7 @@ const pwdRSTSchema = new Schema({
         manufacturer: {type : String},
         isVirtual: {type : Boolean},
         webViewVersion: {type : String},
-        uuid: {type : String}
+        uuid: {type : String},
     },
 },
 {

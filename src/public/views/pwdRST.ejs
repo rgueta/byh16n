@@ -74,14 +74,14 @@
                     return false;
                 }
 
-            const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/apply/' + this.id + '/' + pwd.value + '/' + Repwd.value, {
+            const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/apply/' + this.id + '/' + pwd.value, {
                 method: 'POST',
                 body: '', 
                 headers: {
                 'Content-Type': 'application/json'
                 }
             });
-            const myJson = await response.json(); 
+            const myJson = await response.json();
             console.log('response --> ', myJson);
         }
         
