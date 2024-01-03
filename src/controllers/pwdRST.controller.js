@@ -27,19 +27,23 @@ let html_call = '';
 
 export const pwdRSTReq = async (req,res) => {
     console.log('req.body.model --> ', req.body);
-    console.log('');
+    const { model, platform, operatingSystem, osVersion, manufacturer,
+        isVirtual, webViewVersion, uuid } = await req.body;
 
+    const device = { model, platform, operatingSystem, osVersion, manufacturer,
+        isVirtual, webViewVersion, uuid};
 
     let foundUser = await Users.find({email : req.params.email});
-    return;
-
+    
     try{
-        
+
         if(!foundUser.length) return res.status(400).json({'message': 'User not found'});
 
         // #region save on DB   ------------------------------
         
-        const newPwdRST = new pwdRST({email:req.params.email,confirmed:false,reseted:false});
+        const newPwdRST = new pwdRST({email:req.params.email,confirmed:false,
+            reseted:false, device});
+
         newPwdRST.save(async (err, pwdRST_saved) => {
             if(err) return res.status(400).json({'message': 'Error can not saved pwdRST'});
             pwdRST_id = await pwdRST_saved._id;
@@ -55,23 +59,17 @@ export const pwdRSTReq = async (req,res) => {
                 html : html_call
             }
             
-
-            // await transporter.sendMail(mailOption, (err, info) =>{
-            //     if(err){
-            //         console.log('error send email: ',err)
-            //         res.status(201).json({'pwd rst error': err})
-            //     }else{
-            //         console.log('Email sent: ', info.response);
-            //         res.status(201).json({'email sent': info.response})
-            //     }
-            // });
+            await transporter.sendMail(mailOption, (err, info) =>{
+                if(err){
+                    console.log('error send email: ',err)
+                    res.status(201).json({'pwd rst error': err})
+                }else{
+                    console.log('Email sent: ', info.response);
+                    res.status(201).json({'email sent': info.response})
+                }
+            });
 
         });
-
-
-        // hash_pwdRST = await Tools.encrypt(req.params.email);
-        // const hash_pwdRST_decrypted = await Tools.decrypt(hash_pwdRST);
-        // console.log('hash pwdRST --> ' + JSON.stringify(hash_pwdRST) + '\n decode --> ' + hash_pwdRST_decrypted);
 
         // #endregion  -----------------------------------------
 
