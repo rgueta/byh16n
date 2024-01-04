@@ -20,7 +20,7 @@
                     <div class="logo">
                         <img src="\img\logo_v2.png" alt="">
                     </div>
-                    <div class='right-text'>
+                    <div id='RST' class='right-text'>
                         <h1 class="Title"> Reiniciar la contraseña</h1>
                         <p>
                             Para modificar la contraseña debes capturar
@@ -28,14 +28,38 @@
                             recaptura. 
                         </p>
                         <div>
-                            <input class="input-newPwd" type="text" id="NewPwd" placeholder='Nueva contraseña'>
+                            <input class="input-newPwd" type="password" id="NewPwd" placeholder='Nueva contraseña'>
                         </div>
                         <div>
-                            <input class="input-newPwd" type="text" id="ReNewPwd" placeholder='Reescribe nueva contraseña'>
+                            <input class="input-newPwd" type="password" id="ReNewPwd" placeholder='Reescribe nueva contraseña'>
                         </div>
 
                         <input class="btnSubmit" type="button" value="Reiniciar Contrasea" 
                             onclick="pwdRSTAction()" ></input>
+                    </div>
+
+                    <div id='RSTApplied' class='right-text'>
+                        <h1 class="Title"> Reiniciar la contraseña</h1>
+                        <p>
+                            Tu solicitud se aplico, la contraseña cambio,
+                            ya puedes accesar con tu dispositivo
+                        </p>
+                    </div>
+
+                    <div id='noRequest' class='right-text'>
+                        <h1 class="Title"> Reiniciar la contraseña</h1>
+                        <p>
+                            No hay solicitud activa para cambiar la contraseña,
+                            favor de hacerla desde tu dispositivo
+                        </p>
+                    </div>
+
+                    <div id='RSTError' class='right-text'>
+                        <h1 class="Title"> Reiniciar la contraseña</h1>
+                        <p>
+                            No se pudo hacer el cambio de contraseña,
+                            favor de ponerte en contacto con un tecnico
+                        </p>
                     </div>
                 
                 </div>
@@ -50,16 +74,42 @@
         var pwd = '';
         var Repwd = '';
 
+        RST = document.getElementById("RST");
+        noRQST = document.getElementById("noRequest");
+        RSTApplied = document.getElementById("RSTApplied");
+        RSTError = document.getElementById("RSTError");
+
+        hidePanels();
+
         window.onload = function(){
             const qryString = window.location.search;
             const urlParams = new URLSearchParams(qryString);
             id = urlParams.get('req');
             console.log('id param --> ', id);
-            pwdRSTConfirmation();
+            pwdRSTVerification();
         }
 
-        // const pwdRSTAction = async () => {
-            async function pwdRSTAction(){
+        async function pwdRSTVerification(){
+
+            const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/verify/' + this.id , {
+                method: 'POST',
+                body: '', 
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            });
+            const myJson = await response.json(); 
+            console.log('response --> ', await myJson);
+            if (myJson['status'] == 300) {//No hay solicitud activa
+                switchPanel('noRQST');
+            }else if(myJson['status'] == 200){ //Si hay solicitud activa
+                switchPanel('RST');
+            }else{
+                switchPanel('RSTError');
+            }
+        }
+
+        async function pwdRSTAction(){
             pwd = document.getElementById("NewPwd");
             Repwd = document.getElementById("ReNewPwd");
 
@@ -82,12 +132,18 @@
                 }
             });
             const myJson = await response.json();
-            console.log('response --> ', myJson);
+            console.log('response --> ', await myJson);
+            if (myJson['status'] == 300) { // No hay solicitud activa
+                switchPanel('noRQST');
+            }else if(myJson['status'] == 201){
+                switchPanel('RSTApplied');
+            }else{
+                switchPanel('RSTError');
+            }
+
         }
         
-
         async function pwdRSTConfirmation(){
-
             const response = await fetch(location.protocol + '//' + location.host + '/api/pwdResetReq/confirm/' + this.id , {
                 method: 'POST',
                 body: '', 
@@ -96,6 +152,45 @@
                 }
             });
             const myJson = await response.json(); 
+        }
+
+        async function close(){
+            // var win = window.open("", "_self");
+            // win.close();
+            // window.open('','_self').close();
+
+            document.getElementsByTagName('html')[0].remove();
+        }
+
+
+        function hidePanels(){
+            RST.style.display = "none";
+            noRQST.style.display = "none";
+            RSTApplied.style.display = "none";
+            RSTError.style.display = "none";
+        }
+
+        function switchPanel(panel){
+            RST.style.display = "none";
+            noRQST.style.display = "none";
+            RSTApplied.style.display = "none";
+            RSTError.style.display = "none";
+            switch(panel){
+                case 'RST': //Si hay solicitud activa
+                    RST.style.display = "";
+                    break;
+                case 'noRQST': //No hay solicitud activa
+                    noRQST.style.display = "";
+                    break;
+                case 'RSTApplied': //Se aplico el cambio
+                    RSTApplied.style.display = "";
+                    break;
+                case 'RSTError': // Error
+                    RSTError.style.display = "";
+                    break;
+                default:
+                    break;
+            }
         }
     </script>
 </body>

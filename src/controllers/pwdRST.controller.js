@@ -88,23 +88,38 @@ export const pwdRSTReq = async (req,res) => {
     
 }
 
-
 export const pwdRSTConfirm = async (req, res) => {
-
     const foundpwdRST  = await pwdRST.find({_id : req.params.id});
-    if(!foundpwdRST.length) return res.status(400).json({'error' : 'No hay solicitud para este usuario'});
+    if(!foundpwdRST.length) return res.status(300).json({'status':300,'error' : 'No hay solicitud para este usuario'});
 
     const foundUser = await Users.findOne({email : foundpwdRST[0].email});
-    if(!foundUser) return res.status(400).json({'error' : 'User not found'});
+    if(!foundUser) return res.status(300).json({'status':300,'error' : 'User not found'});
 
     pwdRST.findByIdAndUpdate(req.params.id,{$set : {confirmed : true}},{new:false}, (err, resultConfirmed) => {
         if(err){
-            return res.status(400).json({'error' : 'Could not update reseted.'});
+            return res.status(400).json({'status':201,'error' : 'Could not update reseted.'});
         }
     });
 
     res.status(201).json({'msg':'Password reset confirmation for [ ' + foundUser.email + ' ]' });
+}
 
+
+export const pwdRSTVerify = async (req, res) => {
+    console.log('Password RST verification ..! ', req.params);
+
+   const foundpwdRST  = await pwdRST.find({_id : req.params.id,reseted:false});
+   try{
+        if(!foundpwdRST.length) 
+            return res.status(300).json({'status':300,
+                'error' : 'No hay solicitud para este usuario'});
+
+            return res.status(200).json({'status':200,
+                'msg' : 'Si hay solicitud activa'});
+       
+   }catch(e){
+    res.status(401).json({'status':401,'error': e});
+    }
 }
 
 
@@ -112,37 +127,32 @@ export const pwdRSTApply = async (req, res) => {
     console.log('Password RST confirmed..! ', req.params);
 
    const foundpwdRST  = await pwdRST.find({_id : req.params.id,reseted:false});
-   if(!foundpwdRST.length) return res.status(400).json({'error' : 'No hay solicitud para este usuario'});
+   if(!foundpwdRST.length) return res.status(300).json({'status':300,'error' : 'No hay solicitud para este usuario'});
 
    try{
         const foundUser = await Users.findOne({email : foundpwdRST[0].email});
-        if(!foundUser) return res.status(400).json({'error' : 'User not found'});
+        if(!foundUser) return res.status(301).json({'status':301,'error' : 'User not found'});
 
         const Encryptedpwd = await encryptPassword(req.params.pwd);
-        if(!Encryptedpwd) return res.status(400).json({'error' : 'No password encrypted.'});
+        if(!Encryptedpwd) return res.status(302).json({'status':302,'error' : 'No password encrypted.'});
 
         Users.findOneAndUpdate({email:foundpwdRST[0].email}, {$set : {pwd:Encryptedpwd}},{new:false},(err, result) =>{
             if(err){
-                return res.status(400).json({'error' : 'Could not update password.'});
+                return res.status(500).json({'status':500,'error' : 'Could not update password.'});
             }
             
             console.log('userPwdChanged -- > ',result);
 
             pwdRST.findByIdAndUpdate(req.params.id,{$set : {reseted : true}},{new:false}, (err, resultReseted) => {
                 if(err){
-                    return res.status(400).json({'error' : 'Could not update reseted.'});
+                    return res.status(501).json({'status':501,'error' : 'Could not update reseted.'});
                 }
             });
     
-            res.status(201).json({'msg':'Password changed for [' + foundUser.email + '], encrypted pwd --> ' + Encryptedpwd });
-
-
+            res.status(201).json({'status':201,'msg':'Password changed for [' + foundUser.email + '], encrypted pwd --> ' + Encryptedpwd });
         })
-
-       
-        // const updPwdRST = pwdRST.updateOne()
    }catch(e){
-    res.status(401).json({'Error': e});
+    res.status(401).json({'status':401,'Error': e});
     }
 }
 
@@ -152,9 +162,6 @@ async function encryptPassword(pwd){
     const salt = await bcrypt.genSalt();
     return await bcrypt.hash(pwd,salt);
 }
-
-
-
 
 async function createHTML(){
    html_call =
