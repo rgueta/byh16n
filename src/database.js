@@ -10,5 +10,5 @@ mongoose.connect(`${process.env.DB_HEAD_URL}://${process.env.DB_URI}`,
      useFindAndModify:false,
      useCreateIndex:true
     }
-    ).then(db => console.log('DB successfull connectd.! '))
+    ).then(db => console.log('DB successfull connectd.! to ', process.env.DB_URI))
     .catch(error => console.log('DB error connection.. ' , error));

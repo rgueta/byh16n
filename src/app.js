@@ -26,7 +26,7 @@ import countriesRoutes from "./routes/countries.routes";
 import statesRoutes from "./routes/states.routes";
 import citiesRoutes from "./routes/cities.routes";
 import cpusRoutes from "./routes/cpus.routes";
-import configRoutes from "./routes/config.routes";
+import configAppRoutes from "./routes/configApp.routes";
 
 const cors = require("cors");
 
@@ -89,6 +89,6 @@ app.use('/api/countries', countriesRoutes);
 app.use('/api/states', statesRoutes);
 app.use('/api/cities', citiesRoutes);
 app.use('/api/cpus', cpusRoutes);
-app.use('/api/config', configRoutes);
+app.use('/api/config', configAppRoutes);
 
 export default app;

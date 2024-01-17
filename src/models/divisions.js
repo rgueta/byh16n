@@ -16,5 +16,3 @@ const divisionsSchema = new Schema({
 
 export default model('divisions', divisionsSchema);
 
-// export default model('code_events', divisionSchema);
-
