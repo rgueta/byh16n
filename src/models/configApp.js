@@ -1,14 +1,14 @@
 import { Schema, model } from "mongoose";
 
-const configAppSchema = new Schema({
-    backendUrl : { type : String, required : true },
-    debugging : { type : Boolean, default : false },
-    debugging_send_sms : { type : Boolean, default : false },
-    admin_device_uuid : { type : [ String ] }
+const appSchema = new Schema({
+    serverUrl : { type : String, required : true },
+    debug : { type : Boolean, default : false },
+    send_sms : { type : Boolean, default : false },
+    admin_device : { type : [ String ] }
 },
 {
     timestamps:true,
     versionKey:false
 });
 
-export default model('configApp', configAppSchema);
+export default model('configApp', appSchema, 'configApp');
