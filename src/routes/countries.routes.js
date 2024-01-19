@@ -4,9 +4,10 @@ import { authJwt, verifySignup } from "../middleware";
 
 const router = Router();
 
-router.post('/',[authJwt.verifyToken,authJwt.isAdmin],countriesCtrl.createCountry);
-router.get('/',[authJwt.verifyToken,authJwt.isNeighbor],countriesCtrl.getCountries);
-router.get('/onlyCountries',[authJwt.verifyToken,authJwt.isNeighbor],countriesCtrl.getOnlyCountries);
-router.delete('/:countryId',[authJwt.verifyToken,authJwt.isAdmin],countriesCtrl.deleteCountryById);
+router.post('/:userId',[authJwt.verifyToken,authJwt.isAdmin],countriesCtrl.createCountry);
+router.get('/:userId',[authJwt.verifyToken, authJwt.isNeighbor],countriesCtrl.getCountries);
+
+router.get('/onlyCountries/:userId',[authJwt.verifyToken,authJwt.isNeighbor],countriesCtrl.getOnlyCountries);
+router.delete('/:userId/:countryId',[authJwt.verifyToken,authJwt.isAdmin],countriesCtrl.deleteCountryById);
 
 export default router;

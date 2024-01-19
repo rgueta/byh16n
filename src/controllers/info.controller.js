@@ -117,6 +117,7 @@ export const getInfo = async(req, res) =>{
                 title : 1,
                 description : 1,
                 url : 1,
+                // img : { $concat: [ "$path", "$image" ]},
                 image : 1,
                 path : 1,
                 disable : 1,

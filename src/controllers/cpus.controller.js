@@ -53,7 +53,7 @@ export const getCpusBasic = async (req, res) => {
  await Cpus.find({country:req.params.country,
               state:req.params.state, 
               city:req.params.city,
-              division:NumDivision},{name:1}, (err, results) => {
+              division:NumDivision},{name:1, shortName:1}, (err, results) => {
       if (err) {
         console.log(err);
         res.status(500).json({message: err});
