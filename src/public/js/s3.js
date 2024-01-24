@@ -15,6 +15,7 @@ const s3 = new S3({
 // upload image to s3
 
 export function uploadFile(file){
+    // console.log('file upload --> ',file)
     const fileStream = fs.createReadStream(file.path)
 
     const uploadParams = { 
@@ -22,6 +23,12 @@ export function uploadFile(file){
         Body: fileStream,
         Key: file.filename
     }
+
+        // const uploadParams = { 
+        //     Bucket: bucketName,
+        //     Body: "my content here",
+        //     Key: "my-file.txt"
+        // }
 
     return s3.upload(uploadParams).promise()
 }

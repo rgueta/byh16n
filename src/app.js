@@ -72,6 +72,7 @@ app.get('/pwdResetReq',(req, res) => {
     res.render('pwdRST');
 });
 
+
 app.use('/api/auth',authRoutes);
 app.use('/api/users',usersRoutes);
 app.use('/api/codes',codesRoutes);
