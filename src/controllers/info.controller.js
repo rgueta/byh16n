@@ -21,7 +21,12 @@ const S3 = new AWS.S3({
 })
 
 export const createInfo = async(req, res) =>{
+    console.log('req.file --> ',req.file);
+}
+
+export const createInfo_ = async(req, res) =>{
     // S3.completeMultipartUpload()
+    console.log('req.files.image.name --> ', req.files);
 
     tools.monthlyFolder().then(async (f,fail) => {
         if(fail){
