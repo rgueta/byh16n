@@ -21,7 +21,7 @@ const S3 = new AWS.S3({
 })
 
 export const createInfo = async(req, res) =>{
-    console.log('req.file --> ',req.files);
+    console.log('req.file create info --> ',req.files);
     res.status(200).json({'msg':'Ok'});
 }
 
