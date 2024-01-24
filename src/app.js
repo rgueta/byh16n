@@ -27,6 +27,7 @@ import statesRoutes from "./routes/states.routes";
 import citiesRoutes from "./routes/cities.routes";
 import cpusRoutes from "./routes/cpus.routes";
 import configAppRoutes from "./routes/configApp.routes";
+import { UploadedFile } from "express-fileupload";
 
 const cors = require("cors");
 
@@ -54,6 +55,8 @@ app.set('pkg',pkg);
 
 //#region  -- middleware  -----------------------
 // Parse URL-encoded bodies when sent by HTML forms
+app.use(UploadedFile());
+
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({extended:true}));
 app.use(cors());
