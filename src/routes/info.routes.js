@@ -4,7 +4,7 @@ import { authJwt } from "../middleware";
 
 const router = Router();
 
- router.post('/:userId', infoCtrl.createInfo);
+ router.post('/:userId:title:url:description:locationFolder', infoCtrl.createInfo);
 //  router.post('/:userId',[authJwt.verifyToken,authJwt.isAdmin],infoCtrl.createInfo);
 
  router.get('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],infoCtrl.getInfo);

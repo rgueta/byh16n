@@ -21,13 +21,15 @@ const S3 = new AWS.S3({
 })
 
 export const createInfo = async(req, res) =>{
-    console.log('req.file create info --> ',req.files);
+    const {title,url, description, locationFolder} = req.body;
+    console.log('req.file create info --> ', req.files.image);
+    console.log('req.file name--> ', req.files.image.name);
+    console.log('body --> ', req.body);
     res.status(200).json({'msg':'Ok'});
 }
 
 export const createInfo_ = async(req, res) =>{
     // S3.completeMultipartUpload()
-    console.log('req.files.image.name --> ', req.files);
 
     tools.monthlyFolder().then(async (f,fail) => {
         if(fail){
@@ -44,7 +46,7 @@ export const createInfo_ = async(req, res) =>{
             const fileContent = Buffer.from(req.files.image.data,'binary');
             S3.upload({
                 Bucket: process.env.AWS_BUCKET_NAME,
-                Key: `${req.body.locationFolder}/${folder}/${image}`,
+                Key: `${req.params.locFolder}/${folder}/${image}`,
                 Body:fileContent
             }).promise( async (err, data) => {
                 if (err){
