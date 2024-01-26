@@ -7,6 +7,10 @@ import * as tools from "../tools";
 // import { uploadFile } from "../public/js/s3";
 import AWS from "aws-sdk";
 import {v4 as uuid} from 'uuid';
+import multer from "multer";
+
+// const upload = multer({dest:  '../uploads/'});
+// let middleware = upload.single('image');
 
 
 const S3 = new AWS.S3({
@@ -20,12 +24,40 @@ const S3 = new AWS.S3({
     httpOptions:{timeout: 300000, connectTimeout:5000}
 })
 
-export const createInfo = async(req, res) =>{
+export const createInfo = async(req, res, next) =>{
     const { userId,title,url, description, locationFolder } = req.query;
-    console.log('req.file create info --> ', req.files.image);
-    console.log('req.file name--> ', req.files.image.name);
+    if(req.files){
+        console.log('req.file create info --> ', req.files.image);
+        console.log('req.file name--> ', req.files.image.name);
+    }
     console.log('params --> ', userId,title,url, description, locationFolder);
+
     res.status(200).json({'msg':'Ok'});
+
+
+    // let controller = () => {
+    //     console.log('req.query --> ', req.query);
+    //     console.log('req.files --> ', req.files);
+    //     res.status(200).json({'msg':'Ok'});
+    // };
+
+    // middleware(req, res, controller);
+
+    // var upload = multer({
+    //     storage: multer.diskStorage({
+    //         destination: function (req, file, cb) {
+    //             cb(null, 'uploads')
+    //         },
+    //         filename: function (req, file, cb) {
+    //             cb(null, randomString.generate({ length: 7, charset:  'alphanumeric' }) + path.extname(req.files.image.name))
+    //         }
+    //     })
+    // })
+
+    // upload.single('image')(req, res, next)
+
+    // return next();
+    
 }
 
 export const createInfo_ = async(req, res) =>{

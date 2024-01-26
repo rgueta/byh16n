@@ -2,9 +2,12 @@ import {Router} from 'express'
 import * as infoCtrl from "../controllers/info.controller";
 import { authJwt } from "../middleware";
 
+import multer from "multer";
+const upload = multer({dest:  'uploads/'});
+
 const router = Router();
 
- router.post('', infoCtrl.createInfo);
+ router.post('', upload.single('image'), infoCtrl.createInfo);
  router.get('/:userId', infoCtrl.createInfo);
 //  router.post(':userId:title:url:description:locationFolder', infoCtrl.createInfo);
 //  router.post('/:userId',[authJwt.verifyToken,authJwt.isAdmin],infoCtrl.createInfo);
