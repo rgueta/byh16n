@@ -21,16 +21,17 @@ const S3 = new AWS.S3({
 })
 
 export const createInfo = async(req, res) =>{
-    const {title,url, description, locationFolder} = req.body;
+    const { userId,title,url, description, locationFolder } = req.query;
     console.log('req.file create info --> ', req.files.image);
     console.log('req.file name--> ', req.files.image.name);
-    console.log('body --> ', req.body);
+    console.log('params --> ', userId,title,url, description, locationFolder);
     res.status(200).json({'msg':'Ok'});
 }
 
 export const createInfo_ = async(req, res) =>{
     // S3.completeMultipartUpload()
-
+    console.log('req.file create info --> ', req.files.image);
+    const { userId,title,url, description, locationFolder } = req.query;
     tools.monthlyFolder().then(async (f,fail) => {
         if(fail){
             res.status(400).json({'msg':'Error to generate folder'})
@@ -46,16 +47,16 @@ export const createInfo_ = async(req, res) =>{
             const fileContent = Buffer.from(req.files.image.data,'binary');
             S3.upload({
                 Bucket: process.env.AWS_BUCKET_NAME,
-                Key: `${req.params.locFolder}/${folder}/${image}`,
-                Body:fileContent
+                Key: `${locationFolder}/${folder}/${image}`,
+                Body: fileContent
             }).promise( async (err, data) => {
                 if (err){
                     console.log('aws Error --> ',err)
                     // res.status(401).json({'Error' : 'AWS Error: ' + err})
                 }else{
                     console.log('aws Data --> ', data)
-                    const {title,url, description, locationFolder} = req.body;
-                    const webImgRoot = process.env.AWS_BUCKET_NAME  + req.body.locationFolder 
+                    // const {title,url, description, locationFolder} = req.body;
+                    const webImgRoot = process.env.AWS_BUCKET_NAME  + locationFolder 
                     + '/' + folder + '/' 
                     const location = locationFolder;
                     const size = req.files.image.size;
