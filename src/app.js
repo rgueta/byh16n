@@ -27,14 +27,14 @@ import statesRoutes from "./routes/states.routes";
 import citiesRoutes from "./routes/cities.routes";
 import cpusRoutes from "./routes/cpus.routes";
 import configAppRoutes from "./routes/configApp.routes";
-import fileUpload from "express-fileupload";
+// import fileUpload from "express-fileupload";
 
 const cors = require("cors");
 
 const app = express();
 createRoles();
 
-app.use(fileUpload());
+// app.use(fileUpload());
 
 //  --- static files
 app.use(express.static('public'));
