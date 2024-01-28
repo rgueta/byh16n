@@ -7,6 +7,10 @@ import * as tools from "../tools";
 // import { uploadFile } from "../public/js/s3";
 import AWS from "aws-sdk";
 import {v4 as uuid} from 'uuid';
+import multer from "multer";
+
+// const upload = multer({dest:  '../uploads/'});
+// let middleware = upload.single('image');
 
 
 const S3 = new AWS.S3({
@@ -20,17 +24,53 @@ const S3 = new AWS.S3({
     httpOptions:{timeout: 300000, connectTimeout:5000}
 })
 
-export const createInfo = async(req, res) =>{
+export const createInfo_ = async(req, res, next) =>{
     const { userId,title,url, description, locationFolder } = req.query;
-    console.log('req.file create info --> ', req.files.image);
-    console.log('req.file name--> ', req.files.image.name);
-    console.log('params --> ', userId,title,url, description, locationFolder);
+    // if(req.files){
+    //     console.log('req.file create info --> ', req.files.image);
+    //     console.log('req.file name--> ', req.files.image.name);
+    // }
+    // console.log('params --> ', userId,title,url, description, locationFolder);
+
+    // const fileContent = Buffer.from(req.file.image.replace(/^data:image\/\w+;base64,/, ""),'base64');
+
+    console.log('req.file --> ', req.file);
+    console.log('req.query --> ', req.query);
+
+    const fileStream = fs.createReadStream(req.file.path)
+    console.log('fileStream -->', fileStream);
+
     res.status(200).json({'msg':'Ok'});
+
+
+    // let controller = () => {
+    //     console.log('req.query --> ', req.query);
+    //     console.log('req.files --> ', req.files);
+    //     res.status(200).json({'msg':'Ok'});
+    // };
+
+    // middleware(req, res, controller);
+
+    // var upload = multer({
+    //     storage: multer.diskStorage({
+    //         destination: function (req, file, cb) {
+    //             cb(null, 'uploads')
+    //         },
+    //         filename: function (req, file, cb) {
+    //             cb(null, randomString.generate({ length: 7, charset:  'alphanumeric' }) + path.extname(req.files.image.name))
+    //         }
+    //     })
+    // })
+
+    // upload.single('image')(req, res, next)
+
+    // return next();
+    
 }
 
-export const createInfo_ = async(req, res) =>{
+export const createInfo = async(req, res) =>{
     // S3.completeMultipartUpload()
-    console.log('req.file create info --> ', req.files.image);
+    console.log('req.file --> ', req.file);
     const { userId,title,url, description, locationFolder } = req.query;
     tools.monthlyFolder().then(async (f,fail) => {
         if(fail){
@@ -39,16 +79,33 @@ export const createInfo_ = async(req, res) =>{
         }
         
         const folder = await f.toString();
-        const image = uuid() + path.extname(req.files.image.name);
+        const image = uuid() + path.extname(req.file.filename);
         
         try{
 
             //#region ------ upload image to AWS.S3     --------------------------------------
-            const fileContent = Buffer.from(req.files.image.data,'binary');
+        //    Option #1
+            // const reader = new FileReader()
+            // reader.readAsDataURL(req.file)
+            // const base64str = reader.result.replace(/^data:image\/\w+;base64,/, "");
+            // const fileContent = Buffer.from(base64str,'base64')
+                        
+                        
+            // Option #2
+            // const fileContent = Buffer.from(image,'base64');
+            // const fileContent = new Buffer.from(image,"base64");
+
+
+            // Option #3
+            const fileContent = fs.createReadStream(req.file.path)
+
             S3.upload({
                 Bucket: process.env.AWS_BUCKET_NAME,
                 Key: `${locationFolder}/${folder}/${image}`,
-                Body: fileContent
+                Body: fileContent,
+                // ContentEncoding: "base64",
+                ContentType: req.file.mimetype
+                // Body: req.file.image
             }).promise( async (err, data) => {
                 if (err){
                     console.log('aws Error --> ',err)
@@ -59,7 +116,7 @@ export const createInfo_ = async(req, res) =>{
                     const webImgRoot = process.env.AWS_BUCKET_NAME  + locationFolder 
                     + '/' + folder + '/' 
                     const location = locationFolder;
-                    const size = req.files.image.size;
+                    const size = req.file.size;
                      await tools.getSection(data.Location,'path').then(async (section, fail) => {
                         if(fail){
                             res.status(400).json({'msg':'Error to generate s3 path'})

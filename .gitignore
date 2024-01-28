@@ -35,3 +35,4 @@ npm-debug.log*
 /src/db.gral.mongodb
 /src/query.txt
 config.js
+/uploads
