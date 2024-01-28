@@ -24,12 +24,6 @@ export function uploadFile(file){
         Key: file.filename
     }
 
-        // const uploadParams = { 
-        //     Bucket: bucketName,
-        //     Body: "my content here",
-        //     Key: "my-file.txt"
-        // }
-
     return s3.upload(uploadParams).promise()
 }
 
