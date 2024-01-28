@@ -16,14 +16,10 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage})
 const router = Router();
 
- router.post('/:userId', upload.single('image'), infoCtrl.createInfo);
- router.get('/:userId', infoCtrl.getInfo);
-//  router.post(':userId:title:url:description:locationFolder', infoCtrl.createInfo);
-//  router.post('/:userId',[authJwt.verifyToken,authJwt.isAdmin],infoCtrl.createInfo);
+ router.post('/:userId', [authJwt.verifyToken,authJwt.isNeighbor],upload.single('image'), infoCtrl.createInfo);
+ router.get('/:userId', [authJwt.verifyToken,authJwt.isNeighbor], infoCtrl.getInfo);
 
-//  router.get('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],infoCtrl.getInfo);
-
-//  router.get('/all/:userId',[authJwt.verifyToken,authJwt.isNeighbor],infoCtrl.getInfoAdmin);
+ router.get('/all/:userId',[authJwt.verifyToken,authJwt.isNeighbor],infoCtrl.getInfoAdmin);
  router.post('/updStatus/:userId/:infoId',[authJwt.verifyToken,authJwt.isAdmin],infoCtrl.updInfoStatus);
 
 export default router;
