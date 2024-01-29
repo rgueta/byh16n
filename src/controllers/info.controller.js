@@ -18,76 +18,8 @@ const S3 = new AWS.S3({
     httpOptions:{timeout: 300000, connectTimeout:5000}
 })
 
+export const createInfo = async(req, res) =>{
 
-
-export const createInfo_ = async(req, res) =>{
-
-    const { userId,title,url, description, locationFolder } = req.query;
-    const fileContent = req.file;
-    console.log('req.file --> ', fileContent);
-
-    tools.monthlyFolder().then(async (f,fail) => {
-        if(fail){
-            res.status(400).json({'msg':'Error to generate folder'})
-            return;
-        }
-    
-        const folder = await f.toString();
-        const image = uuid() + '.' + req.file.originalname.split('.').pop();
-
-    const params = {
-        Bucket: process.env.AWS_BUCKET_NAME,
-        Key: fileContent.originalname,
-        Body: fileContent.buffer,
-        ContentType: fileContent.mimetype
-      };
-    
-      try {
-
-        await S3.upload(params).promise(async (err, data) => {
-            if (err){
-                console.log('aws Error --> ',err);
-                res.status(401).json({'Error' : 'AWS Error: ' + err})
-            }else{
-                console.log('aws Data --> ', data)
-                const webImgRoot = process.env.AWS_BUCKET_NAME  + locationFolder 
-                + '/' + folder + '/' 
-                const location = locationFolder;
-                const size = req.file.size;
-                 await tools.getSection(data.Location,'path').then(async (section, fail) => {
-                    if(fail){
-                        res.status(400).json({'msg':'Error to generate s3 path'})
-                        return;
-                    }
-                    const path = section;
-
-                // #region  Insert into Mongo  ---------------------
-            
-                    const newInfo = await information({title, url, description,
-                        image, path, location, size});
-
-                    if(newInfo){
-                        const InfoSaved = await newInfo.save();
-                    }
-                // #endregion -------------------------
-                
-                    console.log('image uploaded..!!!')
-                    res.status(201).json({'msg' : 'Information created'});
-                });
-        // #endregion -------------------------
-            }
-         });
-
-      } catch (error) {
-            console.log('Error at the end', err)
-            res.status(401).json({'error' : 'Error creating informat ' + err})
-      }
-
-    });
-}
-
-export const createInfo__ = async(req, res) =>{
-    console.log('req.file --> ', req.file);
     const { userId,title,url, description, locationFolder } = req.query;
     tools.monthlyFolder().then(async (f,fail) => {
         if(fail){
@@ -96,7 +28,7 @@ export const createInfo__ = async(req, res) =>{
         }
         
         const folder = await f.toString();
-        const image = uuid() + path.extname(req.file.filename);
+        const image = uuid() + '.' + req.file.originalname.split('.').pop();
         
         try{
 
@@ -106,8 +38,7 @@ export const createInfo__ = async(req, res) =>{
 
             S3.upload({
                 Bucket: process.env.AWS_BUCKET_NAME,
-                // Key: `${locationFolder}/${folder}/${image}`,
-                Key: fileContent.originalname,
+                Key: `${locationFolder}/${folder}/${image}`,
                 Body: fileContent.buffer,
                 ContentType: fileContent.mimetype
             }).promise( async (err, data) => {
@@ -115,7 +46,6 @@ export const createInfo__ = async(req, res) =>{
                     console.log('aws Error --> ',err);
                     res.status(401).json({'Error' : 'AWS Error: ' + err})
                 }else{
-                    console.log('aws Data --> ', data)
                     const webImgRoot = process.env.AWS_BUCKET_NAME  + locationFolder 
                     + '/' + folder + '/' 
                     const location = locationFolder;
@@ -151,71 +81,6 @@ export const createInfo__ = async(req, res) =>{
     });
 }
 
-
-export const createInfo = async(req, res) =>{
-    console.log('req.file --> ', req.file);
-    const { userId,title,url, description, locationFolder } = req.query;
-    tools.monthlyFolder().then(async (f,fail) => {
-        if(fail){
-            res.status(400).json({'msg':'Error to generate folder'})
-            return;
-        }
-        
-        const folder = await f.toString();
-        const image = uuid() + '.' + req.file.originalname.split('.').pop();
-        
-        try{
-
-            //#region ------ upload image to AWS.S3     --------------------------------------
-            const fileContent = fs.createReadStream(req.file)
-
-            S3.upload({
-                Bucket: process.env.AWS_BUCKET_NAME,
-                Key: `${locationFolder}/${folder}/${image}`,
-                Body: fileContent.buffer,
-                ContentType: fileContent.mimetype
-            }).promise( async (err, data) => {
-                if (err){
-                    console.log('aws Error --> ',err);
-                    res.status(401).json({'Error' : 'AWS Error: ' + err})
-                }else{
-                    console.log('aws Data --> ', data)
-                    const webImgRoot = process.env.AWS_BUCKET_NAME  + locationFolder 
-                    + '/' + folder + '/' 
-                    const location = locationFolder;
-                    const size = req.file.size;
-                     await tools.getSection(data.Location,'path').then(async (section, fail) => {
-                        if(fail){
-                            res.status(400).json({'msg':'Error to generate s3 path'})
-                            return;
-                        }
-                        const path = section;
-
-                    // #region  Insert into Mongo  ---------------------
-                
-                        const newInfo = await information({title, url, description,
-                            image, path, location, size});
-
-                        if(newInfo){
-                            const InfoSaved = await newInfo.save();
-                        }
-                    // #endregion -------------------------
-                    
-                        console.log('image uploaded..!!!')
-                        res.status(201).json({'msg' : 'Information created'});
-                    });
-            // #endregion -------------------------
-            }
-        })
-           
-        }
-        catch(err){
-            console.log('Error at the end', err)
-            res.status(401).json({'error' : 'Error creating informat ' + err})
-        }
-    });
-   
-};
 
 export const getInfo = async(req, res) =>{
     const userID = Types.ObjectId(req.params.userId);
