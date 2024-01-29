@@ -1,6 +1,6 @@
 import information from "../models/info.model";
 import  { Types } from "mongoose";
-import path from "path";
+// import path from "path";
 import fs from 'fs';
 import * as tools from "../tools";
 // import { uploadFile } from "../public/js/s3";
@@ -19,14 +19,12 @@ const S3 = new AWS.S3({
 })
 
 
-export const createInfo = async(req, res) =>{
-    const image = uuid() + path.extname(req.file.filename);
-}
 
-export const createInfo1 = async(req, res) =>{
+export const createInfo_ = async(req, res) =>{
 
     const { userId,title,url, description, locationFolder } = req.query;
-    
+    const fileContent = req.file;
+    console.log('req.file --> ', fileContent);
 
     tools.monthlyFolder().then(async (f,fail) => {
         if(fail){
@@ -35,7 +33,7 @@ export const createInfo1 = async(req, res) =>{
         }
     
         const folder = await f.toString();
-        const image = uuid() + extname(req.file.filename);
+        const image = uuid() + '.' + req.file.originalname.split('.').pop();
 
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
@@ -45,8 +43,6 @@ export const createInfo1 = async(req, res) =>{
       };
     
       try {
-
-        const fileContent = req.file;
 
         await S3.upload(params).promise(async (err, data) => {
             if (err){
@@ -90,7 +86,7 @@ export const createInfo1 = async(req, res) =>{
     });
 }
 
-export const createInfo_ = async(req, res) =>{
+export const createInfo__ = async(req, res) =>{
     console.log('req.file --> ', req.file);
     const { userId,title,url, description, locationFolder } = req.query;
     tools.monthlyFolder().then(async (f,fail) => {
@@ -156,7 +152,7 @@ export const createInfo_ = async(req, res) =>{
 }
 
 
-export const createInfo__ = async(req, res) =>{
+export const createInfo = async(req, res) =>{
     console.log('req.file --> ', req.file);
     const { userId,title,url, description, locationFolder } = req.query;
     tools.monthlyFolder().then(async (f,fail) => {
@@ -166,18 +162,18 @@ export const createInfo__ = async(req, res) =>{
         }
         
         const folder = await f.toString();
-        const image = uuid() + path.extname(req.file.filename);
+        const image = uuid() + '.' + req.file.originalname.split('.').pop();
         
         try{
 
             //#region ------ upload image to AWS.S3     --------------------------------------
-            const fileContent = fs.createReadStream(req.file.path)
+            const fileContent = fs.createReadStream(req.file)
 
             S3.upload({
                 Bucket: process.env.AWS_BUCKET_NAME,
                 Key: `${locationFolder}/${folder}/${image}`,
-                Body: fileContent,
-                ContentType: req.file.mimetype
+                Body: fileContent.buffer,
+                ContentType: fileContent.mimetype
             }).promise( async (err, data) => {
                 if (err){
                     console.log('aws Error --> ',err);
