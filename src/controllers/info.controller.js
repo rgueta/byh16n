@@ -1,7 +1,6 @@
 import information from "../models/info.model";
 import  { Types } from "mongoose";
-import path from 'path'
-import sharp from "sharp";
+import path from "path";
 import fs from 'fs';
 import * as tools from "../tools";
 // import { uploadFile } from "../public/js/s3";
@@ -19,7 +18,145 @@ const S3 = new AWS.S3({
     httpOptions:{timeout: 300000, connectTimeout:5000}
 })
 
+
 export const createInfo = async(req, res) =>{
+    const image = uuid() + path.extname(req.file.filename);
+}
+
+export const createInfo1 = async(req, res) =>{
+
+    const { userId,title,url, description, locationFolder } = req.query;
+    
+
+    tools.monthlyFolder().then(async (f,fail) => {
+        if(fail){
+            res.status(400).json({'msg':'Error to generate folder'})
+            return;
+        }
+    
+        const folder = await f.toString();
+        const image = uuid() + extname(req.file.filename);
+
+    const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: fileContent.originalname,
+        Body: fileContent.buffer,
+        ContentType: fileContent.mimetype
+      };
+    
+      try {
+
+        const fileContent = req.file;
+
+        await S3.upload(params).promise(async (err, data) => {
+            if (err){
+                console.log('aws Error --> ',err);
+                res.status(401).json({'Error' : 'AWS Error: ' + err})
+            }else{
+                console.log('aws Data --> ', data)
+                const webImgRoot = process.env.AWS_BUCKET_NAME  + locationFolder 
+                + '/' + folder + '/' 
+                const location = locationFolder;
+                const size = req.file.size;
+                 await tools.getSection(data.Location,'path').then(async (section, fail) => {
+                    if(fail){
+                        res.status(400).json({'msg':'Error to generate s3 path'})
+                        return;
+                    }
+                    const path = section;
+
+                // #region  Insert into Mongo  ---------------------
+            
+                    const newInfo = await information({title, url, description,
+                        image, path, location, size});
+
+                    if(newInfo){
+                        const InfoSaved = await newInfo.save();
+                    }
+                // #endregion -------------------------
+                
+                    console.log('image uploaded..!!!')
+                    res.status(201).json({'msg' : 'Information created'});
+                });
+        // #endregion -------------------------
+            }
+         });
+
+      } catch (error) {
+            console.log('Error at the end', err)
+            res.status(401).json({'error' : 'Error creating informat ' + err})
+      }
+
+    });
+}
+
+export const createInfo_ = async(req, res) =>{
+    console.log('req.file --> ', req.file);
+    const { userId,title,url, description, locationFolder } = req.query;
+    tools.monthlyFolder().then(async (f,fail) => {
+        if(fail){
+            res.status(400).json({'msg':'Error to generate folder'})
+            return;
+        }
+        
+        const folder = await f.toString();
+        const image = uuid() + path.extname(req.file.filename);
+        
+        try{
+
+            //#region ------ upload image to AWS.S3     --------------------------------------
+            // const fileContent = fs.createReadStream(req.file.path);
+            const fileContent = await req.file;
+
+            S3.upload({
+                Bucket: process.env.AWS_BUCKET_NAME,
+                // Key: `${locationFolder}/${folder}/${image}`,
+                Key: fileContent.originalname,
+                Body: fileContent.buffer,
+                ContentType: fileContent.mimetype
+            }).promise( async (err, data) => {
+                if (err){
+                    console.log('aws Error --> ',err);
+                    res.status(401).json({'Error' : 'AWS Error: ' + err})
+                }else{
+                    console.log('aws Data --> ', data)
+                    const webImgRoot = process.env.AWS_BUCKET_NAME  + locationFolder 
+                    + '/' + folder + '/' 
+                    const location = locationFolder;
+                    const size = req.file.size;
+                     await tools.getSection(data.Location,'path').then(async (section, fail) => {
+                        if(fail){
+                            res.status(400).json({'msg':'Error to generate s3 path'})
+                            return;
+                        }
+                        const path = section;
+
+                    // #region  Insert into Mongo  ---------------------
+                
+                        const newInfo = await information({title, url, description,
+                            image, path, location, size});
+
+                        if(newInfo){
+                            const InfoSaved = await newInfo.save();
+                        }
+                    // #endregion -------------------------
+                    
+                        console.log('image uploaded..!!!')
+                        res.status(201).json({'msg' : 'Information created'});
+                    });
+            // #endregion -------------------------
+            }})
+           
+        }
+        catch(err){
+            console.log('Error at the end', err)
+            res.status(401).json({'error' : 'Error creating informat ' + err})
+        }
+    });
+}
+
+
+export const createInfo__ = async(req, res) =>{
     console.log('req.file --> ', req.file);
     const { userId,title,url, description, locationFolder } = req.query;
     tools.monthlyFolder().then(async (f,fail) => {
@@ -72,7 +209,8 @@ export const createInfo = async(req, res) =>{
                         res.status(201).json({'msg' : 'Information created'});
                     });
             // #endregion -------------------------
-            }})
+            }
+        })
            
         }
         catch(err){
