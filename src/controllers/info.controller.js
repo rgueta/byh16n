@@ -83,6 +83,7 @@ export const createInfo = async(req, res) =>{
 
 
 export const getInfo = async(req, res) =>{
+    console.log('req.params --> ',req.params)
     const userID = Types.ObjectId(req.params.userId);
     // const info = await information.find({enable : true}).sort({'createdAt':-1});
     const info = await information.aggregate([
