@@ -9,6 +9,7 @@ const router = Router();
 
  router.post('/:userId', [authJwt.verifyToken,authJwt.isNeighbor],upload.single('image'), infoCtrl.createInfo);
  router.get('/:userId/:now', [authJwt.verifyToken,authJwt.isNeighbor], infoCtrl.getInfo);
+// router.get('/:userId/:now', infoCtrl.getInfo);
 
  router.get('/all/:userId',[authJwt.verifyToken,authJwt.isNeighbor],infoCtrl.getInfoAdmin);
  router.post('/updStatus/:userId/:infoId',[authJwt.verifyToken,authJwt.isAdmin],infoCtrl.updInfoStatus);

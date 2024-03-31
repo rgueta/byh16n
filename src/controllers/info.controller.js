@@ -83,13 +83,14 @@ export const createInfo = async(req, res) =>{
 
 
 export const getInfo = async(req, res) =>{
-    console.log('req.params --> ',req.params)
+    
+    let now = await new Date(req.params.now);
+
     const userID = Types.ObjectId(req.params.userId);
     // const info = await information.find({enable : true}).sort({'createdAt':-1});
     const info = await information.aggregate([
-        {
-            $sort : {createdAt : -1}
-        },
+        { $sort : {createdAt : -1} },
+        { $limit : 300 },
         {
             $lookup : {
                 'from': 'users',
@@ -102,11 +103,9 @@ export const getInfo = async(req, res) =>{
          {
           '$match': {
             '$and': [
-              {
-                'disable': false
-              }, {
-                'info_user._id': userID
-              }
+              { 'disable': false }, 
+              { 'info_user._id': userID },
+              { 'updatedAt': { $gte : new Date(now)}}
             ]
           }
         },
@@ -115,19 +114,12 @@ export const getInfo = async(req, res) =>{
                 title : 1,
                 description : 1,
                 url : 1,
-                // img : { $concat: [ "$path", "$image" ]},
                 image : 1,
                 path : 1,
-                disable : 1,
-                size : {$concat : [
-                        { $toString : 
-                            {$round : [{$divide : ['$size',1024]}, 2]}
-                        }, ' KB']
-                       },
-                createdAt : { 
+                updatedAt : { 
                               $dateToString: { 
                                 format: '%Y/%m/%d %H:%M:%S', 
-                                date: '$createdAt', 
+                                date: '$updatedAt', 
                                 timezone: 'America/Los_Angeles' 
                               } 
                             }
