@@ -23,33 +23,22 @@ export const sendMsgOpen = async(req, res) => {
 
 export const sendMsgAccess = async(req, res) => {
   return
-  // console.log('twilio access params --> ', req.params);
   const msg = req.params.msg.split(',');
-  // console.log('MEssage --> ', msg);
   const foundUSer = Users.findOne({_id: msg[1]})
   if(foundUSer){
-    console.log('Si se encontro usuario')
     if(msg[0].toLowerCase() == 'blocked'){
-      console.log('Set Blocked status to ID -->', req.params.userId )
       await Users.findByIdAndUpdate(msg[1], {$set : { status : 4 }},{new : false}, (err , result) => {
         if(err){
           return res.status(200).json({'msg': 'error', 'status' : 'Could not updated status blocked'})
         }
-        console.log('return value after updated blocked --> ', result);
       });
     }else if(msg[0].toLowerCase() == 'unblocked'){
-      console.log('Si es Unblocked command')
       Users.findByIdAndUpdate(msg[1], {$set : { status : 1 }},{new : false}, (err , result) => {
         if(err){
           return res.status(200).json({'msg': 'error', 'status' : 'Could not updated status blocked'})
         }
-        console.log('return value after updated  unblocked --> ', result);
       });
-    }
-    
-  }else{
-    
-    console.log('No se encontro usuario')
+    }    
   }
   
   try{
