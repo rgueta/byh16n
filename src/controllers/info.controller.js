@@ -136,41 +136,43 @@ export const getInfo = async(req, res) =>{
 }
 
 export const getInfoAdmin = async(req, res) =>{
-    const info = await information.aggregate([
-        {
-            $sort : {createdAt : -1}
-        },
-        {
-            $project: {
-                title : 1,
-                description : 1,
-                url : 1,
-                image : 1,
-                path : 1,
-                disable : 1,
-                size : {$concat : [
-                        { $toString : 
-                            {$round : [{$divide : ['$size',1024]}, 2]}
-                        }, ' KB']
-                       },
-                createdAt : { 
-                              $dateToString: { 
-                                format: '%Y/%m/%d %H:%M:%S', 
-                                date: '$createdAt', 
-                                timezone: 'America/Los_Angeles' 
-                              } 
-                            }
-            }
-        }
-    ])
 
-    if(!info){
+    try{
+        const info = await information.aggregate([
+            {
+                $sort : {createdAt : -1}
+            },
+            {
+                $project: {
+                    title : 1,
+                    description : 1,
+                    url : 1,
+                    image : 1,
+                    path : 1,
+                    disable : 1,
+                    size : {$concat : [
+                            { $toString : 
+                                {$round : [{$divide : ['$size',1024]}, 2]}
+                            }, ' KB']
+                        },
+                    createdAt : { 
+                                $dateToString: { 
+                                    format: '%Y/%m/%d %H:%M:%S', 
+                                    date: '$createdAt', 
+                                    timezone: 'America/Los_Angeles' 
+                                } 
+                                }
+                }
+            }
+        ])
+
+        // console.log(info)
+        res.status(201).json(info)
+
+    }catch(err){
         console.log('Error getting info -> ',err)
         res.status(402).json({'Error':'Error getting info' + err})
-    }else{
-        console.log(info)
-        res.status(201).json(info)
-    }    
+    }
 }
 
 export const updInfoStatus = async(req, res) => {
