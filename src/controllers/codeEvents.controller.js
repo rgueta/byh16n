@@ -166,6 +166,7 @@ export const getCode_eventsByDate = async (req,res) => {
                     }
             }
     ]);
+    
     if(codeEvents){
         res.status(201).json(codeEvents);
     }else{

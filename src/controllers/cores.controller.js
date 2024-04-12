@@ -3,8 +3,6 @@ import { Types } from "mongoose";
 
 
 export const createCore = async (req,res) => {
-  console.log('Core pkg body--> ',req.body );
-
 
   const {name, Address, webService, Sim, coord, qty, Motor, Gate_type, Gate_long, 
        Gate_height, Pedestrian_type, Pedestrian_long, Pedestrian_height, housing_unit,
@@ -46,6 +44,27 @@ export const getCoresAdmin = async (req, res) => {
     console.log('Error correcto -->', err)
     return res.status(301).json({'error': err});
   }
+}
+
+export const getCoresByCpu = async (req, res) => {
+  // const CpuId = parseInt(req.params.cpuId)
+console.log('cpuId --> ', req.params.cpuId);
+const objCpuId = Types.ObjectId(req.params.cpuId);
+
+
+  try{
+      Cores.find({cpuId : objCpuId}, (err, results) => {
+          if (err) {
+            console.log(err);
+            res.status(300).json({message: err});
+          } else {
+            res.status(200).json(results);
+          }
+        }); 
+  }catch(err){
+    res.status(500).json({message: err});
+  }
+
 }
 
 export const getCores = async (req, res) => {

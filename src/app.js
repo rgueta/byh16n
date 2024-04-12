@@ -20,13 +20,13 @@ import divisionsRoutes  from "./routes/divisions.routes";
 import pwdRSTRoutes from "./routes/pwdRST.routes";
 import twilioRoutes from "./routes/twilio.routes";
 import housing_unitRoutes from "./routes/housing_unit.routes";
-import pwdRST from './models/pwdRST';
 import infoRoutes  from "./routes/info.routes";
 import countriesRoutes from "./routes/countries.routes";
 import statesRoutes from "./routes/states.routes";
 import citiesRoutes from "./routes/cities.routes";
 import cpusRoutes from "./routes/cpus.routes";
 import configAppRoutes from "./routes/configApp.routes";
+import backstageRoutes from "./routes/backstage.routes";
 
 const cors = require("cors");
 
@@ -92,5 +92,6 @@ app.use('/api/states', statesRoutes);
 app.use('/api/cities', citiesRoutes);
 app.use('/api/cpus', cpusRoutes);
 app.use('/api/config', configAppRoutes);
+app.use('/api/backstage', backstageRoutes);
 
 export default app;
