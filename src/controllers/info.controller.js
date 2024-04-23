@@ -23,7 +23,7 @@ export const createInfo = async(req, res) =>{
     const { userId,title,url, description, locationFolder } = req.query;
     tools.monthlyFolder().then(async (f,fail) => {
         if(fail){
-            res.status(400).json({'msg':'Error to generate folder'})
+            res.status(501).json({'msg':'Error to generate folder'})
             return;
         }
         
@@ -44,7 +44,7 @@ export const createInfo = async(req, res) =>{
             }).promise( async (err, data) => {
                 if (err){
                     console.log('aws Error --> ',err);
-                    res.status(401).json({'Error' : 'AWS Error: ' + err})
+                    res.status(501).json({'Error' : 'AWS Error: ' + err})
                 }else{
                     const webImgRoot = process.env.AWS_BUCKET_NAME  + locationFolder 
                     + '/' + folder + '/' 
@@ -52,7 +52,7 @@ export const createInfo = async(req, res) =>{
                     const size = req.file.size;
                      await tools.getSection(data.Location,'path').then(async (section, fail) => {
                         if(fail){
-                            res.status(400).json({'msg':'Error to generate s3 path'})
+                            res.status(501).json({'msg':'Error to generate s3 path'})
                             return;
                         }
                         const path = section;
@@ -76,7 +76,7 @@ export const createInfo = async(req, res) =>{
         }
         catch(err){
             console.log('Error at the end', err)
-            res.status(401).json({'error' : 'Error creating informat ' + err})
+            res.status(501).json({'error' : 'Error creating informat ' + err})
         }
     });
 }
@@ -128,8 +128,7 @@ export const getInfo = async(req, res) =>{
     ])
 
     if(!info){
-        console.log('Error getting info -> ',err)
-        res.status(402).json({'Error':'Error getting info' + err})
+        res.status(502).json({'Error':'Error getting info' + err})
     }else{
         res.status(201).json(info)
     }    
@@ -170,8 +169,7 @@ export const getInfoAdmin = async(req, res) =>{
         res.status(201).json(info)
 
     }catch(err){
-        console.log('Error getting info -> ',err)
-        res.status(402).json({'Error':'Error getting info' + err})
+        res.status(502).json({'Error':'Error getting info' + err})
     }
 }
 
@@ -180,7 +178,7 @@ export const updInfoStatus = async(req, res) => {
     await information.updateOne({'_id':req.params.infoId},
     {'$set' : {'disable' : req.body.disable}},(err,result)=>{
         if(err){
-            res.status(401).json({'error':'Info status changed' + err});
+            res.status(501).json({'error':'Info status changed' + err});
             return;
         }else{
             res.status(201).json({'msg':'Info status changed'});

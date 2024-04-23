@@ -110,7 +110,7 @@ export const enableCore = async (req,res) => {
     res.status(204).json({'Msg':'Core enabled Ok'})
     // res.status(204).json(updatedCore)
   }else{
-    res.status(404).json({'Msg' : 'Error enable core: '})
+    res.status(504).json({'Msg' : 'Error enable core: '})
   }
   
 }
@@ -123,7 +123,7 @@ export const disableCore = async (req,res) => {
     res.status(204).json({'Msg':'Core disabled Ok '})
     // res.status(204).json(updatedCore)
   }else{
-    res.status(404).json({'Msg' : 'Error core disable'})
+    res.status(504).json({'Msg' : 'Error core disable'})
   }
 }
 
@@ -136,13 +136,18 @@ export const chgSim = async (req,res) => {
     res.status(204).json({'Msg':'Core disabled Ok '})
     // res.status(204).json(updatedCore)
   }else{
-    res.status(404).json({'Msg' : 'Error core not disabled'})
+    res.status(504).json({'Msg' : 'Error core not disabled'})
   }
 }
 
 
 export const deleteCoreById = async (req,res) => {
-  const deletedCore = await Cores.findByIdAndDelete(req.params.coreId);
+  try{
+    const deletedCore = await Cores.findByIdAndDelete(req.params.coreId);
   res.status(204).json(deletedCore)
+  }catch(err){
+    res.status(504).json({'Msg' : 'Error: ' + err.message});
+    }
 }
+  
 

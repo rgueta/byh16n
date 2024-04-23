@@ -20,7 +20,7 @@ export const createCode_event = async (req,res) => {
         // res.status(201).json({'msg':'ok'})
     }catch(err){
         // console.log('createCode_event Error --> ', err)
-        res.status(401).json({'msg..': err})
+        res.status(501).json({'msg..': err})
     }
     
     // try{
@@ -29,7 +29,7 @@ export const createCode_event = async (req,res) => {
     //     res.status(201).json(eventSaved);
     // }catch(err){
     //     console.log('Error --> ', err)
-    //     res.status(404).json({'Error':e.message});
+    //     res.status(504).json({'Error':e.message});
     // }    
 }
 
@@ -46,7 +46,7 @@ export const createCode_event_ = async (req,res) => {
         res.status(201).json(eventSaved);
     }catch(err){
         console.log('Error --> ', err)
-        res.status(404).json({'Error':e.message});
+        res.status(504).json({'Error':e.message});
     }    
 }
 
@@ -105,7 +105,7 @@ export const getCode_events = async (req,res) => {
         ]);
         res.status(201).json(codeEvents);
     }else{
-        res.status(401).json({'msg':'core_sim parameter not received'})
+        res.status(501).json({'msg':'core_sim parameter not received'})
     }
 }
 export const getCode_eventsByDate = async (req,res) => {
@@ -170,7 +170,7 @@ export const getCode_eventsByDate = async (req,res) => {
     if(codeEvents){
         res.status(201).json(codeEvents);
     }else{
-        res.status(403).json({'msg':'No data found'})
+        res.status(503).json({'msg':'No data found'})
     }
     }
 }

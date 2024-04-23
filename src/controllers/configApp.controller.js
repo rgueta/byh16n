@@ -9,7 +9,7 @@ export const getConfig = async (req, res) => {
     await configApp.find({},async (err, results) => {
       if (err) {
         console.log(err);
-        res.status(400).json({message: err});
+        res.status(501).json({message: err});
       } else {
         res.status(200).json(results);
       }
@@ -17,7 +17,7 @@ export const getConfig = async (req, res) => {
 
  }catch(e){
     console.log(e);
-    res.status(500).json({message: e.message});
+    res.status(501).json({message: e.message});
  }
   
 }

@@ -40,7 +40,6 @@ export const signUp = async (req, res) => {
 
 
 export const signIn = async (req, res) => {
-
     try{
         await Users.aggregate([
             {
@@ -138,50 +137,50 @@ export const signIn = async (req, res) => {
             }
             
         ],async function(err, foundUser) {
-            if(err || foundUser == '') return res.status(400).json({'errId':1,'ErrMsg':"Usuario no encontrado","Error": err});
+        if(err || foundUser == '') return res.status(400).json({'errId':1,'ErrMsg':"Usuario no encontrado","Error": err});
 
-            const matchPwd =  await Users.comparePassword(req.body.pwd,foundUser[0].pwd);
+        const matchPwd =  await Users.comparePassword(req.body.pwd,foundUser[0].pwd);
 
-            if(!matchPwd) return res.status(400).json({token:'', ErrMsg:'Invalid password'});
+        if(!matchPwd) return res.status(400).json({token:'', ErrMsg:'Invalid password'});
 
 
-            // Create tokens  ------------------------
-           jwt.sign({id:foundUser[0]._id}, process.env.SECRET,
-            {
-                expiresIn: process.env.token_time
-            },async (err, token) => {
+        // Create tokens  ------------------------
+        jwt.sign({id:foundUser[0]._id}, process.env.SECRET,
+        {
+            expiresIn: process.env.token_time
+        },async (err, token) => {
 
-                // Error manage
-                if(err){
-                    return res.status(400).json(err.message)
-                }
+            // Error manage
+            if(err){
+                return res.status(400).json(err.message)
+            }
 
-                console.log('email: ' + req.body.email + ', pwd : ' + req.body.pwd + 
-            ', encrypted: ' + await Users.encryptPassword(req.body.pwd));
+            console.log('email: ' + req.body.email + ', pwd : ' + req.body.pwd + 
+        ', encrypted: ' + await Users.encryptPassword(req.body.pwd));
 
-                const decode = jwt.decode(token,process.env.SECRET)
+            const decode = jwt.decode(token,process.env.SECRET)
 
-                // //--- Dates Access token
-                let expDate = await new Date(decode.exp * 1000);
-                let iatDate = await new Date(decode.iat * 1000);
+            // //--- Dates Access token
+            let expDate = await new Date(decode.exp * 1000);
+            let iatDate = await new Date(decode.iat * 1000);
 
-                await expDate.setMinutes(expDate.getMinutes() - expDate.getTimezoneOffset());
-                await iatDate.setMinutes(iatDate.getMinutes() - iatDate.getTimezoneOffset());
-                
-                const refreshToken = jwt.sign({id:foundUser[0]._id}, process.env.SECRET_REFRESH,{
-                    expiresIn: process.env.refresh_token_time
-                });
-
-                if(!token) return res.status(401).json({'token' : '', message : 'Something goes wrong'});
-
-                return res.status(201).json({'accessToken' : token ,'refreshToken': refreshToken,
-                    'userId' : foundUser[0]._id, 'roles': foundUser[0].roles,'sim':foundUser[0].sim, 
-                    'core_sim':foundUser[0].coreSim, 'pwd': foundUser[0].pwd,'locked':foundUser[0].locked,
-                    'core_id': foundUser[0].core, 'coreName' : foundUser[0].coreName, 
-                    'location':foundUser[0].location, 'code_expiry': foundUser[0].code_expiry,
-                    'iatDate': iatDate, 'expDate': expDate});
-
+            await expDate.setMinutes(expDate.getMinutes() - expDate.getTimezoneOffset());
+            await iatDate.setMinutes(iatDate.getMinutes() - iatDate.getTimezoneOffset());
+            
+            const refreshToken = jwt.sign({id:foundUser[0]._id}, process.env.SECRET_REFRESH,{
+                expiresIn: process.env.refresh_token_time
             });
+
+            if(!token) return res.status(401).json({'token' : '', message : 'Something goes wrong'});
+
+            return res.status(201).json({'accessToken' : token ,'refreshToken': refreshToken,
+            'userId' : foundUser[0]._id, 'roles': foundUser[0].roles,'sim':foundUser[0].sim, 
+            'core_sim':foundUser[0].coreSim, 'pwd': foundUser[0].pwd,'locked':foundUser[0].locked,
+            'core_id': foundUser[0].core, 'coreName' : foundUser[0].coreName, 'email':foundUser[0].email,
+            'location':foundUser[0].location, 'code_expiry': foundUser[0].code_expiry,
+            'iatDate': iatDate, 'expDate': expDate});
+
+        });
 
         });
     }catch(err){

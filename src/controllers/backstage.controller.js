@@ -3,9 +3,6 @@ import backstage from "../models/backstage";
 import {Schema, Types} from 'mongoose';
 
 export const createBackstage = async (req,res) =>{
-    console.log(req.body);
-
-
     const  {name,email,username,house,
         uuid,sim,gender, note} = await req.body;
 
@@ -18,9 +15,7 @@ export const createBackstage = async (req,res) =>{
         const foundStage = await backstage.findOne({email : req.body.email});
 
         if(foundStage){
-            console.log('backstage already exists -> ' + JSON.stringify(foundStage));
-            res.status(303).send({'status' : 303, 'msg' : 'Ya existe peticion para este correo'});
-            return;
+            res.status(303).json({'status' : 303, 'msg' : 'Ya existe peticion para este correo'});
         }
 
         // Find this email in users collection
@@ -31,18 +26,15 @@ export const createBackstage = async (req,res) =>{
                 email,sim,house,uuid,gender,note});
 
             const backstageSaved = await newBackstage.save();
-            res.status(200).send({'status' : 200,'msg' : 'Backstage saved',
+            res.status(200).json({'status' : 200,'msg' : 'Backstage saved',
                 'result': backstageSaved});
 
         }else{
-            console.log('User already exists -> ' + JSON.stringify(foundUser));
-            res.status(304).send({'status' : 304, 'msg' : 'User already exists'});
-            return;
+            res.status(504).json({'status' : 504, 'msg' : 'Email already exists'});
         }
             
     }catch(err){
-        console.log('Error: ', err.message);
-        return res.status(401).send({'status' : 401, 'msg':err.message});
+        return res.status(501).json({'status' : 501, 'msg':err.message});
     }
 }
 
@@ -111,3 +103,14 @@ export const getBackstage = async (req, res) => {
       return res.status(501).json({'error': err.message});
     }
   }
+
+  export const deleteById = async (req,res) => {
+
+    try{
+        const deletedBackstage = await backstage.findByIdAndDelete(req.params.backstageId);
+        res.status(204).json(deletedBackstage)
+    }catch(err){
+        res.status(501).json({'error: ': err})
+    }
+    
+}

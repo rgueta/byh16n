@@ -25,9 +25,9 @@ export const updateCpu = async (req,res) => {
     if(updCpu)
       res.status(200).json({'msg': updCpu})
     else
-      return res.status(400).json({'msg': 'Can not update cpu'})    
+      return res.status(501).json({'msg': 'Can not update cpu'})    
   }catch(e){
-    return res.status(500).json({'error saving Cpu ': e});
+    return res.status(501).json({'error saving Cpu ': e});
   }
 
 }
@@ -37,15 +37,14 @@ export const getCpu = async (req, res) => {
 
     await Cpus.find({},{name:1},{"sort": {name:1}}, async (err, results) => {
       if (err) {
-        console.log(err);
-        res.status(400).json({message: err});
+        res.status(501).json({message: err});
       } else {
         res.status(200).json(results);
       }
     }); 
 
  }catch(e){
-    res.status(500).json({message: e.message});
+    res.status(501).json({message: e.message});
  }
   
 }
@@ -57,8 +56,7 @@ export const getCpusFull = async (req, res) => {
                 city:req.params.city,
                 division:NumDivision}, (err, results) => {
         if (err) {
-          console.log(err);
-          res.status(500).json({message: err});
+          res.status(501).json({'msg': err});
         } else {
           res.status(200).json(results);
         }
@@ -73,8 +71,7 @@ export const getCpusBasic = async (req, res) => {
               city:req.params.city,
               division:NumDivision},{name:1, shortName:1}, (err, results) => {
       if (err) {
-        console.log(err);
-        res.status(500).json({message: err});
+        res.status(501).json({'msg': err});
       } else {
         res.status(200).json(results);
       }
@@ -84,8 +81,13 @@ export const getCpusBasic = async (req, res) => {
 
 
 export const deleteCpuById = async (req,res) => {
-  const deletedCpu = await Cpus.findByIdAndDelete(req.params.countryId,
+  try{
+    const deletedCpu = await Cpus.findByIdAndDelete(req.params.countryId,
     req.params.stateId,req.params.cityId,req.params.cpuId);
-  res.status(204).json(deletedCpu)
+    res.status(204).json(deletedCpu);
+  }catch(err){
+    res.status(504).json({'Error': err.message});
+  }
+  
 }
 

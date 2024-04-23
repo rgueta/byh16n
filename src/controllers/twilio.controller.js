@@ -16,7 +16,7 @@ export const sendMsgOpen = async(req, res) => {
       .then(message => console.log(message.sid)) 
       .done();
     }catch(err){
-        res.status(404).json({'msg':'twilio send error' + JSON.stringify(err)})
+        res.status(504).json({'msg':'twilio send error' + JSON.stringify(err)})
     }
     res.status(201).json({'msg':'twilio send ok'})
 }
@@ -51,7 +51,7 @@ export const sendMsgAccess = async(req, res) => {
     .then(message => console.log(message.sid)) 
     .done();
   }catch(err){
-      res.status(404).json({'msg':'twilio send error' + JSON.stringify(err)})
+      res.status(504).json({'msg':'twilio send error' + JSON.stringify(err)})
   }
   res.status(201).json({'msg':'twilio send ok'})
 }

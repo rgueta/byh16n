@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as citiesCtrl from '../controllers/cities.controller';
-import { authJwt, verifySignup } from "../middleware";
+import { authJwt } from "../middleware";
 
 const router = Router();
 

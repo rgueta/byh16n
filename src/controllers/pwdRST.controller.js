@@ -26,31 +26,35 @@ let html_call = '';
 // #endregion html layout ---------------------------------------
 
 export const pwdRSTReq = async (req,res) => {
-    console.log('req.body.model --> ', req.body);
     const { model, platform, operatingSystem, osVersion, manufacturer,
         isVirtual, webViewVersion, uuid } = await req.body;
 
     const device = { model, platform, operatingSystem, osVersion, manufacturer,
         isVirtual, webViewVersion, uuid};
 
-    let foundUser = await Users.find({email : req.params.email});
-    
     try{
 
-        if(!foundUser.length) return res.status(400).json({'message': 'User not found'});
+        let foundUser = await Users.find({email : req.params.email});
+        if(!foundUser.length) return res.status(500).json({'message': 'User not found'});
 
         // #region save on DB   ------------------------------
-        
+
+        // Verify if password reset for this email exists
+        const foundPwdRST = await pwdRST.find({email : req.body.email, reseted:false});
+
+        if(foundPwdRST.length > 0){
+            return res.status(503).json({'status' : 503,
+                'msg' : 'Ya existe peticion para este correo'});
+        }
+
         const newPwdRST = new pwdRST({email:req.params.email,confirmed:false,
             reseted:false, device});
 
         newPwdRST.save(async (err, pwdRST_saved) => {
-            if(err) return res.status(400).json({'message': 'Error can not saved pwdRST'});
+            if(err) return res.status(501).json({'msg': 'Error can not saved pwdRST'});
             pwdRST_id = await pwdRST_saved._id;
 
             createHTML();
-
-            console.log('pwdRST_saved id -->', pwdRST_saved._id);
 
             const mailOption = await {
                 from : 'byh16@gmail.com',
@@ -58,13 +62,11 @@ export const pwdRSTReq = async (req,res) => {
                 subject : 'Pssword reset',
                 html : html_call
             }
-            
+
             await transporter.sendMail(mailOption, (err, info) =>{
                 if(err){
-                    console.log('error send email: ',err)
-                    res.status(201).json({'pwd rst error': err})
+                    res.status(501).json({'msg': err})
                 }else{
-                    console.log('Email sent: ', info.response);
                     res.status(201).json({'email sent': info.response})
                 }
             });
@@ -73,35 +75,34 @@ export const pwdRSTReq = async (req,res) => {
 
         // #endregion  -----------------------------------------
 
-        
-        // console.log('pwd RST Req ..... --> ', req.params);
-
-
-        
-
-        res.status('201').json({'message': 'email sent , hash --> ' + hash_pwdRST})
+        return res.status('201').json({'message': 'pwdRST email sent'})
 
     }catch(e){
-        console.log('error pwdRSTReq -----> ' , e);
-        res.status('401').json({'pwdRSTReq error' : e.message})
+        return res.status(501).json({'msg' : e.message})
     }
     
 }
 
 export const pwdRSTConfirm = async (req, res) => {
-    const foundpwdRST  = await pwdRST.find({_id : req.params.id});
-    if(!foundpwdRST.length) return res.status(300).json({'status':300,'error' : 'No hay solicitud para este usuario'});
+    try{
+        const foundpwdRST  = await pwdRST.find({_id : req.params.id});
+        if(!foundpwdRST.length) return res.status(300).json({'status':300,
+        'error' : 'No hay solicitud para este usuario'});
 
-    const foundUser = await Users.findOne({email : foundpwdRST[0].email});
-    if(!foundUser) return res.status(300).json({'status':300,'error' : 'User not found'});
+        const foundUser = await Users.findOne({email : foundpwdRST[0].email});
+        if(!foundUser) return res.status(300).json({'status':300,'error' : 'User not found'});
 
-    pwdRST.findByIdAndUpdate(req.params.id,{$set : {confirmed : true}},{new:false}, (err, resultConfirmed) => {
-        if(err){
-            return res.status(400).json({'status':201,'error' : 'Could not update reseted.'});
-        }
-    });
+        pwdRST.findByIdAndUpdate(req.params.id,{$set : {confirmed : true}},{new:false},
+             (err, resultConfirmed) => {
+            if(err){
+                return res.status(502).json({'msg' : 'Could not update reseted'});
+            }
+        });
 
-    res.status(201).json({'msg':'Password reset confirmation for [ ' + foundUser.email + ' ]' });
+        res.status(201).json({'msg':'Password reset confirmation for [ ' + foundUser.email + ' ]' });
+    }catch(err){
+        res.status(501).json({'msg':'Error: ' + err.message});
+    }
 }
 
 
@@ -118,7 +119,7 @@ export const pwdRSTVerify = async (req, res) => {
                 'msg' : 'Si hay solicitud activa'});
        
    }catch(e){
-    res.status(401).json({'status':401,'error': e});
+    res.status(501).json({'status':501,'error': e});
     }
 }
 
@@ -152,7 +153,7 @@ export const pwdRSTApply = async (req, res) => {
             res.status(201).json({'status':201,'msg':'Password changed for [' + foundUser.email + '], encrypted pwd --> ' + Encryptedpwd });
         })
    }catch(e){
-    res.status(401).json({'status':401,'Error': e});
+    res.status(501).json({'status':501,'Error': e});
     }
 }
 

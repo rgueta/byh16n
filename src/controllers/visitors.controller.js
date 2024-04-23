@@ -6,18 +6,18 @@ export const createVisitor = async (req,res,next) =>{
     try{
         const  {userId, name,email,username,pwd,address,sim,gender,avatar} = req.body;
         
-        // return res.status(404).json({'msg':'Testing refesh token..!'});
+        // return res.status(504).json({'msg':'Testing refesh token..!'});
         
         const newVisitor = await new Visitors({userId, name,email,username,pwd,address,sim,gender,avatar});
         const visitorSaved = await newVisitor.save();
         if(visitorSaved){
             res.status(200);
         }else{
-            res.status(404).json({'Error DataBasa adding visitor' : err});
+            res.status(504).json({'Error DataBasa adding visitor' : err});
         }
     
     }catch(err){
-        return res.status(404).json({'Error adding visitor ': err});
+        return res.status(504).json({'Error adding visitor ': err});
     }
 }
 

@@ -1,7 +1,7 @@
 import Users  from "../models/Users";
+import Cores from "../models/cores";
 import {Types} from 'mongoose';
-import { response } from "express";
-import { Resiliencehub } from "aws-sdk";
+
 
 export const createUser = async (req,res) =>{
     console.log('Create User -->', req.body);
@@ -29,7 +29,81 @@ export const createUser = async (req,res) =>{
             
         
     }catch(err){
-        return res.status(401).send({'status' : 401, 'msg':err.message});
+        return res.status(501).send({'status' : 501, 'msg':err.message});
+    }
+}
+
+export const updRoles = async (req, res) => {
+    const userId = req.body.userId;
+    const roles = req.body.roles.map(Types.ObjectId);
+
+    const userFound = Users.findById(req.body.userId);
+    if(userFound){
+            Users.findByIdAndUpdate(userId,{$set: {roles:roles}}, (err,result) => {
+                if(err) res.status(502).json({'msg' : 'Can not update roles' + err});
+
+                console.log('result: ',result);
+                res.status(200).send(result);
+            });
+            
+        
+    }else{
+        res.status(501).send({'msg':'user not exists'});
+    }
+}
+
+export const newUser = async (req,res) => {
+    const roles = req.body.roles.map(Types.ObjectId);
+    const core = new Types.ObjectId(req.body.core);
+    const locked = false;
+    let pwd = ''
+    let location = ''
+    const  {name,email,username,house,uuid,sim,gender,avatar} = await req.body;
+    
+    if (location == ''){
+        await Cores.aggregate([
+            [
+                {
+                  $match: {_id : core}
+                },
+                {
+                  $project:
+                    {
+                      _id:0,
+                      location: {
+                        $concat: ["$country", ".", "$state" , ".", "$city" , "." ,
+                                  {$toString: "$division"}, "." , "$cpu" , "." , "$shortName"]
+                      },
+                    },
+                },
+              ]
+        ], async (err, result) => {
+            if (err) {
+                console.log('Error: ', err)
+                return res.status(301).json({'error': err});
+              } else {
+              
+              location = result[0].location;
+              
+            }
+        });
+    }
+
+    try{
+        const foundUser = await Users.findOne({email : req.body.email});
+
+        if(!foundUser){
+            const newUser = new Users({name,email,username,pwd,core,house,uuid,sim,gender,
+                avatar,roles,locked,location});
+
+            const userSaved = await newUser.save();
+
+            res.status(200).send({'status' : 200,'msg' : 'User saved'});
+        }else{
+            res.status(301).send({'status' : 301, 'msg' : 'email already exists'});
+        }
+    }catch(err){
+        return res.status(501).send({'status' : 501, 'msg':err.message});
     }
 }
 
@@ -72,6 +146,19 @@ export const getUserByCore = async(req, res) =>{
                 }
             },
             {
+                $lookup: {
+                  from: "cores",
+                  localField: "core",
+                  foreignField: "_id",
+                  as: "cores_user",
+                },
+              },
+              {
+                $unwind: {
+                  path: "$cores_user",
+                },
+              },
+            {
                 $project: {
                     core : 1,
                     email : 1,
@@ -84,7 +171,8 @@ export const getUserByCore = async(req, res) =>{
                     roles: '$roles_user.name',
                     sim : 1,
                     username : 1,
-                    uuid : 1
+                    uuid : 1,
+                    coreSim: "$cores_user.Sim",
                 }
             }
         ]);
@@ -118,10 +206,10 @@ export const lockUser = async (req,res) =>{
         if(updLocked)
             res.status(200).json({'msg': updLocked})
         else
-        res.status(400).json({'msg': 'Can not locked user [ ' + 
+        res.status(501).json({'msg': 'Can not locked user [ ' + 
         userId + ' ]'})
     }catch(err){
-        res.status(400).json({'msg': err})
+        res.status(501).json({'msg': err})
     }
     
 }
@@ -133,10 +221,10 @@ export const unlockUser = async (req,res) =>{
         if(updUnlocked)
             res.status(200).json({'msg': updUnlocked})
         else
-            res.status(400).json({'msg': 'Can not unlocked user [ ' + 
+            res.status(501).json({'msg': 'Can not unlocked user [ ' + 
             userId + ' ]'})
     }catch(err){
-        res.status(400).json({'msg': err})
+        res.status(501).json({'msg': err})
     }
 }
 
