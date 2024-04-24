@@ -33,6 +33,24 @@ export const createUser = async (req,res) =>{
     }
 }
 
+export const updSim = async (req, res) => {
+    const userId = req.body.userId;
+    const newSim = req.body.newSim;
+
+    const userFound = Users.findById(req.body.userId);
+    if(userFound){
+        Users.findByIdAndUpdate(userId,{$set: {sim:newSim}}, (err,result) => {
+            if(err) res.status(502).json({'msg' : 'Can not update sim, ' + err});
+            console.log('result: ',result);
+            res.status(200).send(result);
+        });
+            
+        
+    }else{
+        res.status(501).send({'msg':'user not exists'});
+    }
+}
+
 export const updRoles = async (req, res) => {
     const userId = req.body.userId;
     const roles = req.body.roles.map(Types.ObjectId);

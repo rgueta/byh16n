@@ -10,7 +10,7 @@ router.post('/register/',usersCtrl.RegisterUser);
 router.post('/lock/:userId/:neighborId',[authJwt.verifyToken,authJwt.isAdmin],usersCtrl.lockUser);
 router.post('/unlock/:userId/:neighborId',[authJwt.verifyToken,authJwt.isAdmin],usersCtrl.unlockUser);
 router.post('/updroles/:userId',[authJwt.verifyToken,authJwt.isAdmin],usersCtrl.updRoles);
-router.post('/updSim/:userId/:neighborId',[authJwt.verifyToken,authJwt.isAdmin],usersCtrl.updRoles);
+router.post('/updSim/:userId',[authJwt.verifyToken,authJwt.isNeighborAdmin],usersCtrl.updSim);
 
 router.get('/',usersCtrl.getUsers);
 router.get('/user/:userId',usersCtrl.getUserById);
