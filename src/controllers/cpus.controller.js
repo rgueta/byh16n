@@ -34,6 +34,36 @@ export const updateCpu = async (req,res) => {
 
 export const getCpu = async (req, res) => {
   try{
+    await Cpus.aggregate([
+      { $sort: {name:1}},
+      {
+          $project: {
+              name : 1,
+              location: { 
+                $concat : ["$country", "." , "$state",
+                    "." ,"$city", ".", {$toString : "$division" }, 
+                    "." , "$shortName"]
+              }
+              
+          }
+      }
+    ], async (err, result) => {
+        if (err) {
+            console.log('Error: ', err)
+            return res.status(301).json({'msg': err});
+          } else {
+          return res.status(200).json(result);
+        }
+    });
+
+  }catch(err){
+    console.log('Error -->', err)
+    return res.status(501).json({'error': err.message});
+  }
+}
+
+export const getCpu_ = async (req, res) => {
+  try{
 
     await Cpus.find({},{name:1},{"sort": {name:1}}, async (err, results) => {
       if (err) {

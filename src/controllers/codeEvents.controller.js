@@ -103,11 +103,13 @@ export const getCode_events = async (req,res) => {
                     }
             }
         ]);
+        console.log('events: ', codeEvents)
         res.status(201).json(codeEvents);
     }else{
         res.status(501).json({'msg':'core_sim parameter not received'})
     }
 }
+
 export const getCode_eventsByDate = async (req,res) => {
 
     let start = await new Date(req.params.start);
@@ -168,9 +170,57 @@ export const getCode_eventsByDate = async (req,res) => {
     ]);
     
     if(codeEvents){
-        res.status(201).json(codeEvents);
+        res.status(201).send(codeEvents);
     }else{
         res.status(503).json({'msg':'No data found'})
     }
     }
+}
+
+export const getCodeEventsCount = async (req, res, next) => {
+    try{
+        const codeEventsC = await code_events.aggregate([
+                {$group: {_id:null, count:{$sum:1}}}
+        ]);
+
+        res.status(200).json(codeEventsC[0])
+
+    }catch(ex){
+        res.status(301).json({'Error': ex})
+    }
+
+}
+
+export const getCodeEventsByCode = async (req, res, next) => {
+  if(req.params.code != null){
+    const events = await code_events.aggregate([
+      {
+        $lookup:{
+            'from' : 'codes',
+            'localField' : 'codeId',
+            'foreignField' : '_id',
+            'as': 'codeEvents_codes'
+
+            }
+     },
+     {$unwind : '$codeEvents_codes'},
+     {$match : {'codeEvents_codes.code' : req.params.code}},
+     {$sort : {createdAt : -1}},
+     {$project: {
+            visitor : '$codeEvents_codes.visitorName',
+            time : {
+                    $dateToString: {
+                      format: '%Y/%m/%d %H:%M:%S',
+                      date: '$createdAt',
+                      timezone: 'America/Los_Angeles'
+                    }
+                  }
+
+         }
+     }
+   ]);
+   res.status(200).json(events);
+  }else {
+    res.status(401).json({'msg':'code parameter not received'});
+  }
 }

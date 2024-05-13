@@ -1,4 +1,5 @@
 import Codes  from "../models/Codes";
+import code_events from "../models/code_events";
 import { Types } from "mongoose";
 import { response } from "express";
 
@@ -68,8 +69,6 @@ export const getCodes = async (req,res) => {
 
 export const getCodesByUser = async (req,res) => {
     if(req.params.userId != 'null'){
-        console.log('get Code by user --> ' + req.params.userId);
-        // const user = new ObjectId(req.params.userId);
         const codes = await await Codes.aggregate([
             {$sort : {expiry : -1}},
             {
@@ -86,6 +85,7 @@ export const getCodesByUser = async (req,res) => {
                         'code_users._id' : { $eq : Types.ObjectId(req.params.userId)}
                     }
                 },
+                {$limit: 20},
                 {
                 $project:{
                         codeId : 1,
@@ -104,10 +104,9 @@ export const getCodesByUser = async (req,res) => {
                         }
                 }
         ])
-
+        console.log(codes)
         res.status(200).json(codes);
     }else{
-        console.log({'Error':'userId missing '});
         res.status(201).json({'Error':'userId missing '});
     }
 }
@@ -118,6 +117,60 @@ export const getCodeById = async (req,res) => {
     console.log(req.params.codeId);
     res.status(200).json(code);
 }
+
+export const getVisitors_dashboard = async (req,res) => {
+    try{
+        // get all codes
+        const codes = await Codes.aggregate([
+            {
+                $lookup:{
+                        from : 'users',
+                        localField : "source.user",
+                        foreignField : '_id',
+                        as :  'code_users'
+                        }
+                },
+                {'$unwind' : '$code_users'},
+                {$sort : {expiry : -1}},
+                {
+                $project:{
+                        codeId : 1,
+                        code: 1,
+                        created : 1,
+                        initial : 1,
+                        expiry : 1,
+                        enable:1,
+                        userId : '$code_users._id',
+                        userName : '$code_users.name',
+                        email : '$code_users.email',
+                        avatar : '$code_users.Avatar',
+                        visitorname: 1,
+                        visitorSim: 1
+                        }
+                }
+        ])
+
+        
+
+        // get count code_events
+        const  countEvents= await code_events.find().count();
+
+        // get count codes
+        const  countCodes = await Codes.find().count();
+
+        const data = {'codes' : codes,
+                    'countCodes' : countCodes,
+                    'countEvents' :  countEvents}
+
+        res.status(200).json(data);
+
+    }catch(e){
+        res.status(500).json({'error': 'error at getVisitors_dashboard: ' + JSON.stringify(e)})
+    }
+
+    
+}
+
 
 export const updateCodeById = async (req,res) => {
     console.log('(req.params.codeId --> ' + req.params.codeId);

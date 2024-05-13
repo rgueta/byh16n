@@ -5,7 +5,4 @@ const router = Router();
 
 router.get('',configCtrl.getConfig);
 router.post('',configCtrl.getConfig);
-// router.get('/:CoreSim',[authJwt.verifyToken,authJwt.isNeighbor],codeEventsCtrl.getCode_events);
-// router.get('/:userId/:CoreSim/:start/:end',[authJwt.verifyToken,authJwt.isNeighbor],codeEventsCtrl.getCode_eventsByDate);
-
 export default router;

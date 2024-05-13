@@ -47,7 +47,6 @@ export const getCoresAdmin = async (req, res) => {
 }
 
 export const getCoresByCpu = async (req, res) => {
-  // const CpuId = parseInt(req.params.cpuId)
 console.log('cpuId --> ', req.params.cpuId);
 const objCpuId = Types.ObjectId(req.params.cpuId);
 

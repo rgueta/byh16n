@@ -16,3 +16,15 @@ export const getRoles = async (req,res) => {
     }
       
 }
+
+export const getRolesNeiAdmin = async (req,res) => {
+
+    try{
+        const roles = await Roles.find({level:{ $in: [3,4]}}).sort({level:1});
+        res.status(201).json(roles);
+    }catch(err){
+        res.status(502).json({'Error':'Error getting roles, '
+         + err})
+    }
+      
+}

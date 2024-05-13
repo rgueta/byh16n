@@ -9,6 +9,7 @@ export const createUser = async (req,res) =>{
     const pwd = await Users.encryptPassword(req.body.pwd)
     console.log('User encrypted pwd --> ', pwd)
 
+    return
 
     try{
         const  {name,email,username,house,uuid,sim,gender,
@@ -37,7 +38,7 @@ export const updSim = async (req, res) => {
     const userId = req.body.userId;
     const newSim = req.body.newSim;
 
-    const userFound = Users.findById(req.body.userId);
+    const userFound = Users.findById(userId);
     if(userFound){
         Users.findByIdAndUpdate(userId,{$set: {sim:newSim}}, (err,result) => {
             if(err) res.status(502).json({'msg' : 'Can not update sim, ' + err});
@@ -71,7 +72,8 @@ export const updRoles = async (req, res) => {
 }
 
 export const newUser = async (req,res) => {
-    const roles = req.body.roles.map(Types.ObjectId);
+    const roles = req.body.roles.map(role => role.id);
+
     const core = new Types.ObjectId(req.body.core);
     const locked = false;
     let pwd = ''
@@ -141,7 +143,69 @@ export const getUserById = async (req,res) => {
 }
 
 export const getUserByCore = async(req, res) =>{
+    const query = {'core' : Types.ObjectId(req.params.coreId)};
+    const fields = {};
+    const mySort = await { 'house' : 1};
+    try{
 
+        const result = await Users.aggregate([
+            {
+                $match : {
+                    core : Types.ObjectId(req.params.coreId)
+                }
+            },
+            {$sort : { house : 1 }},
+            {
+                $lookup:{
+                    'from' : 'roles',
+                    'localField' : 'roles',
+                    'foreignField' : '_id',
+                    'as' : 'roles_user'
+                }
+            },
+            {
+                $lookup: {
+                  from: "cores",
+                  localField: "core",
+                  foreignField: "_id",
+                  as: "cores_user",
+                },
+              },
+              {
+                $unwind: {
+                  path: "$cores_user",
+                },
+              },
+            {
+                $project: {
+                    core : 1,
+                    email : 1,
+                    gender : 1, 
+                    house : 1,
+                    location : 1,
+                    locked : 1,
+                    name : 1 ,
+                    open : 1,
+                    roles: '$roles_user.name',
+                    sim : 1,
+                    username : 1,
+                    uuid : 1,
+                    coreSim: "$cores_user.Sim",
+                }
+            }
+        ]);
+        
+        if(result.length > 0){
+            return res.status(200).json(result);
+        }else{
+            return res.status(300).json({'msg':'NO data found'});
+        }
+    }catch(ex){
+        return res.status(501).json(ex);
+    }
+}
+
+export const getUserByCoreNeighbor = async(req, res) =>{
     const query = {'core' : Types.ObjectId(req.params.coreId)};
     const fields = {};
     const mySort = await { 'house' : 1};
@@ -176,6 +240,7 @@ export const getUserByCore = async(req, res) =>{
                   path: "$cores_user",
                 },
               },
+              { $match : {"roles_user.level" : {"$nin" : [1,2]}} },
             {
                 $project: {
                     core : 1,
