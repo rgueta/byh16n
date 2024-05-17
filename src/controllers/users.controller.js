@@ -118,7 +118,7 @@ export const newUser = async (req,res) => {
 
             const userSaved = await newUser.save();
 
-            res.status(200).send({'status' : 200,'msg' : 'User saved'});
+            res.status(200).send(userSaved);
         }else{
             res.status(301).send({'status' : 301, 'msg' : 'email already exists'});
         }
@@ -276,8 +276,13 @@ export const updateUserById = async (req,res) => {
 }
 
 export const deleteUserById = async (req,res) => {
-    const deletedUser = await Codes.findByIdAndDelete(req.params.userId);
-    res.status(204).json(deletedUser)
+    try{
+        const deletedUser = await Users.findByIdAndDelete(req.params.userId);
+        res.status(200).json(deletedUser);
+    }catch(e){
+        res.status(500).json({'error': e.message});
+    }
+   
 }
 
 export const lockUser = async (req,res) =>{

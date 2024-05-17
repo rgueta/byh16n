@@ -108,7 +108,7 @@ export const getBackstage = async (req, res) => {
 
     try{
         const deletedBackstage = await backstage.findByIdAndDelete(req.params.backstageId);
-        res.status(204).json(deletedBackstage)
+        res.status(200).json(deletedBackstage)
     }catch(err){
         res.status(501).json({'error: ': err})
     }
