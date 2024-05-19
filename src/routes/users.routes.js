@@ -12,8 +12,10 @@ router.post('/unlock/:userId/:neighborId',[authJwt.verifyToken,authJwt.isNeighbo
 router.post('/updroles/:userId',[authJwt.verifyToken,authJwt.isAdmin],usersCtrl.updRoles);
 router.post('/updSim/:userId',[authJwt.verifyToken,authJwt.isNeighborAdmin],usersCtrl.updSim);
 
+
 router.get('/',usersCtrl.getUsers);
 router.get('/user/:userId',usersCtrl.getUserById);
+router.get('/notLocked/:userId',[authJwt.verifyToken,authJwt.isNeighbor],usersCtrl.notLockUser);
 router.get('/core/:coreId/:userId',[authJwt.verifyToken,authJwt.isNeighborAdmin],usersCtrl.getUserByCore);
 router.get('/coreNeighbor/:coreId/:userId',[authJwt.verifyToken,authJwt.isNeighborAdmin],usersCtrl.getUserByCoreNeighbor);
 router.get('/family/:userId',[authJwt.verifyToken,authJwt.isNeighbor],usersCtrl.getFamily);

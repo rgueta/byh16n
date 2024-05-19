@@ -1,3 +1,4 @@
+import { expectedError } from "@babel/core/lib/errors/rewrite-stack-trace";
 import Users  from "../models/Users";
 import Cores from "../models/cores";
 import {Types} from 'mongoose';
@@ -313,6 +314,21 @@ export const unlockUser = async (req,res) =>{
             userId + ' ]'})
     }catch(err){
         res.status(501).json({'msg': err})
+    }
+}
+
+export const notLockUser = async (req, res, next) =>{
+    const userId = req.params.userId;
+    try{
+        await Users.find({_id : Types.ObjectId(userId), locked:false}, async (err, result) => {
+            if (result == ''){
+                res.status(501).json({'msg': 'is locked'});
+            }else{
+                res.status(200).json({'msg':'is ok'});
+            }
+        })
+    }catch(err){
+        res.status(501).json({'msg': err});
     }
 }
 

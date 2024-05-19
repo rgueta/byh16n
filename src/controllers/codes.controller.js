@@ -104,7 +104,6 @@ export const getCodesByUser = async (req,res) => {
                         }
                 }
         ])
-        console.log(codes)
         res.status(200).json(codes);
     }else{
         res.status(201).json({'Error':'userId missing '});
@@ -114,7 +113,6 @@ export const getCodesByUser = async (req,res) => {
 
 export const getCodeById = async (req,res) => {
     const code = await Codes.findById(req.params.codeId);
-    console.log(req.params.codeId);
     res.status(200).json(code);
 }
 
@@ -173,10 +171,7 @@ export const getVisitors_dashboard = async (req,res) => {
 
 
 export const updateCodeById = async (req,res) => {
-    console.log('(req.params.codeId --> ' + req.params.codeId);
-    console.log('pkg to update --> ' + JSON.stringify(req.body))
     const updatedCode = await Codes.findByIdAndUpdate(req.params.codeId,req.body,{new:true});
-    console.log('updatedCode -> ', updatedCode);
     res.status(200).json(updatedCode);    
 }
 
