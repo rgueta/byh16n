@@ -21,6 +21,6 @@ router.get('/coreNeighbor/:coreId/:userId',[authJwt.verifyToken,authJwt.isNeighb
 router.get('/family/:userId',[authJwt.verifyToken,authJwt.isNeighbor],usersCtrl.getFamily);
 
 router.put('/:userId',[authJwt.verifyToken,authJwt.isAdmin,authJwt.isNeighbor],usersCtrl.updateUserById);
-router.delete('/user/:userId',[authJwt.verifyToken,authJwt.isAdmin],usersCtrl.deleteUserById);
+router.delete('/:userId/:delUserId',[authJwt.verifyToken,authJwt.isNeighborAdmin],usersCtrl.deleteUserById);
 
 export default router;

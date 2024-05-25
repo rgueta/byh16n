@@ -128,6 +128,7 @@ export const newUser = async (req,res) => {
     }
 }
 
+
 export const RegisterUser = async (req, res) => {
     console.log('RegisterUser -->', req.body);
 }
@@ -278,7 +279,7 @@ export const updateUserById = async (req,res) => {
 
 export const deleteUserById = async (req,res) => {
     try{
-        const deletedUser = await Users.findByIdAndDelete(req.params.userId);
+        const deletedUser = await Users.findByIdAndDelete(req.params.delUserId);
         res.status(200).json(deletedUser);
     }catch(e){
         res.status(500).json({'error': e.message});
