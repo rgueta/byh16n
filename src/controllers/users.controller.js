@@ -288,8 +288,6 @@ export const deleteUserById = async (req,res) => {
 }
 
 export const lockUser = async (req,res) =>{
-    console.log('neighbor  to lock--> ', req.body.neighborId);
-
     const userId = Types.ObjectId(req.body.neighborId);
     try{
         const updLocked = await Users.updateOne({_id : userId},{$set:{locked:true}})

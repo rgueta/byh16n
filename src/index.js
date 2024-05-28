@@ -3,6 +3,9 @@ import app from './app';
 import { Server } from "http";
 import axios from "axios";
 
+// socket.io
+import socket from "socket.io";
+
 
 // index setup
 const PORT = process.env.PORT;
@@ -11,6 +14,13 @@ const PORT = process.env.PORT;
 const httpServer = new Server(app,);
 httpServer.listen(PORT);
 // #endregion ------ http  ---------
+
+// socket.io
+const io = socket(httpServer,{
+    cors:{
+        origin: '*'
+    }
+})
 
 console.log('Server listen on port: ', PORT);
 
@@ -41,3 +51,9 @@ app.use("/api/alerts/:core/:msg/:title?/:subtitle?", async (req, res, next) => {
    return await res.status(200).send(resp);
 
  });
+
+//  socket.io implementation
+
+io.on('connection', (socket) =>{
+    console.log(`socket --> ${socket.id} connected.`);
+})
