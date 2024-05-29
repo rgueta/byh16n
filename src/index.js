@@ -61,7 +61,7 @@ io.on('connection', (socket) =>{
 
     // socket.on('codeEvent',(socket) => {
     //     console.log('codeEvent catchup..!!!!, socket: ', socket);
-    //     io.sockets.emit('codeEvent',{'msg':'hola'})
+    //     io.sockets.emit('codeEvent',{'msg':'event triggered'})
     // })
 });
 
