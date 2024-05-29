@@ -55,6 +55,11 @@ export const getCode_events = async (req,res) => {
     if(req.params.CoreSim != null){
         const codeEvents = await code_events.aggregate([
             {
+                $match : {
+                        CoreSim : req.params.CoreSim
+                    }
+            },
+            {
                 $lookup:{
                         'from' :  'codes',
                         'localField' : 'codeId',
@@ -81,11 +86,7 @@ export const getCode_events = async (req,res) => {
                     }   
                 },
             {$unwind : '$codes_users'},
-            {
-                $match : {
-                        CoreSim : req.params.CoreSim
-                    }
-            },
+           
             {$sort : { createdAt : -1 }},
             {
                 $project : {
@@ -93,7 +94,7 @@ export const getCode_events = async (req,res) => {
                         CoreSim : 1,
                         code : '$code_events_code.code',
                         casa : '$codes_users.house',
-                        visitorname : '$code_events.code.visitorName',
+                        visitorname : '$code_events_code.visitorName',
                         initial: '$code_events_code.initial',
                         expiry: '$code_events_code.expiry',
                         createdAt : { 
