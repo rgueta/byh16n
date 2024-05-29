@@ -63,15 +63,15 @@ export const getCode_events = async (req,res) => {
                     }
             },
             {$unwind : '$code_events_code'},
-            //     {
-            //     $lookup:{
-            //             'from' :  'visitors',
-            //             'localField' : 'code_events_code.visitorId',
-            //             'foreignField' : '_id',
-            //             'as' : 'code_visitors'
-            //         }
-            //     },
-            // {$unwind : '$code_visitors'},
+                {
+                $lookup:{
+                        'from' :  'visitors',
+                        'localField' : 'code_events_code.visitorId',
+                        'foreignField' : '_id',
+                        'as' : 'code_visitors'
+                    }
+                },
+            {$unwind : '$code_visitors'},
             {
                 $lookup : {
                         'from' :  'users',
