@@ -63,15 +63,15 @@ export const getCode_events = async (req,res) => {
                     }
             },
             {$unwind : '$code_events_code'},
-                {
-                $lookup:{
-                        'from' :  'visitors',
-                        'localField' : 'code_events_code.visitorId',
-                        'foreignField' : '_id',
-                        'as' : 'code_visitors'
-                    }
-                },
-            {$unwind : '$code_visitors'},
+            //     {
+            //     $lookup:{
+            //             'from' :  'visitors',
+            //             'localField' : 'code_events_code.visitorId',
+            //             'foreignField' : '_id',
+            //             'as' : 'code_visitors'
+            //         }
+            //     },
+            // {$unwind : '$code_visitors'},
             {
                 $lookup : {
                         'from' :  'users',
@@ -93,7 +93,7 @@ export const getCode_events = async (req,res) => {
                         CoreSim : 1,
                         code : '$code_events_code.code',
                         casa : '$codes_users.house',
-                        visitorname : '$code_visitors.name',
+                        visitorname : '$code_events.code.visitorName',
                         initial: '$code_events_code.initial',
                         expiry: '$code_events_code.expiry',
                         createdAt : { 
