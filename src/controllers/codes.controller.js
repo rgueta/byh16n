@@ -12,8 +12,8 @@ export const createCode = async (req, res, next) => {
         const codeSaved = await newCode.save();
         
         if(codeSaved) {
+            global._io.emit('newCode',{'msg':'event triggered'})
             res.status(200).json(codeSaved);
-            // return next(codeSaved);
         }else{
             return res.status(304).json({'msg':'No created code'});
         }

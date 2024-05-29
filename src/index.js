@@ -22,6 +22,8 @@ const io = socket(httpServer,{
     }
 })
 
+// global var to user from another files like controllers files
+global._io = io;
 console.log('Server listen on port: ', PORT);
 
 // Firebase ALerts  -----------------
@@ -56,4 +58,11 @@ app.use("/api/alerts/:core/:msg/:title?/:subtitle?", async (req, res, next) => {
 
 io.on('connection', (socket) =>{
     console.log(`socket --> ${socket.id} connected.`);
-})
+
+    // socket.on('codeEvent',(socket) => {
+    //     console.log('codeEvent catchup..!!!!, socket: ', socket);
+    //     io.sockets.emit('codeEvent',{'msg':'hola'})
+    // })
+});
+
+// export default httpServer;
