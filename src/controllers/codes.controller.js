@@ -179,3 +179,12 @@ export const deleteCodeById = async (req,res) => {
     const deletedCode = await Codes.findByIdAndDelete(req.params.codeId);
     res.status(204).json(deletedCode)
 }
+
+export const expirationCode = async (req,res) => {
+    const codeId = req.params.codeId
+    let userCourses = await Codes.find({
+        _id: req.body.codeId,
+        status: "VALID",
+        expirationDate: { $gt: new Date() }
+      });
+}
