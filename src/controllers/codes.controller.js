@@ -181,10 +181,20 @@ export const deleteCodeById = async (req,res) => {
 }
 
 export const expirationCode = async (req,res) => {
-    const codeId = req.params.codeId
-    let userCourses = await Codes.find({
-        _id: req.body.codeId,
-        status: "VALID",
-        expirationDate: { $gt: new Date() }
+    let now = await new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    console.log('now: ', now)
+    let code = await Codes.find({
+        code: req.params.code,
+        enable: 1,
+        expiry: { $gte: now.toISOString()}
       });
+
+      if(code.length > 0){
+        console.log('code: ',code);
+        res.status(200).json({'valid': true});
+      }else{
+        res.status(500).json({'valid':false});
+      }
+    
 }
