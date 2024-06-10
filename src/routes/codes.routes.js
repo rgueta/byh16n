@@ -3,7 +3,8 @@ import * as codesCtrl from '../controllers/codes.controller';
 import {authJwt}  from "../middleware";
 const router = Router();
 
-router.post('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.createCode );
+router.post('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.createCode);
+//router.post('/:userId',codesCtrl.createCode);
 
 router.get('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCodes);
 router.get('/user/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCodesByUser);
