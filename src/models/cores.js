@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 const coresSchema = new Schema({
     name : {type : String, required: true},
     Address : {type : String, required: true},
-    Sim : {type : String, required: true},
+    Sim : {type : String, required: true, default:''},
     coord : {type : [String], required: true},
     Houses : {
         qty : {type : Number, required: true},
