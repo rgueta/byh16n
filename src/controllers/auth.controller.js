@@ -1,6 +1,7 @@
 import Users from '../models/Users';
 import jwt from 'jsonwebtoken';
 import Roles from '../models/Roles';
+import { Schema, Types } from "mongoose";
 
 
 export const signUp = async (req, res) => {
@@ -47,6 +48,7 @@ export const signIn = async (req, res) => {
                     email : String(req.body.email)
                 }
             },
+            
             {
                 $lookup : {
                         'from' : 'cores',
@@ -107,12 +109,13 @@ export const signIn = async (req, res) => {
             },
             {
                 $lookup: {
-                  from: "configApp",
-                  as: "config",
-                  pipeline:[{"$match":{_id: ObjectId('65a822555b9c9da318f78179')}}]
+                  from : 'configApp',
+                  as : 'config',
+                  pipeline :[{$match :{_id: Types.ObjectId('65a822555b9c9da318f78179')}}]
                 }
               },
-              {$unwind : "$config"},
+              {$unwind : '$config'},
+            
             {
                 $project: {
                     _id : 1,
@@ -144,11 +147,13 @@ export const signIn = async (req, res) => {
                     localUrl: "$config.localUrl"
                 
                 }
-            }
+            },
             
         ],async function(err, foundUser) {
-        if(err || foundUser == '') return res.status(400).json({'errId':1,'ErrMsg':"Usuario no encontrado","Error": err});
-
+        if(err || foundUser == '') {
+            console.log('Error Auth: ', err)
+            return res.status(400).json({'errId':1,'ErrMsg':"Usuario no encontrado","Error": err});
+        }
         const matchPwd =  await Users.comparePassword(req.body.pwd,foundUser[0].pwd);
 
         if(!matchPwd) return res.status(400).json({token:'', ErrMsg:'Invalid password'});
@@ -186,14 +191,16 @@ export const signIn = async (req, res) => {
             return res.status(201).json({'accessToken' : token ,'refreshToken': refreshToken,
             'userId' : foundUser[0]._id, 'roles': foundUser[0].roles,'sim':foundUser[0].sim, 
             'core_sim':foundUser[0].coreSim, 'pwd': foundUser[0].pwd,'locked':foundUser[0].locked,
-            'core_id': foundUser[0].core, 'coreName' : foundUser[0].coreName, 'email':foundUser[0].email,
-            'location':foundUser[0].location, 'code_expiry': foundUser[0].code_expiry,
-            'iatDate': iatDate, 'expDate': expDate});
+            'core_id': foundUser[0].core, 'coreName' : foundUser[0].coreName,
+            'email':foundUser[0].email,'location':foundUser[0].location,
+            'backendUrl' : foundUser[0].backendUrl, 'localUrl' : foundUser[0].localUrl,
+            'code_expiry': foundUser[0].code_expiry,'iatDate': iatDate, 'expDate': expDate});
 
         });
 
         });
     }catch(err){
+        console.log('Error Auth: ', err)
         return res.status(400).json({'msg': 'Something wrong with server'})
     }
 }
