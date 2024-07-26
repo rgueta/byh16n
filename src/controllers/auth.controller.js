@@ -106,6 +106,14 @@ export const signIn = async (req, res) => {
                     } 
             },
             {
+                $lookup: {
+                  from: "configApp",
+                  as: "config",
+                  pipeline:[{"$match":{_id: ObjectId('65a822555b9c9da318f78179')}}]
+                }
+              },
+              {$unwind : "$config"},
+            {
                 $project: {
                     _id : 1,
                     name: 1,
@@ -125,15 +133,17 @@ export const signIn = async (req, res) => {
                     coreShortName: '$user_core.shortName',
                     core: 1,
                     code_expiry: '$user_core.code_expiry',
-                    locked:1
+                    locked:1,
                     //   img_folder: {$concat : [ '$cpu_country.shortName', '.' ,
                     //                 '$user_cpu.state', '.' ,
                     //                 '$cpu_city.shortName', '.' ,
                     //                 {$toString : '$user_division.id'} , '.' ,
                     //                 '$user_cpu.shortName', '.' ,
                     //                 '$user_core.shortName']}
+                    backendUrl: "$config.backendUrl",
+                    localUrl: "$config.localUrl"
                 
-                    }
+                }
             }
             
         ],async function(err, foundUser) {
