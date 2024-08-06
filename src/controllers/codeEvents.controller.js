@@ -1,18 +1,30 @@
 import code_events  from "../models/code_events";
-import { Schema, Types } from "mongoose";
+import { Types } from "mongoose";
+import Codes  from "../models/Codes";
 
 export const createCode_event = async (req,res) => {
-
     try{
+        let doorName = '';
         const code_Id = req.body.codeId;
         const picId = req.body.picId;
-        const CoreSim = req.body.CoreSim;
+        const coreSim = req.body.CoreSim;
         const codeId = Types.ObjectId(code_Id);
-        console.log('at createCode_event parameters--> ' + codeId 
-        + ', ' + picId 
-        + ', ' + CoreSim )
+        if(req.body.doorName){
+            doorName = req.body.doorName;
+        }
 
-        const newCode_event = new code_events({codeId,picId,CoreSim});
+        newCodeEvent(codeId, picId, coreSim, doorName);
+
+    }catch(err){
+        // console.log('createCode_event Error --> ', err)
+        res.status(501).json({'msg..': err})
+    }
+     
+}
+
+async function newCodeEvent(codeId,picId,coreSim,doorName){
+    try{
+        const newCode_event = new code_events({codeId,picId,coreSim,doorName});
         const eventSaved = await newCode_event.save();
          // using global io from index.js
         global._io.emit('codeEvent',{'msg':'event triggered'})
@@ -22,104 +34,169 @@ export const createCode_event = async (req,res) => {
         // console.log('createCode_event Error --> ', err)
         res.status(501).json({'msg..': err})
     }
-    
-    // try{
-    //     const newCode_event = new code_events({codeId,CoreSim,picId});
-    //     const eventSaved = await newCode_event.save();
-    //     res.status(201).json(eventSaved);
-    // }catch(err){
-    //     console.log('Error --> ', err)
-    //     res.status(504).json({'Error':e.message});
-    // }    
 }
 
-export const createCode_event_ = async (req,res) => {
-    const {code, picId, CoreSim} = await req.params;
-    const codeId = Types.ObjectId(code);
-    console.log('at createCode_event parameters--> ' + codeId 
-    + ', ' + picId 
-    + ', ' + CoreSim )
-    try{
-        const newCode_event = new code_events({codeId,CoreSim,picId});
-        const eventSaved = await newCode_event.save();
-        res.status(201).json(eventSaved);
-    }catch(err){
-        console.log('Error --> ', err)
-        res.status(504).json({'Error':e.message});
-    }    
+export const createCodeEvent_justCode = async (req,res) => {
+    let now = await new Date();
+
+    let code = await Codes.find({
+        code: req.params.code,
+        enable: 1,
+        expiry: { $gte: now.toISOString()}
+      });
+
+    if(code.length > 0){
+        console.log('si se encuentra el codigo')
+    }
+
+    console.log('justCode params --> ', req.params)
+    console.log('justCode body --> ', req.body)
+    res.status(201).json({'msg':'ok call api'});
+
+
+    // try{
+    //     const code_Id = req.body.codeId;
+
+
+    //     const picId = req.body.picId;
+    //     const CoreSim = req.body.CoreSim;
+    //     const codeId = Types.ObjectId(code_Id);
+    //     console.log('at createCode_event parameters--> ' + codeId 
+    //     + ', ' + picId 
+    //     + ', ' + CoreSim )
+
+    //     const newCode_event = new code_events({codeId,picId,CoreSim});
+    //     const eventSaved = await newCode_event.save();
+    //      // using global io from index.js
+    //     global._io.emit('codeEvent',{'msg':'event triggered'})
+    //     res.status(201).json(eventSaved);
+    //     // res.status(201).json({'msg':'ok'})
+    // }catch(err){
+    //     // console.log('createCode_event Error --> ', err)
+    //     res.status(501).json({'msg..': err})
+    // }
+     
 }
 
 export const getCode_events = async (req,res) => {
-   
-
-    if(req.params.CoreSim != null){
-        const codeEvents = await code_events.aggregate([
-            {
-                $match : {
-                        CoreSim : req.params.CoreSim
-                    }
-            },
-            {
-                $lookup:{
-                        'from' :  'codes',
-                        'localField' : 'codeId',
-                        'foreignField' : '_id',
-                        'as' : 'code_events_code'
-                    }
-            },
-            {$unwind : '$code_events_code'},
-            //     {
-            //     $lookup:{
-            //             'from' :  'visitors',
-            //             'localField' : 'code_events_code.visitorId',
-            //             'foreignField' : '_id',
-            //             'as' : 'code_visitors'
-            //         }
-            //     },
-            // {$unwind : '$code_visitors'},
-            {
-                $lookup : {
-                        'from' :  'users',
-                        'localField' : 'code_events_code.source.user',
-                        'foreignField' : '_id',
-                        'as' : 'codes_users'
-                    }   
+    let codeEvents = ''
+    
+    try{
+        if(req.params.CoreSim != null){
+            codeEvents = await code_events.aggregate([
+                {
+                    $match : {
+                            CoreSim : req.params.CoreSim
+                        }
                 },
-            {$unwind : '$codes_users'},
-            {
-                $lookup : {
-                        'from' :  'cores',
-                        'localField' : 'codes_users.core',
-                        'foreignField' : '_id',
-                        'as' : 'users_core'
-                    }   
+                {
+                    $lookup:{
+                            'from' :  'codes',
+                            'localField' : 'codeId',
+                            'foreignField' : '_id',
+                            'as' : 'code_events_code'
+                        }
                 },
-            {$unwind : '$users_core'},
-           
-            {$sort : { createdAt : -1 }},
-            {
-                $project : {
-                        codeId : 1,
-                        CoreSim : 1,
-                        code : '$code_events_code.code',
-                        street: '$users_core.name',
-                        house : '$codes_users.house',
-                        visitorname : '$code_events_code.visitorName',
-                        initial: '$code_events_code.initial',
-                        expiry: '$code_events_code.expiry',
-                        createdAt : { 
-                            $dateToString: { 
-                              format: '%Y/%m/%d %H:%M:%S', 
-                              date: '$createdAt', 
-                              timezone: 'America/Los_Angeles' 
-                            } 
-                          }
-                    }
-            }
-        ]);
-        res.status(201).json(codeEvents);
-    }else{
-        res.status(501).json({'msg':'core_sim parameter not received'})
+                {$unwind : '$code_events_code'},
+                {
+                    $lookup : {
+                            'from' :  'users',
+                            'localField' : 'code_events_code.source.user',
+                            'foreignField' : '_id',
+                            'as' : 'codes_users'
+                        }   
+                    },
+                {$unwind : '$codes_users'},
+                {
+                    $lookup : {
+                            'from' :  'cores',
+                            'localField' : 'codes_users.core',
+                            'foreignField' : '_id',
+                            'as' : 'users_core'
+                        }   
+                    },
+                {$unwind : '$users_core'},
+            
+                {$sort : { createdAt : -1 }},
+                {
+                    $project : {
+                            codeId : 1,
+                            CoreSim : 1,
+                            code : '$code_events_code.code',
+                            street: '$users_core.name',
+                            house : '$codes_users.house',
+                            visitorname : '$code_events_code.visitorName',
+                            initial: '$code_events_code.initial',
+                            expiry: '$code_events_code.expiry',
+                            createdAt : { 
+                                $dateToString: { 
+                                format: '%Y/%m/%d %H:%M:%S', 
+                                date: '$createdAt', 
+                                timezone: 'America/Los_Angeles' 
+                                } 
+                            }
+                        }
+                }
+            ]);
+            res.status(201).json(codeEvents);
+        }else{
+            codeEvents = await code_events.aggregate([
+                {
+                    $lookup:{
+                            'from' :  'codes',
+                            'localField' : 'codeId',
+                            'foreignField' : '_id',
+                            'as' : 'code_events_code'
+                        }
+                },
+                {$unwind : '$code_events_code'},
+                {
+                    $lookup : {
+                            'from' :  'users',
+                            'localField' : 'code_events_code.source.user',
+                            'foreignField' : '_id',
+                            'as' : 'codes_users'
+                        }   
+                    },
+                {$unwind : '$codes_users'},
+                {
+                    $lookup : {
+                            'from' :  'cores',
+                            'localField' : 'codes_users.core',
+                            'foreignField' : '_id',
+                            'as' : 'users_core'
+                        }   
+                    },
+                {$unwind : '$users_core'},
+            
+                {$sort : { createdAt : -1 }},
+                {
+                    $project : {
+                            codeId : 1,
+                            CoreSim : 1,
+                            code : '$code_events_code.code',
+                            coreName: '$users_core.name',
+                            doorName:1,
+                            house : '$codes_users.house',
+                            visitorname : '$code_events_code.visitorName',
+                            initial: '$code_events_code.initial',
+                            expiry: '$code_events_code.expiry',
+                            createdAt : { 
+                                $dateToString: { 
+                                format: '%Y/%m/%d %H:%M:%S', 
+                                date: '$createdAt', 
+                                timezone: 'America/Los_Angeles' 
+                                } 
+                            }
+                        }
+                }
+            ]);
+            res.status(201).json(codeEvents);
+            
+        }
+    }catch(err){
+        console.log('Error: ', err);
+        res.status(501).json({'error':err})
     }
 }
 

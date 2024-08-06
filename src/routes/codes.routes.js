@@ -11,7 +11,7 @@ router.get('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCode
 router.get('/user/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCodesByUser);
 router.get('/:codeId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCodeById);
 router.get('/visitors_dashboard/:userId',codesCtrl.getVisitors_dashboard);
-router.get('/activeCode/:code/:userId',[authJwt.isNeighbor],codesCtrl.expirationCode);
+router.get('/activeCode/:code/:userId/:doorName',[authJwt.isNeighbor],codesCtrl.expirationCode);
 
 router.put('/update/:userId/:codeId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.updateCodeById);
 router.delete('/:codeId',[authJwt.verifyToken,authJwt.isAdmin],codesCtrl.deleteCodeById);
