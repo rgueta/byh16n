@@ -1,7 +1,7 @@
 import Codes  from "../models/Codes";
 import code_events from "../models/code_events";
 import { Types } from "mongoose";
-import { response } from "express";
+
 
 export const createCode = async (req, res, next) => {
     try{
@@ -148,8 +148,6 @@ export const getVisitors_dashboard = async (req,res) => {
                 }
         ])
 
-        
-
         // get count code_events
         const  countEvents= await code_events.find().count();
 
@@ -182,6 +180,7 @@ export const deleteCodeById = async (req,res) => {
 
 export const expirationCode = async (req,res) => {
     let now = await new Date();
+
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     let code = await Codes.find({
         code: req.params.code,

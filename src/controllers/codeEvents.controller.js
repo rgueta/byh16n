@@ -1,125 +1,184 @@
 import code_events  from "../models/code_events";
-import { Schema, Types } from "mongoose";
+import { Types } from "mongoose";
+import Codes  from "../models/Codes";
+import { query } from "express";
 
 export const createCode_event = async (req,res) => {
-
     try{
+        let doorName = '';
         const code_Id = req.body.codeId;
         const picId = req.body.picId;
         const CoreSim = req.body.CoreSim;
         const codeId = Types.ObjectId(code_Id);
-        console.log('at createCode_event parameters--> ' + codeId 
-        + ', ' + picId 
-        + ', ' + CoreSim )
 
-        const newCode_event = new code_events({codeId,picId,CoreSim});
-        const eventSaved = await newCode_event.save();
-         // using global io from index.js
-        global._io.emit('codeEvent',{'msg':'event triggered'})
-        res.status(201).json(eventSaved);
-        // res.status(201).json({'msg':'ok'})
+        if(req.body.doorName){
+            doorName = req.body.doorName;
+        }
+
+        newCodeEvent(codeId, picId, CoreSim, doorName, res)
+        // res.status(201).json(eventSaved);
+
     }catch(err){
         // console.log('createCode_event Error --> ', err)
         res.status(501).json({'msg..': err})
     }
-    
-    // try{
-    //     const newCode_event = new code_events({codeId,CoreSim,picId});
-    //     const eventSaved = await newCode_event.save();
-    //     res.status(201).json(eventSaved);
-    // }catch(err){
-    //     console.log('Error --> ', err)
-    //     res.status(504).json({'Error':e.message});
-    // }    
+     
 }
 
-export const createCode_event_ = async (req,res) => {
-    const {code, picId, CoreSim} = await req.params;
-    const codeId = Types.ObjectId(code);
-    console.log('at createCode_event parameters--> ' + codeId 
-    + ', ' + picId 
-    + ', ' + CoreSim )
+async function newCodeEvent(codeId,picId,CoreSim,doorName,res){
     try{
-        const newCode_event = new code_events({codeId,CoreSim,picId});
+        const newCode_event = 
+            new code_events({codeId,picId,CoreSim,doorName});
         const eventSaved = await newCode_event.save();
-        res.status(201).json(eventSaved);
+         // using global io from index.js
+        global._io.emit('codeEvent',{'msg':'event triggered'})
+        res.status(201).json({'msg':'ok'});
     }catch(err){
-        console.log('Error --> ', err)
-        res.status(504).json({'Error':e.message});
-    }    
+        // console.log('createCode_event Error --> ', err)
+        res.status(501).json({'msg..': err})
+    }
+}
+
+async function callQuery(query){
+    try{
+        return await code_events.aggregate(query)
+    }catch(err){
+        console.log('Error: ', err);
+        return ''
+    }
+}
+
+export const createCodeEvent_justCode = async (req,res) => {
+    let now = await new Date();
+    try{
+        let code = await Codes.find({
+            code: req.params.code,
+            enable: 1,
+            expiry: { $gte: now.toISOString()}
+          });
+    
+        if(code.length > 0){
+            newCodeEvent(code[0]._id, req.body.picId,
+                req.body.CoreSim, req.body.doorName, res)
+        }
+    }catch(err){
+    // console.log('createCode_event Error --> ', err)
+    res.status(501).json({'msg..': err})
+    }
+
 }
 
 export const getCode_events = async (req,res) => {
-   
+    let codeEvents = ''
+    let match = {}
+    let start = ''
+    let end = ''
+    let match1 = {}
 
-    if(req.params.CoreSim != null){
-        const codeEvents = await code_events.aggregate([
-            {
-                $match : {
-                        CoreSim : req.params.CoreSim
-                    }
-            },
-            {
-                $lookup:{
-                        'from' :  'codes',
-                        'localField' : 'codeId',
-                        'foreignField' : '_id',
-                        'as' : 'code_events_code'
-                    }
-            },
-            {$unwind : '$code_events_code'},
-            //     {
-            //     $lookup:{
-            //             'from' :  'visitors',
-            //             'localField' : 'code_events_code.visitorId',
-            //             'foreignField' : '_id',
-            //             'as' : 'code_visitors'
-            //         }
-            //     },
-            // {$unwind : '$code_visitors'},
-            {
-                $lookup : {
-                        'from' :  'users',
-                        'localField' : 'code_events_code.source.user',
-                        'foreignField' : '_id',
-                        'as' : 'codes_users'
-                    }   
-                },
-            {$unwind : '$codes_users'},
-            {
-                $lookup : {
-                        'from' :  'cores',
-                        'localField' : 'codes_users.core',
-                        'foreignField' : '_id',
-                        'as' : 'users_core'
-                    }   
-                },
-            {$unwind : '$users_core'},
-           
-            {$sort : { createdAt : -1 }},
-            {
-                $project : {
-                        codeId : 1,
-                        CoreSim : 1,
-                        code : '$code_events_code.code',
-                        street: '$users_core.name',
-                        house : '$codes_users.house',
-                        visitorname : '$code_events_code.visitorName',
-                        initial: '$code_events_code.initial',
-                        expiry: '$code_events_code.expiry',
-                        createdAt : { 
-                            $dateToString: { 
-                              format: '%Y/%m/%d %H:%M:%S', 
-                              date: '$createdAt', 
-                              timezone: 'America/Los_Angeles' 
-                            } 
-                          }
-                    }
-            }
-        ]);
-        res.status(201).json(codeEvents);
+    if(req.body.CoreSim != null){
+        match = { CoreSim : req.body.CoreSim } 
     }else{
-        res.status(501).json({'msg':'core_sim parameter not received'})
+        console.log('CoreSim is null: ', req.body.CoreSim )
+    }
+
+    if(req.params.start != null && req.params.end != null){
+        console.log('start: ', start )
+        console.log('end: ', end )
+
+        console.log('req.params.start: ',req.params.start);
+        console.log('req.params.end: ',req.params.end);
+        
+        start = await new Date(req.params.start);
+        end = await new Date(req.params.end);
+
+        await start.setMinutes(start.getMinutes() - start.getTimezoneOffset());
+        await end.setMinutes(end.getMinutes() - start.getTimezoneOffset());
+   
+        match1 = await {
+            'codes.source.user'  : Types.ObjectId(req.params.userId),
+            createdAt :  {
+                $gte : new Date(start),
+                $lte : new Date(end)
+            }
+        }
+
+    }
+
+
+    console.log('match1: ', match1)
+
+    let query = [
+                {
+                    $match: match
+                },
+                {
+                    $match: match1
+                },
+                {
+                    $lookup:{
+                            'from' :  'codes',
+                            'localField' : 'codeId',
+                            'foreignField' : '_id',
+                            'as' : 'codes'
+                        }
+                },
+                {$unwind : '$codes'},
+                {
+                    $lookup : {
+                            'from' :  'users',
+                            'localField' : 'codes.source.user',
+                            'foreignField' : '_id',
+                            'as' : 'users'
+                        }   
+                    },
+                {$unwind : '$users'},
+                {
+                    $lookup : {
+                            'from' :  'cores',
+                            'localField' : 'users.core',
+                            'foreignField' : '_id',
+                            'as' : 'cores'
+                        }   
+                    },
+                {$unwind : '$cores'},
+
+                {$sort : { createdAt : -1 }},
+                {
+                    $project : {
+                            codeId : 1,
+                            CoreSim : 1,
+                            code : '$codes.code',
+                            street: '$cores.name',
+                            doorName:1,
+                            house : '$users.house',
+                            visitorName : '$codes.visitorName',
+                            initial: '$codes.initial',
+                            expiry: '$codes.expiry',
+                            createdAt : { 
+                                $dateToString: { 
+                                format: '%Y/%m/%d %H:%M:%S', 
+                                date: '$createdAt', 
+                                timezone: 'America/Los_Angeles' 
+                                } 
+                            }
+                        }
+                }
+    ]
+
+    console.log('query: ', query)
+            
+    try{
+       codeEvents = await callQuery(query);
+       if(codeEvents){
+            res.status(201).send(codeEvents);
+        }else{
+            res.status(503).json({'msg':'No data found'})
+        }
+            
+        
+    }catch(err){
+        console.log('Error: ', err);
+        res.status(501).json({'error':err})
     }
 }
 
@@ -132,8 +191,7 @@ export const getCode_eventsByDate = async (req,res) => {
     end.setMinutes(end.getMinutes() - start.getTimezoneOffset());
 
 
-    if(req.params.CoreSim != null && req.params.start != null && req.params.end != null){
-        const CoreSim = req.params.CoreSim;
+    if(req.params.start != null && req.params.end != null){
         const date = req.params.date;
 
         const codeEvents = await code_events.aggregate([
@@ -175,12 +233,13 @@ export const getCode_eventsByDate = async (req,res) => {
                         createdAt : { 
                             $dateToString: { 
                                 format: '%Y/%m/%d %H:%M:%S', 
-                                date: '$createdAt' 
+                                date: '$createdAt'
                             } 
                             }
                     }
             }
     ]);
+    
     
     if(codeEvents){
         res.status(201).send(codeEvents);

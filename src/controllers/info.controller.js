@@ -104,8 +104,8 @@ export const getInfo = async(req, res) =>{
           '$match': {
             '$and': [
               { 'disable': false }, 
-              { 'info_user._id': userID },
-              { 'updatedAt': { $gte : new Date(now)}}
+              { 'info_user._id': userID }
+            //   { 'updatedAt': { $gte : new Date(now)}}
             ]
           }
         },
