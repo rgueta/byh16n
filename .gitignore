@@ -12,6 +12,7 @@
 Thumbs.db
 UserInterfaceState.xcuserstate
 $RECYCLE.BIN/
+*.pem
 
 *.log
 log.txt
