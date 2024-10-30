@@ -7,7 +7,7 @@ router.post('/new',codeEventsCtrl.createCode_event);
 router.post('/newJustCode/:code',codeEventsCtrl.createCodeEvent_justCode);
 
 router.get('/:CoreSim/:userId',codeEventsCtrl.getCode_events);
-router.get('/:userId/:CoreSim/:start/:end',[authJwt.verifyToken,authJwt.isNeighbor],codeEventsCtrl.getCode_eventsByDate);
+router.get('/:userId/:start/:end',[authJwt.verifyToken,authJwt.isNeighbor],codeEventsCtrl.getCode_events);
 router.get('/code/:code',codeEventsCtrl.getCodeEventsByCode);
 
 router.get('/count/all/:userId',codeEventsCtrl.getCodeEventsCount);

@@ -144,7 +144,8 @@ export const signIn = async (req, res) => {
                     //                 '$user_cpu.shortName', '.' ,
                     //                 '$user_core.shortName']}
                     backendUrl: "$config.backendUrl",
-                    localUrl: "$config.localUrl"
+                    localUrl: "$config.localUrl",
+                    remote: '$user_core.remote'
                 
                 }
             },
@@ -194,7 +195,9 @@ export const signIn = async (req, res) => {
             'core_id': foundUser[0].core, 'coreName' : foundUser[0].coreName,
             'email':foundUser[0].email,'location':foundUser[0].location,
             'backendUrl' : foundUser[0].backendUrl, 'localUrl' : foundUser[0].localUrl,
-            'code_expiry': foundUser[0].code_expiry,'iatDate': iatDate, 'expDate': expDate});
+            'code_expiry': foundUser[0].code_expiry,'iatDate': iatDate, 'expDate': expDate,
+            'remote': foundUser[0].remote
+            });
 
         });
 
