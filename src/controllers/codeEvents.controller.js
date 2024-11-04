@@ -31,8 +31,8 @@ async function newCodeEvent(codeId,picId,CoreSim,doorName,res){
             new code_events({codeId,picId,CoreSim,doorName});
         const eventSaved = await newCode_event.save();
          // using global io from index.js
-        global._io.emit('codeEvent',{'msg':'event triggered'})
-        res.status(201).json({'msg':'ok'});
+        await global._io.emit('codeEvent',{'msg':'event triggered'})
+        await res.status(201).json({'msg':'ok'});
     }catch(err){
         // console.log('createCode_event Error --> ', err)
         res.status(501).json({'msg..': err})
@@ -58,9 +58,12 @@ export const createCodeEvent_justCode = async (req,res) => {
           });
     
         if(code.length > 0){
-            newCodeEvent(code[0]._id, req.body.picId,
+            await newCodeEvent(code[0]._id, req.body.picId,
                 req.body.CoreSim, req.body.doorName, res)
-        }
+            // res.status(200).json({'valid': true});
+        }else{
+            res.status(500).json({'valid':false});
+          }
     }catch(err){
     // console.log('createCode_event Error --> ', err)
     res.status(501).json({'msg..': err})
@@ -103,9 +106,6 @@ export const getCode_events = async (req,res) => {
         }
 
     }
-
-
-    console.log('match1: ', match1)
 
     let query = [
                 {
@@ -164,8 +164,6 @@ export const getCode_events = async (req,res) => {
                         }
                 }
     ]
-
-    console.log('query: ', query)
             
     try{
        codeEvents = await callQuery(query);
