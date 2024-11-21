@@ -1,4 +1,5 @@
-import S3  from "aws-sdk/clients/s3";
+import { Upload } from "@aws-sdk/lib-storage";
+import { S3 } from "@aws-sdk/client-s3";
 import fs from "fs";
 
 const bucketName = process.env.AWS_BUCKET_NAME;
@@ -8,8 +9,11 @@ const secretAccessKey = process.env.AWS_SECRET_KEY;
 
 const s3 = new S3({
     region,
-    accessKeyId,
-    secretAccessKey
+
+    credentials: {
+        accessKeyId,
+        secretAccessKey
+    }
 });
 
 // upload image to s3
@@ -24,7 +28,10 @@ export function uploadFile(file){
         Key: file.filename
     }
 
-    return s3.upload(uploadParams).promise()
+    return new Upload({
+        client: s3,
+        params: uploadParams
+    }).done();
 }
 
 exports.uploadFile = uploadFile

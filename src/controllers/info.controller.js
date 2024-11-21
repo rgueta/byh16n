@@ -3,19 +3,31 @@ import  { Types } from "mongoose";
 // import path from "path";
 import fs from 'fs';
 import * as tools from "../tools";
-// import { uploadFile } from "../public/js/s3";
-import AWS from "aws-sdk";
+import { Upload } from '@aws-sdk/lib-storage';
+import { S3 } from '@aws-sdk/client-s3';
 import {v4 as uuid} from 'uuid';
 
-const S3 = new AWS.S3({
-    bucketName : process.env.AWS_BUCKET_NAME,
+const S3 = new S3({
+    // The transformation for bucketName is not implemented.
+    // Refer to UPGRADING.md on aws-sdk-js-v3 for changes needed.
+    // Please create/upvote feature request on aws-sdk-js-codemod for bucketName.
+    bucketName: process.env.AWS_BUCKET_NAME,
+
     region : process.env.AWS_BUCKET_REGION,
-    maxRetries:3,
+
+    // The key maxRetries is renamed to maxAttempts.
+    // The value of maxAttempts needs to be maxRetries + 1.
+    maxAttempts: 3,
+
     credentials:{
        accessKeyId : process.env.AWS_ACCESS_KEY,
        secretAccessKey : process.env.AWS_SECRET_KEY
     },
-    httpOptions:{timeout: 300000, connectTimeout:5000}
+
+    // The transformation for httpOptions is not implemented.
+    // Refer to UPGRADING.md on aws-sdk-js-v3 for changes needed.
+    // Please create/upvote feature request on aws-sdk-js-codemod for httpOptions.
+    httpOptions: {timeout: 300000, connectTimeout:5000}
 })
 
 export const createInfo = async(req, res) =>{
@@ -36,12 +48,16 @@ export const createInfo = async(req, res) =>{
             // const fileContent = fs.createReadStream(req.file.path);
             const fileContent = await req.file;
 
-            S3.upload({
-                Bucket: process.env.AWS_BUCKET_NAME,
-                Key: `${locationFolder}/${folder}/${image}`,
-                Body: fileContent.buffer,
-                ContentType: fileContent.mimetype
-            }).promise( async (err, data) => {
+            new Upload({
+                client: S3,
+
+                params: {
+                    Bucket: process.env.AWS_BUCKET_NAME,
+                    Key: `${locationFolder}/${folder}/${image}`,
+                    Body: fileContent.buffer,
+                    ContentType: fileContent.mimetype
+                }
+            }).done( async (err, data) => {
                 if (err){
                     console.log('aws Error --> ',err);
                     res.status(501).json({'Error' : 'AWS Error: ' + err})
