@@ -3,11 +3,13 @@ import  { Types } from "mongoose";
 // import path from "path";
 import fs from 'fs';
 import * as tools from "../tools";
-import { Upload } from '@aws-sdk/lib-storage';
-// import { S3 } from '@aws-sdk/client-s3';
+import { S3 } from '@aws-sdk/client-s3';
 import {v4 as uuid} from 'uuid';
 
-const S3 = new S3({
+const s3 = new S3({
+    // The transformation for bucketName is not implemented.
+    // Refer to UPGRADING.md on aws-sdk-js-v3 for changes needed.
+    // Please create/upvote feature request on aws-sdk-js-codemod for bucketName.
     // The transformation for bucketName is not implemented.
     // Refer to UPGRADING.md on aws-sdk-js-v3 for changes needed.
     // Please create/upvote feature request on aws-sdk-js-codemod for bucketName.
@@ -17,6 +19,9 @@ const S3 = new S3({
 
     // The key maxRetries is renamed to maxAttempts.
     // The value of maxAttempts needs to be maxRetries + 1.
+    // The transformation for maxAttempts is not implemented.
+    // Refer to UPGRADING.md on aws-sdk-js-v3 for changes needed.
+    // Please create/upvote feature request on aws-sdk-js-codemod for maxAttempts.
     maxAttempts: 3,
 
     credentials:{
@@ -24,6 +29,9 @@ const S3 = new S3({
        secretAccessKey : process.env.AWS_SECRET_KEY
     },
 
+    // The transformation for httpOptions is not implemented.
+    // Refer to UPGRADING.md on aws-sdk-js-v3 for changes needed.
+    // Please create/upvote feature request on aws-sdk-js-codemod for httpOptions.
     // The transformation for httpOptions is not implemented.
     // Refer to UPGRADING.md on aws-sdk-js-v3 for changes needed.
     // Please create/upvote feature request on aws-sdk-js-codemod for httpOptions.
@@ -49,7 +57,7 @@ export const createInfo = async(req, res) =>{
             const fileContent = await req.file;
 
             new Upload({
-                client: S3,
+                client: s3,
 
                 params: {
                     Bucket: process.env.AWS_BUCKET_NAME,
