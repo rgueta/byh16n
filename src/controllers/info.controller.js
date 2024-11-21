@@ -4,7 +4,7 @@ import  { Types } from "mongoose";
 import fs from 'fs';
 import * as tools from "../tools";
 import { Upload } from '@aws-sdk/lib-storage';
-import { S3 } from '@aws-sdk/client-s3';
+// import { S3 } from '@aws-sdk/client-s3';
 import {v4 as uuid} from 'uuid';
 
 const S3 = new S3({
