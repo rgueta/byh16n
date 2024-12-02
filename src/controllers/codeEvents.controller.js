@@ -82,6 +82,7 @@ export const getCode_events = async (req,res) => {
         match = { CoreSim : req.body.CoreSim } 
     }else{
         console.log('CoreSim is null: ', req.body.CoreSim )
+        1 == 1;
     }
 
     if(req.params.start != null && req.params.end != null){
@@ -111,9 +112,7 @@ export const getCode_events = async (req,res) => {
                 {
                     $match: match
                 },
-                {
-                    $match: match1
-                },
+              
                 {
                     $lookup:{
                             'from' :  'codes',
@@ -141,6 +140,10 @@ export const getCode_events = async (req,res) => {
                         }   
                     },
                 {$unwind : '$cores'},
+
+                {
+                    $match: match1
+                },
 
                 {$sort : { createdAt : -1 }},
                 {
