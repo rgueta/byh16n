@@ -13,7 +13,7 @@ router.get('/:codeId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCode
 router.get('/visitors_dashboard/:userId',codesCtrl.getVisitors_dashboard);
 router.get('/activeCode/:code/:userId/:doorName',[authJwt.isNeighbor],codesCtrl.expirationCode);
 
-router.put('/update/:userId/:codeId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.updateCodeById);
+router.put('/update/:userId/:codeId',[authJwt.verifyToken,authJwt.isAdmin],codesCtrl.updateCodeById);
 router.delete('/:codeId',[authJwt.verifyToken,authJwt.isAdmin],codesCtrl.deleteCodeById);
 
 export default router;
