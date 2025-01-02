@@ -27,6 +27,7 @@ import citiesRoutes from "./routes/cities.routes";
 import cpusRoutes from "./routes/cpus.routes";
 import configAppRoutes from "./routes/configApp.routes";
 import backstageRoutes from "./routes/backstage.routes";
+import coreEvents from "./routes/coreEvents.routes";
 
 const cors = require("cors");
 
@@ -93,5 +94,6 @@ app.use('/api/cities', citiesRoutes);
 app.use('/api/cpus', cpusRoutes);
 app.use('/api/config', configAppRoutes);
 app.use('/api/backstage', backstageRoutes);
+app.use('/api/coreEvents', coreEvents);
 
 export default app;

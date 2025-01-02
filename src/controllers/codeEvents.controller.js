@@ -1,7 +1,6 @@
 import code_events  from "../models/code_events";
 import { Types } from "mongoose";
 import Codes  from "../models/Codes";
-import { query } from "express";
 
 export const createCode_event = async (req,res) => {
     try{
