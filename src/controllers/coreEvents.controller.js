@@ -5,15 +5,10 @@ export const createCoreEvent = async (req,res) => {
     try{
         const core_Id = req.body.coreId;
         const coreId = Types.ObjectId(core_Id);
-        
-
-        console.log('coreEvents body: ',req.body)
-        console.log('coreEvents params: ',req.params)
 
         newCoreEvent(coreId, req.body.data, res)
 
     }catch(err){
-        console.log('createCore_event Error --> ', err)
         res.status(501).json({'error: ': err})
     }
      
