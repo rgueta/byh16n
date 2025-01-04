@@ -8,7 +8,7 @@ export const createCoreEvent = async (req,res) => {
 
         console.log('req.body: ', req.body )
 
-        newCoreEvent(coreId, req.body.data, res)
+        newCoreEvent(coreId, req.body, res)
 
     }catch(err){
         res.status(501).json({'error: ': err})
