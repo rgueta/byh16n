@@ -6,6 +6,8 @@ export const createCoreEvent = async (req,res) => {
         const core_Id = req.body.coreId;
         const coreId = Types.ObjectId(core_Id);
 
+        console.log('req.body: ', req.body )
+
         newCoreEvent(coreId, req.body.data, res)
 
     }catch(err){
