@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 
 export const createCoreEvent = async (req,res) => {
     try{
-        const core_Id = req.body.coreId;
+        const core_Id = req.params.coreId;
         const coreId = Types.ObjectId(core_Id);
 
         newCoreEvent(coreId, req.body, res)
