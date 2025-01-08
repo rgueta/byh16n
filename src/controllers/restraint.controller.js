@@ -6,7 +6,27 @@ export const createRestraint = async (req,res) => {
         const core_Id = req.params.coreId;
         const coreId = Types.ObjectId(core_Id);
 
-        newRestraint(coreId, req.body, res)
+        const options = {
+            upsert: true,
+            new: true,
+            setDefaultsOnInsert: true
+        };
+        const query = {
+            $set: {
+                data: req.body
+            }
+        };
+        
+        await Restraint.findByIdAndUpdate(
+            coreId,
+            query,
+            options,function(err, restraint){
+                if(err){
+                    res.status(500).json({'error: ': err})
+                }else{
+                    res.status(200);
+                }
+            })
 
     }catch(err){
         res.status(501).json({'error: ': err})
