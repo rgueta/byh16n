@@ -14,12 +14,13 @@ export const createRestraint = async (req,res) => {
 
         const query = {
             $set: {
-                data: req.body
+                data: req.body,
+                coreId : coreId
             }
         };
         
         await Restraint.findByIdAndUpdate(
-            coreId,
+            req.params.coreId,
             query,
             options,function(err, restraint){
                 if(err){
