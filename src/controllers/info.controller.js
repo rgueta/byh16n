@@ -154,7 +154,7 @@ export const getInfo = async(req, res) =>{
     if(!info){
         res.status(502).json({'Error':'Error getting info' + err})
     }else{
-        res.status(201).json(info)
+        res.status(200).json(info)
     }    
 }
 

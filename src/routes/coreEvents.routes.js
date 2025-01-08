@@ -5,6 +5,6 @@ const router = Router();
 
 router.post('/new/:coreId',coreEventsCtrl.createCoreEvent);
 
-router.get('/:CoreSim/:userId',coreEventsCtrl.getCoreEvents);
+router.get('/:coreId',coreEventsCtrl.getCoreEvents);
 
 export default router;

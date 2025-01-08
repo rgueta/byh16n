@@ -29,113 +29,44 @@ async function newCoreEvent(coreId,data,res){
 }
 
 export const getCoreEvents = async (req,res) => {
-    let codeEvents = ''
-    let match = {}
-    let start = ''
-    let end = ''
-    let match1 = {}
-
-    if(req.body.CoreSim != null){
-        match = { CoreSim : req.body.CoreSim } 
-    }else{
-        console.log('CoreSim is null: ', req.body.CoreSim )
-        1 == 1;
-    }
-
-    if(req.params.start != null && req.params.end != null){
-        console.log('start: ', start )
-        console.log('end: ', end )
-
-        console.log('req.params.start: ',req.params.start);
-        console.log('req.params.end: ',req.params.end);
-        
-        start = await new Date(req.params.start);
-        end = await new Date(req.params.end);
-
-        await start.setMinutes(start.getMinutes() - start.getTimezoneOffset());
-        await end.setMinutes(end.getMinutes() - start.getTimezoneOffset());
-   
-        match1 = await {
-            'codes.source.user'  : Types.ObjectId(req.params.userId),
-            createdAt :  {
-                $gte : new Date(start),
-                $lte : new Date(end)
+    const coreId = Types.ObjectId(req.params.coreId);
+    const coreEvent = await coreEvents.aggregate([
+        { $sort : {createdAt : -1} },
+        { $limit : 1 },
+        {
+            $lookup : {
+                'from': 'cores',
+                'localField' : 'coreId',
+                'foreignField' : '_id',
+                'as' : 'events_core'
+            }
+        },
+        {$unwind : '$events_core'},
+        {
+        '$match': {
+            '$and': [
+            { 'events_core._id': coreId }
+            ]
+        }
+        },
+        {
+            $project: {
+                name : '$events_core.name',
+                sim : '$events_core.Sim',
+                updatedAt : { 
+                            $dateToString: { 
+                                format: '%Y/%m/%d %H:%M:%S', 
+                                date: '$updatedAt', 
+                                timezone: 'America/Los_Angeles' 
+                            } 
+                            }
             }
         }
+    ])
 
-    }
-
-    let query = [
-                {
-                    $match: match
-                },
-              
-                {
-                    $lookup:{
-                            'from' :  'codes',
-                            'localField' : 'codeId',
-                            'foreignField' : '_id',
-                            'as' : 'codes'
-                        }
-                },
-                {$unwind : '$codes'},
-                {
-                    $lookup : {
-                            'from' :  'users',
-                            'localField' : 'codes.source.user',
-                            'foreignField' : '_id',
-                            'as' : 'users'
-                        }   
-                    },
-                {$unwind : '$users'},
-                {
-                    $lookup : {
-                            'from' :  'cores',
-                            'localField' : 'users.core',
-                            'foreignField' : '_id',
-                            'as' : 'cores'
-                        }   
-                    },
-                {$unwind : '$cores'},
-
-                {
-                    $match: match1
-                },
-
-                {$sort : { createdAt : -1 }},
-                {
-                    $project : {
-                            codeId : 1,
-                            CoreSim : 1,
-                            code : '$codes.code',
-                            street: '$cores.name',
-                            doorName:1,
-                            house : '$users.house',
-                            visitorName : '$codes.visitorName',
-                            initial: '$codes.initial',
-                            expiry: '$codes.expiry',
-                            createdAt : { 
-                                $dateToString: { 
-                                format: '%Y/%m/%d %H:%M:%S', 
-                                date: '$createdAt', 
-                                timezone: 'America/Los_Angeles' 
-                                } 
-                            }
-                        }
-                }
-    ]
-            
-    try{
-       codeEvents = await callQuery(query);
-       if(codeEvents){
-            res.status(201).send(codeEvents);
-        }else{
-            res.status(503).json({'msg':'No data found'})
-        }
-            
-        
-    }catch(err){
-        console.log('Error: ', err);
-        res.status(501).json({'error':err})
-    }
+    if(!restraint){
+        res.status(502).json({'Error':'Error getting info' + err})
+    }else{
+        res.status(200).json(restraint)
+    }    
 }
