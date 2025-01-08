@@ -7,10 +7,11 @@ export const createRestraint = async (req,res) => {
         const coreId = Types.ObjectId(core_Id);
 
         const options = {
-            upsert: false,
+            upsert: true,
             new: true,
-            setDefaultsOnInsert: true
+            setDefaultsOnInsert: false
         };
+
         const query = {
             $set: {
                 data: req.body
