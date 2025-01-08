@@ -7,7 +7,7 @@ export const createRestraint = async (req,res) => {
         const coreId = Types.ObjectId(core_Id);
 
         const options = {
-            upsert: true,
+            upsert: false,
             new: true,
             setDefaultsOnInsert: true
         };
