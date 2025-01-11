@@ -41,6 +41,7 @@ export const createBackstage = async (req,res) =>{
 
         }else{
             res.status(504).json({'status' : 504, 'msg' : 'Ya existe correo en users'});
+            return
         }
             
     }catch(err){
