@@ -1,5 +1,6 @@
 import Users  from "../models/Users";
 import backstage from "../models/backstage";
+import pwdRST from "../models/pwdRST";
 import {Schema, Types} from 'mongoose';
 
 export const createBackstage = async (req,res) =>{
@@ -15,9 +16,17 @@ export const createBackstage = async (req,res) =>{
         const foundStage = await backstage.findOne({email : req.body.email});
 
         if(foundStage){
-            res.status(303).json({'status' : 303, 'msg' : 'Ya existe peticion para este correo'});
+            res.status(303).json({'status' : 303, 'msg' : 'Ya existe correo en backstage'});
             return;
         }
+
+         // Find this email in pwdrsts collection
+         const foundRST = await pwdRST.findOne({email : req.body.email});
+
+         if(foundRST){
+             res.status(303).json({'status' : 303, 'msg' : 'Ya existe correo en pwdrsts'});
+             return;
+         }
 
         // Find this email in users collection
         const foundUser = await Users.findOne({email : req.body.email});
@@ -31,7 +40,7 @@ export const createBackstage = async (req,res) =>{
                 'result': backstageSaved});
 
         }else{
-            res.status(504).json({'status' : 504, 'msg' : 'Email already exists'});
+            res.status(504).json({'status' : 504, 'msg' : 'Ya existe correo en users'});
         }
             
     }catch(err){
