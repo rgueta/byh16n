@@ -16,6 +16,7 @@ export const createBackstage = async (req,res) =>{
 
         if(foundStage){
             res.status(303).json({'status' : 303, 'msg' : 'Ya existe peticion para este correo'});
+            return;
         }
 
         // Find this email in users collection
