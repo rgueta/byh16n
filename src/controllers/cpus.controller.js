@@ -33,8 +33,6 @@ export const updateCpu = async (req,res) => {
 }
 
 export const getCpu = async (req, res) => {
-  // cache control header
-	res.setHeader("Cache-Control", "public"); 
   try{
     await Cpus.aggregate([
       { $sort: {name:1}},

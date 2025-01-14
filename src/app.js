@@ -36,6 +36,12 @@ const app = express();
 createRoles();
 
 
+// cors configation
+var corsOptions = {
+    origin: 'http://100.24.58.74',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
+
 //  --- static files
 app.use(express.static('public'));
 app.use('/css',express.static(__dirname + '/public/css'));
