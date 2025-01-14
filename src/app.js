@@ -58,17 +58,15 @@ app.set('pkg',pkg);
 //#region  -- middleware  -----------------------
 // Parse URL-encoded bodies when sent by HTML forms
 
-app.use(express.static(path.join(__dirname, "/public"),{
-setHeaders: function(res) {
-    res.set("Content-Security-Policy", "default-src 'self'");
-  }}
-));
+app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({extended:true}));
 app.use(cors());
 app.use(express.json());
 app.use(morgan(':date[iso] :method :url :status (:response-time ms'));
 
-
+res.header('env', process.env.ENV);
+res.setHeader('env', process.env.ENV);
+res.set('env', process.env.ENV);
 // #endregion --------------------------------------
 
 // ---- routes ----
