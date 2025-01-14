@@ -5,7 +5,7 @@ var cors = require('cors')
 
 // cors configation
 var corsOptions = {
-    origin: 'http://100.24.58.74',
+    origin: ['*','capacitor://localhost'],
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   }
 
