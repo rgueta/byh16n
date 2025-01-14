@@ -58,20 +58,15 @@ app.set('pkg',pkg);
 //#region  -- middleware  -----------------------
 // Parse URL-encoded bodies when sent by HTML forms
 
-app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.static(path.join(__dirname, "/public"),{
+setHeaders: function(res) {
+    res.set("Content-Security-Policy", "default-src 'self'");
+  }}
+));
 app.use(express.urlencoded({extended:true}));
 app.use(cors());
 app.use(express.json());
 app.use(morgan(':date[iso] :method :url :status (:response-time ms'));
-
-// header
-
-app.use((req, res, next) => {
-    res.append('Access-Control-Allow-Origin', ['*','capacitor://localhost']);
-    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.append('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
 
 
 // #endregion --------------------------------------
