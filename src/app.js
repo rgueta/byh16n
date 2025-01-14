@@ -64,6 +64,16 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan(':date[iso] :method :url :status (:response-time ms'));
 
+// header
+
+app.use((req, res, next) => {
+    res.append('Access-Control-Allow-Origin', ['*','capacitor://localhost']);
+    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.append('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+});
+
+
 // #endregion --------------------------------------
 
 // ---- routes ----
