@@ -64,9 +64,6 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan(':date[iso] :method :url :status (:response-time ms'));
 
-res.header('env', process.env.ENV);
-res.setHeader('env', process.env.ENV);
-res.set('env', process.env.ENV);
 // #endregion --------------------------------------
 
 // ---- routes ----
