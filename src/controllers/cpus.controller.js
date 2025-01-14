@@ -1,5 +1,4 @@
 import Cpus  from "../models/cpus";
-import { Types } from "mongoose";
 
 
 export const createCpu = async (req,res) => {
