@@ -60,7 +60,7 @@ app.set('pkg',pkg);
 
 
 function setCorsHeaders(req, res, next) {
-    res.setHeader('Origin', ['*','capacitor://localhost']);
+    res.setHeader('Origin', ['http://100.24.58.74','capacitor://localhost']);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
