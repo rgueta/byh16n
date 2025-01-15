@@ -59,6 +59,14 @@ app.set('pkg',pkg);
 //#region  -- middleware  -----------------------
 // Parse URL-encoded bodies when sent by HTML forms
 
+
+function setCorsHeaders(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+  }
+
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({extended:true}));
 // app.use(cors());
@@ -103,9 +111,3 @@ app.use('/api/restraint', RestraintRoutes);
 export default app;
 
 
-function setCorsHeaders(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next();
-  }
