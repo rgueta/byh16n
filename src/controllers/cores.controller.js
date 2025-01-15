@@ -28,7 +28,7 @@ export const createCore = async (req,res) => {
 export const getCoresAdmin = async (req, res) => {
   try{
     Cores.find({},{_id:1,name:1,Houses:1,Address:1,coord:1,
-      Sim:1,detail:1,enable:1,
+      Sim:1,detail:1,enable:1,remote:1,
       location:{$concat : ['$country', '.', '$state', '.', '$city',
       '.', {$toString : '$division'}, '.', '$cpu', '.', '$shortName']}
       },async (err, results) => {
