@@ -103,7 +103,10 @@ export const getCoresLight = async (req, res) => {
 
 
 export const statusCore = async (req,res) => {
-  const item = req.body.item
+  const item = req.body.item;
+  const qry = {$set : {item}}
+  console.log('qry: ', qry);
+  return
   const updatedCore = 
   await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},
     {$set: {item}})
