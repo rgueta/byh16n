@@ -102,38 +102,20 @@ export const getCoresLight = async (req, res) => {
 }
 
 
-export const statusCore = async (req,res) => {
-  const item = req.body.item;
-  console.log('item: ', item);
-  const StrQry = '{ "$set" : ' + JSON.stringify(item) + '}'
-  console.log('qry: ', StrQry);
+export const chgItemCore = async (req,res) => {
+  const StrQry = '{ "$set" : ' + JSON.stringify(req.body.item) + '}';
   const qry = JSON.parse(StrQry);
  
   const updatedCore = 
   await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},qry)
   
   if(updatedCore){
-    console.log('Core enabled OK')
-    res.status(204).json({'Msg':'Core enabled Ok'})
-    // res.status(204).json(updatedCore)
+    // res.status(204).json({'Msg':'Core enabled Ok'})
+    res.status(204).json(updatedCore)
   }else{
     res.status(504).json({'Msg' : 'Error enable core: '})
   }
   
-}
-
-export const disableCore = async (req,res) => {
-  // const updatedCore = await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},
-  // {$set:{enable:false}})
-  res.status(204).json({'Msg':'Core enabled Ok'})
-  return;
-  
-  if(updatedCore){
-    res.status(204).json({'Msg':'Core disabled Ok '})
-    // res.status(204).json(updatedCore)
-  }else{
-    res.status(504).json({'Msg' : 'Error core disable'})
-  }
 }
 
 export const chgSim = async (req,res) => {

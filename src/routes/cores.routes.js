@@ -6,8 +6,7 @@ const router = Router();
 
 router.post('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],coresCtrl.createCore);
 router.post('/chgSim/:userId',[authJwt.verifyToken,authJwt.isAdmin],coresCtrl.chgSim);
-router.post('/status/:userId',[authJwt.verifyToken,authJwt.isAdmin],coresCtrl.statusCore);
-router.post('/disable/:userId',[authJwt.verifyToken,authJwt.isAdmin],coresCtrl.disableCore);
+router.post('/chgItem/:userId',[authJwt.verifyToken,authJwt.isAdmin],coresCtrl.chgItemCore);
 
 router.get('/:cpuId',coresCtrl.getCoresByCpu);
 router.get('/admin/:userId',[authJwt.verifyToken,authJwt.isAdmin],coresCtrl.getCoresAdmin);
