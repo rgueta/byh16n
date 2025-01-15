@@ -123,7 +123,8 @@ export const statusCore = async (req,res) => {
 }
 
 export const disableCore = async (req,res) => {
-  // const updatedCore = await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},{$set:{enable:false}})
+  // const updatedCore = await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},
+  // {$set:{enable:false}})
   res.status(204).json({'Msg':'Core enabled Ok'})
   return;
   
