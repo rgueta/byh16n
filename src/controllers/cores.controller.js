@@ -102,8 +102,11 @@ export const getCoresLight = async (req, res) => {
 }
 
 
-export const enableCore = async (req,res) => {
-  const updatedCore = await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},{$set: {enable:true}})
+export const statusCore = async (req,res) => {
+  const updatedCore = 
+  await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},
+    {$set: {enable:req.body.enable}})
+  
   if(updatedCore){
     console.log('Core enabled OK')
     res.status(204).json({'Msg':'Core enabled Ok'})
@@ -115,10 +118,8 @@ export const enableCore = async (req,res) => {
 }
 
 export const disableCore = async (req,res) => {
-  console.log('coreId --> ',req.body.coreId)
   const updatedCore = await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},{$set:{enable:false}})
   if(updatedCore){
-    console.log('Core disable OK')
     res.status(204).json({'Msg':'Core disabled Ok '})
     // res.status(204).json(updatedCore)
   }else{
@@ -127,11 +128,9 @@ export const disableCore = async (req,res) => {
 }
 
 export const chgSim = async (req,res) => {
-  console.log('coreId: ',req.body.coreId + ', new sim: ' + req.body.newSim)
   const updatedCore = await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},
     {$set:{Sim:req.body.newSim}})
   if(updatedCore){
-    console.log('Core sim changed OK')
     res.status(204).json({'Msg':'Core disabled Ok '})
     // res.status(204).json(updatedCore)
   }else{
