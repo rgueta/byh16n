@@ -110,8 +110,7 @@ export const statusCore = async (req,res) => {
   const qry = JSON.parse(StrQry);
  
   const updatedCore = 
-  await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},
-    {qry})
+  await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},qry)
   
   if(updatedCore){
     console.log('Core enabled OK')
