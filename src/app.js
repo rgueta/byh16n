@@ -35,6 +35,8 @@ const cors = require("cors");
 const app = express();
 createRoles();
 
+app.cors.
+
 //  --- static files
 app.use(express.static('public'));
 app.use('/css',express.static(__dirname + '/public/css'));
@@ -59,7 +61,8 @@ app.set('pkg',pkg);
 
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({extended:true}));
-app.use(cors());
+// app.use(cors());
+app.use(setCorsHeaders);
 app.use(express.json());
 app.use(morgan(':date[iso] :method :url :status (:response-time ms'));
 
@@ -98,3 +101,11 @@ app.use('/api/coreEvents', coreEvents);
 app.use('/api/restraint', RestraintRoutes);
 
 export default app;
+
+
+function setCorsHeaders(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+  }
