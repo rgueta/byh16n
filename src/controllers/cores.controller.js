@@ -104,6 +104,7 @@ export const getCoresLight = async (req, res) => {
 
 export const chgItemCore = async (req,res) => {
   const StrQry = '{ "$set" : ' + JSON.stringify(req.body.item) + '}';
+  console.log('strQry: ', StrQry)
   const qry = JSON.parse(StrQry);
  
   const updatedCore = 
