@@ -36,7 +36,8 @@ const coresSchema = new Schema({
     cpu : {type: String},
     enable : {type: Boolean},
     code_expiry : {type: Number},
-    webService : {type: Boolean}
+    webService : {type: Boolean},
+    remote:{type:Boolean}
     },
     
 // });
