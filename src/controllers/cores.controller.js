@@ -107,10 +107,10 @@ export const statusCore = async (req,res) => {
   console.log('item: ', item);
   const qry = '$set :' + JSON.stringify(item)
   console.log('qry: ', qry);
-  return
+ 
   const updatedCore = 
   await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},
-    {$set: {item}})
+    {qry})
   
   if(updatedCore){
     console.log('Core enabled OK')
