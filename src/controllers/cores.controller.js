@@ -103,7 +103,7 @@ export const getCoresLight = async (req, res) => {
 
 
 export const statusCore = async (req,res) => {
-  const item = req.body.item;
+  const item = req.body.item[0];
   const qry = {$set : {item}}
   console.log('qry: ', qry);
   return
