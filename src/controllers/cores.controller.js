@@ -103,14 +103,10 @@ export const getCoresLight = async (req, res) => {
 
 
 export const statusCore = async (req,res) => {
-  console.log('body --> ', req.body);
-  res.status(204).json({'Msg':'Core enabled Ok'})
-  return;
-  
-  const valStatus = req.body.enable
+  const item = req.body.item
   const updatedCore = 
   await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},
-    {$set: {enable:valStatus}})
+    {$set: {item}})
   
   if(updatedCore){
     console.log('Core enabled OK')
