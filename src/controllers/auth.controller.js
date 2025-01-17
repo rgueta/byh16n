@@ -190,13 +190,14 @@ export const signIn = async (req, res) => {
             if(!token) return res.status(401).json({'token' : '', message : 'Something goes wrong'});
 
             return res.status(201).json({'accessToken' : token ,'refreshToken': refreshToken,
-            'userId' : foundUser[0]._id, 'roles': foundUser[0].roles,'sim':foundUser[0].sim, 
-            'core_sim':foundUser[0].coreSim, 'pwd': foundUser[0].pwd,'locked':foundUser[0].locked,
-            'core_id': foundUser[0].core, 'coreName' : foundUser[0].coreName,
-            'email':foundUser[0].email,'location':foundUser[0].location,
-            'backendUrl' : foundUser[0].backendUrl, 'localUrl' : foundUser[0].localUrl,
-            'code_expiry': foundUser[0].code_expiry,'iatDate': iatDate, 'expDate': expDate,
-            'remote': foundUser[0].remote
+            'userId' : foundUser[0]._id, 'userName': foundUser[0].name,
+            'roles': foundUser[0].roles, 'sim':foundUser[0].sim,
+            'core_sim':foundUser[0].coreSim, 'pwd': foundUser[0].pwd,
+            'locked':foundUser[0].locked, 'core_id': foundUser[0].core, 
+            'coreName' : foundUser[0].coreName,'email':foundUser[0].email,
+            'location':foundUser[0].location,'backendUrl':foundUser[0].backendUrl,
+            'localUrl' : foundUser[0].localUrl,'code_expiry': foundUser[0].code_expiry,
+            'iatDate': iatDate, 'expDate': expDate,'remote': foundUser[0].remote
             });
 
         });
