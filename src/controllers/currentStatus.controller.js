@@ -1,9 +1,10 @@
-import Restraint  from "../models/restraint";
+import currentStatus  from "../models/currentStatus";
 import { Types } from "mongoose";
 
-export const createRestraint = async (req,res) => {
+export const createCurrentStatus = async (req,res) => {
     try{
         const core_Id = req.params.coreId;
+        const name = req.params.name;
         const coreId = Types.ObjectId(core_Id);
 
         const options = {
@@ -17,11 +18,12 @@ export const createRestraint = async (req,res) => {
         const update = {
             $set: {
                 data: req.body,
-                coreId : coreId
+                coreId : coreId,
+                name: name
             }
         };
         
-        await Restraint.findOneAndUpdate(
+        await currentStatus.findOneAndUpdate(
             query,
             update,
             options,function(err, restraint){
@@ -38,23 +40,21 @@ export const createRestraint = async (req,res) => {
      
 }
 
-async function newRestraint(coreId,data,res){
+async function newStatus(coreId,name,data,res){
     try{
         const newRest = 
-            new Restraint({coreId,data});
+            new currentStatus({coreId,name,data});
         const restSaved = await newRest.save();
         await res.status(200).json(restSaved);
-
-        // await res.status(200).json({'msg': 'ok'})
 
     }catch(err){
         res.status(501).json({'error ': err})
     }
 }
 
-export const getRestraint = async (req,res) => {
+export const getStatus = async (req,res) => {
        const coreId = Types.ObjectId(req.params.coreId);
-       const restraint = await Restraint.aggregate([
+       const restraint = await currentStatus.aggregate([
            { $sort : {createdAt : -1} },
            { $limit : 1 },
            {
@@ -62,21 +62,21 @@ export const getRestraint = async (req,res) => {
                    'from': 'cores',
                    'localField' : 'coreId',
                    'foreignField' : '_id',
-                   'as' : 'restraint_core'
+                   'as' : 'currentStatus_core'
                }
            },
-           {$unwind : '$restraint_core'},
+           {$unwind : '$currentStatus_core'},
             {
              '$match': {
                '$and': [
-                 { 'restraint_core._id': coreId }
+                 { 'currentStatus_core._id': coreId }
                ]
              }
            },
            {
                $project: {
-                   name : '$restraint_core.name',
-                   sim : '$restraint_core.Sim',
+                   name : '$currentStatus_core.name',
+                   sim : '$currentStatus_core.Sim',
                    updatedAt : { 
                                  $dateToString: { 
                                    format: '%Y/%m/%d %H:%M:%S', 

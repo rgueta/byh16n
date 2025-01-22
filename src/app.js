@@ -28,7 +28,7 @@ import cpusRoutes from "./routes/cpus.routes";
 import configAppRoutes from "./routes/configApp.routes";
 import backstageRoutes from "./routes/backstage.routes";
 import coreEvents from "./routes/coreEvents.routes";
-import RestraintRoutes from "./routes/restraint.routes";
+import currentStatusRoutes from "./routes/currentStatus.routes";
 
 const cors = require("cors");
 
@@ -96,7 +96,7 @@ app.use('/api/cpus', cpusRoutes);
 app.use('/api/config', configAppRoutes);
 app.use('/api/backstage', backstageRoutes);
 app.use('/api/coreEvents', coreEvents);
-app.use('/api/restraint', RestraintRoutes);
+app.use('/api/currentStatus', currentStatusRoutes);
 
 export default app;
 

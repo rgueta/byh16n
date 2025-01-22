@@ -1,7 +1,8 @@
 import { Schema, model } from "mongoose";
 
-const restraint_Schema = new Schema({
+const currentStatus_Schema = new Schema({
     coreId : {type : Schema.Types.ObjectId, required: true},
+    name:{type: String, required:true},
     data : [{}]
     },
     {
@@ -9,4 +10,4 @@ const restraint_Schema = new Schema({
         versionKey:false
     });
 
-export default model('restraint', restraint_Schema);
+export default model('currentStatus', currentStatus_Schema);
