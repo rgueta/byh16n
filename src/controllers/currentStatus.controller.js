@@ -17,8 +17,6 @@ export const createCurrentStatus = async (req,res) => {
 
         const query = { coreId : coreId, name : name };
 
-       
-        
         if (name == 'events' || name == 'extrange') {
             update = {
                 $push: {
@@ -33,6 +31,7 @@ export const createCurrentStatus = async (req,res) => {
                         res.status(500).json({'error: ': err})
                     }else{
                         res.status(200);
+                        return;
                     }
                 })
             }
