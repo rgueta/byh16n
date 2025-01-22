@@ -28,5 +28,5 @@ export const getTimestamp = async() => {
   
     var withOffset = myDate.getTime();
     var withoutOffset = withOffset - offset;
-    return withoutOffset;
+    return offset;
   }
