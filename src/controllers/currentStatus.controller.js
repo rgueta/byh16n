@@ -19,7 +19,7 @@ export const createCurrentStatus = async (req,res) => {
 
         if (name == 'events' || name == 'extrange') {
             update = {
-                $push: {
+                $addToSet: {
                     data: req.body
                 }
             };
