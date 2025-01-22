@@ -7,42 +7,54 @@ export const createCurrentStatus = async (req,res) => {
         const name = req.params.name;
         const coreId = Types.ObjectId(core_Id);
         let options = {};
-
-        if (name == 'events' || name == 'extrange') {
-            options = {
-                upsert: true,
-                new: false,
-                setDefaultsOnInsert: false
-            };
-            console.log(`name: ${name}, option: ${options}` )
-        }else{
-            options = {
-                upsert: true,
-                new: true,
-                setDefaultsOnInsert: false
-            };
-        }
+        let update = {};
+        
+        options = {
+            upsert: true,
+            new: true,
+            setDefaultsOnInsert: false
+        };
 
         const query = { coreId : coreId, name : name };
 
-        const update = {
-            $set: {
-                data: req.body,
-                coreId : coreId,
-                name: name
-            }
-        };
+       
         
-        await currentStatus.findOneAndUpdate(
-            query,
-            update,
-            options,function(err, status){
-                if(err){
-                    res.status(500).json({'error: ': err})
-                }else{
-                    res.status(200);
+        if (name == 'events' || name == 'extrange') {
+            update = {
+                $push: {
+                    data: req.body
                 }
-            })
+            };
+            await currentStatus.updateOne(
+                query,
+                update,
+                options,function(err, status){
+                    if(err){
+                        res.status(500).json({'error: ': err})
+                    }else{
+                        res.status(200);
+                    }
+                })
+            }
+        else{
+            update = {
+                $set: {
+                    data: req.body,
+                    coreId : coreId,
+                    name: name
+                }
+            };
+            await currentStatus.findOneAndUpdate(
+                query,
+                update,
+                options,function(err, status){
+                    if(err){
+                        res.status(500).json({'error: ': err})
+                    }else{
+                        res.status(200);
+                    }
+                })
+        }
 
     }catch(err){
         res.status(501).json({'error: ': err})
