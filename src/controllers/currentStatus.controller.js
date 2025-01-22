@@ -6,12 +6,21 @@ export const createCurrentStatus = async (req,res) => {
         const core_Id = req.params.coreId;
         const name = req.params.name;
         const coreId = Types.ObjectId(core_Id);
+        let options = {};
 
-        const options = {
-            upsert: true,
-            new: true,
-            setDefaultsOnInsert: false
-        };
+        if (name == 'events' || name == 'extrange') {
+            options = {
+                upsert: false,
+                new: true,
+                setDefaultsOnInsert: false
+            };
+        }else{
+            options = {
+                upsert: true,
+                new: true,
+                setDefaultsOnInsert: false
+            };
+        }
 
         const query = { coreId : coreId, name : name };
 
@@ -26,7 +35,7 @@ export const createCurrentStatus = async (req,res) => {
         await currentStatus.findOneAndUpdate(
             query,
             update,
-            options,function(err, restraint){
+            options,function(err, status){
                 if(err){
                     res.status(500).json({'error: ': err})
                 }else{
