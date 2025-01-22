@@ -14,6 +14,7 @@ export const createCurrentStatus = async (req,res) => {
                 new: false,
                 setDefaultsOnInsert: false
             };
+            console.log(`name: ${name}, option: ${options}` )
         }else{
             options = {
                 upsert: true,
