@@ -27,8 +27,9 @@ const io = socket(httpServer,{
 // global var to user from another files like controllers files
 global._io = io;
 // console.log('Server listen on port: ' + PORT);
+tools.getTimestamp();
 console.log('Server listen on port: '+ PORT 
-    + ', '+ Date.now());
+    + ', '+ new Date().toISOString());
 
 // Firebase ALerts  -----------------
 app.use("/api/alerts/:core/:msg/:title?/:subtitle?", async (req, res, next) => {
