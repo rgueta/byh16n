@@ -13,7 +13,7 @@ export const createCurrentStatus = async (req,res) => {
             setDefaultsOnInsert: false
         };
 
-        const query = { coreId : coreId };
+        const query = { coreId : coreId, name : name };
 
         const update = {
             $set: {
