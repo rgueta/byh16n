@@ -28,7 +28,7 @@ const io = socket(httpServer,{
 global._io = io;
 // console.log('Server listen on port: ' + PORT);
 console.log('Server listen on port: '+ PORT 
-    + ', '+ JSON.stringify(await tools.getTimestamp()));
+    + ', '+ Date.now());
 
 // Firebase ALerts  -----------------
 app.use("/api/alerts/:core/:msg/:title?/:subtitle?", async (req, res, next) => {
