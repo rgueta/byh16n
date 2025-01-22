@@ -2,9 +2,11 @@
 import app from './app';
 import { Server } from "http";
 import axios from "axios";
+import * as tools from "../src/tools";
 
 // socket.io
 import socket from "socket.io";
+
 
 
 // index setup
@@ -24,7 +26,7 @@ const io = socket(httpServer,{
 
 // global var to user from another files like controllers files
 global._io = io;
-console.log('Server listen on port: ', PORT);
+console.log(`Server listen on port: ${PORT}, ${tools.getTimestamp()}`);
 
 // Firebase ALerts  -----------------
 app.use("/api/alerts/:core/:msg/:title?/:subtitle?", async (req, res, next) => {
@@ -64,5 +66,3 @@ io.on('connection', (socket) =>{
     //     io.sockets.emit('codeEvent',{'msg':'event triggered'})
     // })
 });
-
-// export default httpServer;
