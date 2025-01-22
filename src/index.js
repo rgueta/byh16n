@@ -2,7 +2,6 @@
 import app from './app';
 import { Server } from "http";
 import axios from "axios";
-import * as tools from "../src/tools";
 
 // socket.io
 import socket from "socket.io";
@@ -26,8 +25,7 @@ const io = socket(httpServer,{
 
 // global var to user from another files like controllers files
 global._io = io;
-// console.log('Server listen on port: ' + PORT);
-tools.getTimestamp();
+
 console.log('Server listen on port: '+ PORT 
     + ', '+ new Date().toISOString());
 

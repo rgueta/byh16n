@@ -21,13 +21,3 @@ export const getSection = async (string,section) => {
 
     return str_section;
 }
-
-export const getTimestamp = async() => {
-    var myDate = new Date();
-    var offset = myDate.getTimezoneOffset() * 60 * 1000;
-  
-    var withOffset = myDate.getTime();
-    var withoutOffset = withOffset - offset;
-    console.log('date: ' + withoutOffset);
-    return withoutOffset;
-  }
