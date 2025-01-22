@@ -10,8 +10,8 @@ export const createCurrentStatus = async (req,res) => {
 
         if (name == 'events' || name == 'extrange') {
             options = {
-                upsert: false,
-                new: true,
+                upsert: true,
+                new: false,
                 setDefaultsOnInsert: false
             };
         }else{
