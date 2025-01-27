@@ -17,7 +17,7 @@ export const createComment = async (req,res) => {
             setDefaultsOnInsert: false
         };
 
-        newComment(coreId, userId, comment);
+        newComment(coreId, userId, comment, res);
 
     }catch(err){
         res.status(501).json({'error: ': err})
@@ -25,7 +25,7 @@ export const createComment = async (req,res) => {
      
 }
 
-async function newComment(coreId, userId, comment){
+async function newComment(coreId, userId, comment, res){
     try{
         const newRest = 
             new commentsApp({coreId, userId, comment});
