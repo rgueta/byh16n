@@ -29,6 +29,7 @@ import configAppRoutes from "./routes/configApp.routes";
 import backstageRoutes from "./routes/backstage.routes";
 import coreEvents from "./routes/coreEvents.routes";
 import currentStatusRoutes from "./routes/currentStatus.routes";
+import commentsAppRoutes from "./routes/commentsApp.routes";
 
 const cors = require("cors");
 
@@ -97,6 +98,7 @@ app.use('/api/config', configAppRoutes);
 app.use('/api/backstage', backstageRoutes);
 app.use('/api/coreEvents', coreEvents);
 app.use('/api/currentStatus', currentStatusRoutes);
+app.use('/api/commentsApp', commentsAppRoutes);
 
 export default app;
 
