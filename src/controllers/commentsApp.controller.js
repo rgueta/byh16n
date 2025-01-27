@@ -17,7 +17,7 @@ export const createComment = async (req,res) => {
             setDefaultsOnInsert: false
         };
 
-        newCodeEvent(coreId, userId, comment);
+        newComment(coreId, userId, comment);
 
     }catch(err){
         res.status(501).json({'error: ': err})
