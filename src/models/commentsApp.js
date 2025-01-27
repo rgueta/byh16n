@@ -1,9 +1,8 @@
 import { Schema, model } from "mongoose";
 
-const commentApp_Schema = new Schema({
+const commentsApp_Schema = new Schema({
     coreId : {type : Schema.Types.ObjectId, required: true},
     userId : {type : Schema.Types.ObjectId, required: true},
-    name:{type: String, required:true},
     comment : [{}]
     },
     {
@@ -11,4 +10,4 @@ const commentApp_Schema = new Schema({
         versionKey:false
     });
 
-export default model('commentApp', commentApp_Schema);
+export default model('commentsApp', commentsApp_Schema);
