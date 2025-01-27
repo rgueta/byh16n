@@ -5,7 +5,6 @@ export const createComment = async (req,res) => {
     try{
         const core_Id = req.params.coreId;
         const user_Id = req.params.userId;
-        const name = req.body.name;
         const comment = req.body.comment;
         const coreId = Types.ObjectId(core_Id);
         const userId = Types.ObjectId(user_Id);
@@ -18,7 +17,7 @@ export const createComment = async (req,res) => {
             setDefaultsOnInsert: false
         };
 
-        newCodeEvent(coreId, userId, name, comment);
+        newCodeEvent(coreId, userId, comment);
 
     }catch(err){
         res.status(501).json({'error: ': err})
@@ -26,10 +25,10 @@ export const createComment = async (req,res) => {
      
 }
 
-async function newComment(coreId, userId, name, comment){
+async function newComment(coreId, userId, comment){
     try{
         const newRest = 
-            new commentsApp({coreId, userId, name, comment});
+            new commentsApp({coreId, userId, comment});
         const restSaved = await newRest.save();
         await res.status(200).json(restSaved);
 
