@@ -13,7 +13,8 @@ const PORT = process.env.PORT;
 
 // #region   -------- http  -----------------------------
 const httpServer = new Server(app,);
-httpServer.listen(PORT);
+httpServer.listen(PORT,'0.0.0.0');
+
 // #endregion ------ http  ---------
 
 // socket.io
@@ -25,6 +26,8 @@ const io = socket(httpServer,{
 
 // global var to user from another files like controllers files
 global._io = io;
+
+
 
 console.log('Server listen on port: '+ PORT 
     + ', '+ new Date().toISOString());

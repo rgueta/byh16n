@@ -5,6 +5,7 @@ import pkg from '../package.json';
 import "./database";
 import {createRoles} from './libs/initialSetup';
 import path from 'path';
+const cors = require("cors");
 
 
 //-- router imports  -----
@@ -31,9 +32,22 @@ import coreEvents from "./routes/coreEvents.routes";
 import currentStatusRoutes from "./routes/currentStatus.routes";
 import commentsAppRoutes from "./routes/commentsApp.routes";
 
-const cors = require("cors");
-
 const app = express();
+
+
+// Enable CORS for all routes (development only)
+app.use(cors()); // ✅ Allows ALL origins (unsafe for production)
+// app.use(cors({ origin: [
+//         'https://localhost:4200', // Angular dev server
+//     'https://localhost:8100', // Ionic dev server
+
+// ] })); // Ionic dev
+
+// app.use(cors({
+//     origin:'*'
+// }));
+
+
 createRoles();
 
 
