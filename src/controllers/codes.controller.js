@@ -82,7 +82,7 @@ export const getCodesByUser = async (req,res) => {
                 {'$unwind' : '$code_users'},
                 {
                     $match:{
-                        'code_users._id' : { $eq : Types.ObjectId(req.params.userId)}
+                        'code_users._id' : { $eq : new Types.ObjectId(req.params.userId)}
                     }
                 },
                 {$limit: 20},

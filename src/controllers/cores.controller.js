@@ -25,30 +25,32 @@ export const createCore = async (req,res) => {
 
 }
 
+
 export const getCoresAdmin = async (req, res) => {
   try{
-    Cores.find({},{_id:1,name:1,Houses:1,Address:1,coord:1,
+
+    await Cores.find({},{_id:1,name:1,Houses:1,Address:1,coord:1,
       Sim:1,detail:1,enable:1,remote:1,
       location:{$concat : ['$country', '.', '$state', '.', '$city',
       '.', {$toString : '$division'}, '.', '$cpu', '.', '$shortName']}
-      },async (err, results) => {
-        if (err) {
-          return res.status(301).json({'msg': err});
-        } else {
+      })
+      .then(result => {
+        return res.status(200).json(result);
+      })
+      .catch(err=>{
+        console.log('Error: ', err);
+        return res.status(301).json({'msg': err});
+      });
 
-        return res.status(200).json(results);
-          
-        }
-      }); 
   }catch(err){
-    console.log('Error correcto -->', err)
+    console.log('Error -->', err)
     return res.status(301).json({'error': err});
   }
 }
 
 export const getCoresByCpu = async (req, res) => {
 console.log('cpuId --> ', req.params.cpuId);
-const objCpuId = Types.ObjectId(req.params.cpuId);
+const objCpuId = new Types.ObjectId(req.params.cpuId);
 
 
   try{
@@ -108,7 +110,7 @@ export const chgItemCore = async (req,res) => {
   const qry = JSON.parse(StrQry);
  
   const updatedCore = 
-  await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},qry)
+  await Cores.updateOne({_id: new Types.ObjectId(req.body.coreId)},qry)
   
   if(updatedCore){
     // res.status(204).json({'Msg':'Core enabled Ok'})
@@ -120,7 +122,7 @@ export const chgItemCore = async (req,res) => {
 }
 
 export const chgSim = async (req,res) => {
-  const updatedCore = await Cores.updateOne({_id:Types.ObjectId(req.body.coreId)},
+  const updatedCore = await Cores.updateOne({_id: new Types.ObjectId(req.body.coreId)},
     {$set:{Sim:req.body.newSim}})
   if(updatedCore){
     res.status(204).json({'Msg':'Core disabled Ok '})

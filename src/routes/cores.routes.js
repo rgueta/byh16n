@@ -9,7 +9,10 @@ router.post('/chgSim/:userId',[authJwt.verifyToken,authJwt.isAdmin],coresCtrl.ch
 router.post('/chgItem/:userId',[authJwt.verifyToken,authJwt.isAdmin],coresCtrl.chgItemCore);
 
 router.get('/:cpuId',coresCtrl.getCoresByCpu);
-router.get('/admin/:userId',[authJwt.verifyToken,authJwt.isAdmin],coresCtrl.getCoresAdmin);
+
+// router.get('/admin/:userId',[authJwt.verifyToken,authJwt.isAdmin],coresCtrl.getCoresAdmin);
+router.get('/admin/:userId',coresCtrl.getCoresAdmin);
+
 router.get('/:country/:state/:city/:division/:cpu/:userId',
     [authJwt.verifyToken,authJwt.isNeighbor],coresCtrl.getCores);
 router.get('/light/:country/:state/:city/:division/:cpu/:userId',

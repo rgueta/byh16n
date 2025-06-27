@@ -6,9 +6,11 @@ const router = Router();
 
 router.post('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.createCode);
 //router.post('/:userId',codesCtrl.createCode);
-
 router.get('/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCodes);
-router.get('/user/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCodesByUser);
+
+// router.get('/user/:userId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCodesByUser);
+router.get('/user/:userId',codesCtrl.getCodesByUser);
+
 router.get('/:codeId',[authJwt.verifyToken,authJwt.isNeighbor],codesCtrl.getCodeById);
 router.get('/visitors_dashboard/:userId',codesCtrl.getVisitors_dashboard);
 router.get('/activeCode/:code/:userId/:doorName',[authJwt.isNeighbor],codesCtrl.expirationCode);

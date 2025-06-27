@@ -2,9 +2,7 @@ import configApp from "../models/configApp";
 import  { Types } from "mongoose";
 
 export const getConfig = async (req, res) => {
-
   try{
-
     configApp.find({})
     .then(results => {
       res.status(200).send(results);

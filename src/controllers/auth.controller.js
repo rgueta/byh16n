@@ -111,7 +111,7 @@ export const signIn = async (req, res) => {
                 $lookup: {
                   from : 'configApp',
                   as : 'config',
-                  pipeline :[{$match :{_id: Types.ObjectId('65a822555b9c9da318f78179')}}]
+                  pipeline :[{$match :{_id: new Types.ObjectId('65a822555b9c9da318f78179')}}]
                 }
               },
               {$unwind : '$config'},
@@ -150,29 +150,23 @@ export const signIn = async (req, res) => {
                 }
             },
             
-        ],async function(err, foundUser) {
-        if(err || foundUser == '') {
-            console.log('Error Auth: ', err)
-            return res.status(400).json({'errId':1,'ErrMsg':"Usuario no encontrado","Error": err});
-        }
-        const matchPwd =  await Users.comparePassword(req.body.pwd,foundUser[0].pwd);
+        ])
+        .then(async foundUser =>{
+            const matchPwd =  await Users.comparePassword(req.body.pwd,foundUser[0].pwd);
+            if(!matchPwd) return res.status(400).json({token:'', ErrMsg:'Invalid password'});
+            // Create tokens  ------------------------
+            jwt.sign({id:foundUser[0]._id}, process.env.SECRET,
+            {
+                expiresIn: process.env.token_time
+            },async (err, token) => {
 
-        if(!matchPwd) return res.status(400).json({token:'', ErrMsg:'Invalid password'});
-
-
-        // Create tokens  ------------------------
-        jwt.sign({id:foundUser[0]._id}, process.env.SECRET,
-        {
-            expiresIn: process.env.token_time
-        },async (err, token) => {
-
-            // Error manage
-            if(err){
-                return res.status(400).json(err.message)
-            }
+                // Error manage
+                // if(err){
+                //     return res.status(400).json(err.message)
+                // }
 
             console.log('email: ' + req.body.email + ', pwd : ' + req.body.pwd + 
-        ', encrypted: ' + await Users.encryptPassword(req.body.pwd));
+            ', encrypted: ' + await Users.encryptPassword(req.body.pwd));
 
             const decode = jwt.decode(token,process.env.SECRET)
 
@@ -200,9 +194,13 @@ export const signIn = async (req, res) => {
             'iatDate': iatDate, 'expDate': expDate,'remote': foundUser[0].remote
             });
 
-        });
+            });
 
-        });
+            })
+        .catch(err =>{
+            console.log('Error Auth: ', err)
+            return res.status(400).json({'errId':1,'ErrMsg':"Usuario no encontrado","Error": err});
+        })
     }catch(err){
         console.log('Error Auth: ', err)
         return res.status(400).json({'msg': 'Something wrong with server'})
