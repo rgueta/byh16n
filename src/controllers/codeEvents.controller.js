@@ -1,6 +1,7 @@
 import code_events  from "../models/code_events";
 import { Types } from "mongoose";
 import Codes  from "../models/Codes";
+const newObjectId = new Types.ObjectId();
 
 export const createCode_event = async (req,res) => {
     try{
@@ -8,7 +9,7 @@ export const createCode_event = async (req,res) => {
         const code_Id = req.body.codeId;
         const picId = req.body.picId;
         const CoreSim = req.body.CoreSim;
-        const codeId = new Types.ObjectId(code_Id);
+        const codeId = newObjectId(code_Id);
 
         if(req.body.doorName){
             doorName = req.body.doorName;
@@ -98,7 +99,7 @@ export const getCode_events = async (req,res) => {
         await end.setMinutes(end.getMinutes() - start.getTimezoneOffset());
    
         match1 = await {
-            'codes.source.user'  : new Types.ObjectId(req.params.userId),
+            'codes.source.user'  : newObjectId(req.params.userId),
             createdAt :  {
                 $gte : new Date(start),
                 $lte : new Date(end)
@@ -215,7 +216,7 @@ export const getCode_eventsByDate = async (req,res) => {
             {$unwind : '$codes_users'},
             {
                 $match : {
-                        'codes.source.user'  : new Types.ObjectId(req.params.userId),
+                        'codes.source.user'  : newObjectId(req.params.userId),
                         createdAt :  {
                             $gte : new Date(start),
                             $lte : new Date(end)

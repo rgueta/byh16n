@@ -3,12 +3,11 @@ import Users  from "../models/Users";
 import Cores from "../models/cores";
 import {Types} from 'mongoose';
 
-
+const newObjectId = new Types.ObjectId();
 export const createUser = async (req,res) =>{
     console.log('Create User -->', req.body);
     const roles = req.body.roles.map(Types.ObjectId);
     const pwd = await Users.encryptPassword(req.body.pwd)
-    console.log('User encrypted pwd --> ', pwd)
 
     return
 
@@ -75,7 +74,7 @@ export const updRoles = async (req, res) => {
 export const newUser = async (req,res) => {
     const roles = req.body.roles.map(role => role.id);
 
-    const core = new Types.ObjectId(req.body.core);
+    const core = newObjectId(req.body.core);
     const locked = false;
     let pwd = ''
     let location = ''
@@ -145,7 +144,7 @@ export const getUserById = async (req,res) => {
 }
 
 export const getUserByCore = async(req, res) =>{
-    const query = {'core' : Types.ObjectId(req.params.coreId)};
+    const query = {'core' : new Types.ObjectId(req.params.coreId)};
     const fields = {};
     const mySort = await { 'house' : 1};
     try{
@@ -153,7 +152,7 @@ export const getUserByCore = async(req, res) =>{
         const result = await Users.aggregate([
             {
                 $match : {
-                    core : Types.ObjectId(req.params.coreId)
+                    core : new Types.ObjectId(req.params.coreId)
                 }
             },
             {$sort : { house : 1 }},
@@ -208,7 +207,7 @@ export const getUserByCore = async(req, res) =>{
 }
 
 export const getUserByCoreNeighbor = async(req, res) =>{
-    const query = {'core' : Types.ObjectId(req.params.coreId)};
+    const query = {'core' : newObjectId(req.params.coreId)};
     const fields = {};
     const mySort = await { 'house' : 1};
 
@@ -217,7 +216,7 @@ export const getUserByCoreNeighbor = async(req, res) =>{
         const result = await Users.aggregate([
             {
                 $match : {
-                    core : Types.ObjectId(req.params.coreId)
+                    core : newObjectId(req.params.coreId)
                 }
             },
             {$sort : { house : 1 }},
@@ -288,7 +287,7 @@ export const deleteUserById = async (req,res) => {
 }
 
 export const lockUser = async (req,res) =>{
-    const userId = Types.ObjectId(req.body.neighborId);
+    const userId = newObjectId(req.body.neighborId);
     try{
         const updLocked = await Users.updateOne({_id : userId},{$set:{locked:true}})
         if(updLocked)
@@ -305,7 +304,7 @@ export const lockUser = async (req,res) =>{
 export const unlockUser = async (req,res) =>{
     const userId = req.body.neighborId;
     try{
-        const updUnlocked = await Users.updateOne({_id : Types.ObjectId(userId)},{$set:{locked:false}})
+        const updUnlocked = await Users.updateOne({_id : newObjectId(userId)},{$set:{locked:false}})
         if(updUnlocked)
             res.status(200).json({'msg': updUnlocked})
         else
@@ -319,7 +318,7 @@ export const unlockUser = async (req,res) =>{
 export const notLockUser = async (req, res, next) =>{
     const userId = req.params.userId;
     try{
-        await Users.find({_id : Types.ObjectId(userId), locked:false}, async (err, result) => {
+        await Users.find({_id : newObjectId(userId), locked:false}, async (err, result) => {
             if (result == ''){
                 res.status(501).json({'msg': 'is locked'});
             }else{
@@ -340,8 +339,8 @@ export const getFamily = async (req,res) => {
                 {
                     $match: { 
                         house : user.house, 
-                        core: Types.ObjectId(user.core),
-                        _id: {$ne : Types.ObjectId(user._id)}
+                        core: newObjectId(user.core),
+                        _id: {$ne : newObjectId(user._id)}
                     }
                 },
                 {

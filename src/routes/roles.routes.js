@@ -8,6 +8,7 @@ router.post('/',[authJwt.verifyToken,authJwt.isAdmin],rolesCtrl.createRoles);
 // router.get('/:userId',[authJwt.verifyToken,authJwt.isNeighborAdmin],rolesCtrl.getRoles);
 router.get('/:userId',rolesCtrl.getRoles);
 
-router.get('/neiAdmin/:userId',[authJwt.verifyToken,authJwt.isNeighborAdmin],rolesCtrl.getRolesNeiAdmin);
+// router.get('/neiAdmin/:userId',[authJwt.verifyToken,authJwt.isNeighborAdmin],rolesCtrl.getRolesNeiAdmin);
+router.get('/neiAdmin/:userId',rolesCtrl.getRolesNeiAdmin);
 
 export default router;
