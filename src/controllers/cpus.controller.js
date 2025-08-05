@@ -104,14 +104,14 @@ export const getCpusBasic = async (req, res) => {
       division: NumDivision,
     },
     { name: 1, shortName: 1 },
-    (err, results) => {
-      if (err) {
-        res.status(501).json({ msg: err });
-      } else {
-        res.status(200).json(results);
-      }
-    },
-  );
+  )
+    .then((results) => {
+      res.status(200).json(results);
+    })
+    .catch((err) => {
+      console.log("Error -->", err);
+      res.status(501).json({ msg: err });
+    });
 };
 
 export const deleteCpuById = async (req, res) => {
