@@ -97,53 +97,47 @@ export const updRoles = async (req, res) => {
 };
 
 export const newUser = async (req, res) => {
-  const roles = req.body.roles.map((role) => role.id);
+  const core = new Types.ObjectId(req.body.core);
 
-  const core = newObjectId(req.body.core);
   const locked = false;
   let pwd = "";
   let location = "";
-  const { name, email, username, house, uuid, sim, gender, avatar } =
+  const { name, email, username, house, uuid, sim, gender, avatar, roles } =
     await req.body;
 
   if (location == "") {
-    await Cores.aggregate(
-      [
-        [
-          {
-            $match: { _id: core },
-          },
-          {
-            $project: {
-              _id: 0,
-              location: {
-                $concat: [
-                  "$country",
-                  ".",
-                  "$state",
-                  ".",
-                  "$city",
-                  ".",
-                  { $toString: "$division" },
-                  ".",
-                  "$cpu",
-                  ".",
-                  "$shortName",
-                ],
-              },
-            },
-          },
-        ],
-      ],
-      async (err, result) => {
-        if (err) {
-          console.log("Error: ", err);
-          return res.status(301).json({ error: err });
-        } else {
-          location = result[0].location;
-        }
+    const tmpCores = await Cores.aggregate([
+      {
+        $match: { _id: core },
       },
-    );
+      {
+        $project: {
+          _id: 0,
+          location: {
+            $concat: [
+              "$country",
+              ".",
+              "$state",
+              ".",
+              "$city",
+              ".",
+              { $toString: "$division" },
+              ".",
+              "$cpu",
+              ".",
+              "$shortName",
+            ],
+          },
+        },
+      },
+    ])
+      .then((tmpCores) => {
+        location = tmpCores[0].location;
+      })
+      .catch((err) => {
+        console.log("Error: ", err);
+        return res.status(301).json({ error: err });
+      });
   }
 
   try {
@@ -170,7 +164,7 @@ export const newUser = async (req, res) => {
 
       res.status(200).send(userSaved);
     } else {
-      res.status(301).send({ status: 301, msg: "email already exists" });
+      res.status(409).send({ status: 409, msg: "email already exists" });
     }
   } catch (err) {
     return res.status(501).send({ status: 501, msg: err.message });
