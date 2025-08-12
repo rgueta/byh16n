@@ -63,6 +63,7 @@ export const getCpu = async (req, res) => {
       },
     ])
       .then((result) => {
+        console.log("Cpus --> ", result);
         return res.status(200).json(result);
       })
       .catch((err) => {
