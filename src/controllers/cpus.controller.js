@@ -21,14 +21,12 @@ export const updateCpu = async (req, res) => {
     const updCpu = await Cpus.updateOne(
       { _id: _id },
       {
-        $set: {
-          cores: cores,
-          entry: entry,
-          coord: coord,
-          houses: houses,
-          sim: sim,
-          school: school,
-        },
+        cores: cores,
+        entry: entry,
+        coord: coord,
+        houses: houses,
+        sim: sim,
+        school: school,
       },
     );
 
@@ -63,7 +61,6 @@ export const getCpu = async (req, res) => {
       },
     ])
       .then((result) => {
-        console.log("Cpus --> ", result);
         return res.status(200).json(result);
       })
       .catch((err) => {
