@@ -106,18 +106,14 @@ export const getCoresByCpu = async (req, res) => {
   console.log("cpuId --> ", req.params.cpuId);
   const objCpuId = new Types.ObjectId(req.params.cpuId);
 
-  try {
-    Cores.find({ cpuId: objCpuId }, (err, results) => {
-      if (err) {
-        console.log(err);
-        res.status(300).json({ message: err });
-      } else {
-        res.status(200).json(results);
-      }
+  await Cores.find({ cpuId: objCpuId })
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: err });
     });
-  } catch (err) {
-    res.status(500).json({ message: err });
-  }
 };
 
 export const getCores = async (req, res) => {
