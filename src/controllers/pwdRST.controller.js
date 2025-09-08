@@ -76,11 +76,10 @@ export const pwdRSTReq = async (req, res) => {
     const pwdRsrSaved = newPwdRST.save();
     createHTML();
 
-    // to: req.params.email,
     const mailOption = {
       from: "byh16@gmail.com",
       to: "ricardogueta@gmail.com",
-      subject: "Pssword reset",
+      subject: "Password reset",
       html: html_call,
     };
 

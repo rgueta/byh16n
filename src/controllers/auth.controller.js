@@ -268,11 +268,8 @@ export const refresh = async (req, res, next) => {
     return res.status(400).json({ message: "Something goes wrong." });
   } else {
     try {
-      const refTokenDecode = await jwt.decode(
-        token,
-        process.env.SECRET_REFRESH,
-      );
-      let dateExp = await new Date(refTokenDecode.exp * 1000);
+      const refTokenDecode = jwt.decode(token, process.env.SECRET_REFRESH);
+      let dateExp = new Date(refTokenDecode.exp * 1000);
 
       console.log(
         "refresh expiry --> ",

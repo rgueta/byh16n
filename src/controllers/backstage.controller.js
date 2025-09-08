@@ -7,6 +7,8 @@ export const createBackstage = async (req, res) => {
   const { name, username, email, sim, house, device, gender, note } =
     await req.body;
 
+  console.log("Send to: ", req.body.email);
+
   const cpu = new Types.ObjectId(req.body.cpu);
   const core = new Types.ObjectId(req.body.core);
   const demoMode = req.body.demoMode;
@@ -66,8 +68,8 @@ export const createBackstage = async (req, res) => {
 
 export const getBackstage = async (req, res) => {
   try {
-    await backstage.aggregate(
-      [
+    await backstage
+      .aggregate([
         {
           $lookup: {
             from: "cpus",
@@ -125,16 +127,14 @@ export const getBackstage = async (req, res) => {
             },
           },
         },
-      ],
-      async (err, result) => {
-        if (err) {
-          console.log("Error: ", err);
-          return res.status(301).json({ msg: err });
-        } else {
-          return res.status(200).json(result);
-        }
-      },
-    );
+      ])
+      .then((result) => {
+        return res.status(200).json(result);
+      })
+      .catch((err) => {
+        console.log("Error: ", err);
+        return res.status(301).json({ msg: err });
+      });
   } catch (err) {
     console.log("Error -->", err);
     return res.status(501).json({ error: err.message });

@@ -38,6 +38,8 @@ export const updateCpu = async (req, res) => {
 };
 
 export const getCpu = async (req, res) => {
+  console.log("getCpu controller ");
+
   try {
     await Cpus.aggregate([
       { $sort: { name: 1 } },
