@@ -365,16 +365,12 @@ export const unlockUser = async (req, res) => {
 export const notLockUser = async (req, res, next) => {
   const userId = req.params.userId;
   try {
-    await Users.find(
-      { _id: newObjectId(userId), locked: false },
-      async (err, result) => {
-        if (result == "") {
-          res.status(501).json({ msg: "is locked" });
-        } else {
-          res.status(200).json({ msg: "is ok" });
-        }
-      },
-    );
+    const user = await Users.find({ _id: userId, locked: true });
+      if (!user.length > 0) {
+        res.status(201).json({ msg: "is locked" });
+      } else {
+        res.status(200).json({ msg: "is ok" });
+      }
   } catch (err) {
     res.status(501).json({ msg: err });
   }

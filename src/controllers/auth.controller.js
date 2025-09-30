@@ -336,8 +336,9 @@ export const refresh = async (req, res, next) => {
               );
 
               res.status(200).json({
+                success:true,
                 userId: refTokenDecode.id,
-                accessToken: token,
+                authToken: token,
                 refreshToken: refToken,
                 iatDate: iatDate,
                 expDate: expDate,

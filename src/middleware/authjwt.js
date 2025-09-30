@@ -5,7 +5,7 @@ import node from "@babel/register/lib/node";
 import { Mongoose } from "mongoose";
 
 export const verifyToken = async (req, res, next) => {
-  try {
+  // try {
     let token = req.header("authorization");
     console.log("token--> ", token);
 
@@ -18,17 +18,17 @@ export const verifyToken = async (req, res, next) => {
     jwt.verify(token, process.env.SECRET, async (err, decoded) => {
       if (err) {
         console.log("Se genero un error --> ", err);
-        return res.status(401).json({ "verify token error ": err.message });
-      } else {
-        //--- Decode, Dates Access token
-        // res.status(201).json({'msg':'verify token Ok '});
-        // res.status(201);
-        next();
+        if(err.name === 'TokenExpiredError'){
+          return res.status(401).json({ message:'Token expirado',expired:true });
+        }
+        return res.status(403).json({ "verify token error ": err.message });
       }
+      req.decoded = decoded;
+      next();
     });
-  } catch (e) {
-    return res.status(400).json({ "Verify token error": e });
-  }
+  // } catch (e) {
+  //   return res.status(400).json({ "Verify token error": e });
+  // }
 };
 
 export const isAdmin = async (req, res, next) => {

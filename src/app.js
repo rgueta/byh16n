@@ -40,17 +40,43 @@ changeStream.on("change", (change) => {
   console.log("backstage alert change: ", change);
 });
 
-// Enable CORS for all routes (development only)
-app.use(cors()); // ✅ Allows ALL origins (unsafe for production)
-// app.use(cors({ origin: [
-//         'https://localhost:4200', // Angular dev server
-//     'https://localhost:8100', // Ionic dev server
+// Lista de dominios permitidos
+const whitelist = [
+  "https://tu-dominio-frontend.com",
+  "https://otro-dominio.com",
+  "http://192.168.1.246:5000",
+  "http://192.168.1.185:5000",
+];
 
-// ] })); // Ionic dev
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     // Si el dominio de la petición está en la lista blanca O si no hay origen (p.ej. Postman o curl),
+//     // permite la conexión.
+//     if (whitelist.indexOf(origin) !== -1 || !origin) {
+//       callback(null, true);
+//     } else {
+//       // De lo contrario, rechaza la conexión
+//       callback(new Error("No permitido por CORS"));
+//     }
+//   },
+//   optionsSuccessStatus: 200, // Para navegadores antiguos (IE11, varios SmartTVs)
+// };
 
-// app.use(cors({
-//     origin:'*'
-// }));
+// // Middleware de CORS para producción: usa las opciones de la lista blanca
+// app.use(cors(corsOptions));
+//
+
+// // Enable CORS for all routes (development only)
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    credentials: true,
+  }),
+);
+
+// app.options("*", cors());
 
 createRoles();
 
