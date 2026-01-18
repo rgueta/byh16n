@@ -15,6 +15,32 @@ httpServer.listen(PORT, "0.0.0.0");
 
 // #endregion ------ http  ---------
 
+// Websocket --------
+import net from "net";
+import { WebSocketServer } from "ws";
+
+const TCP_PORT = process.env.TCP_PORT;
+let simClients = [];
+
+/* -------- TCP  ----------------- */
+const wss = new WebSocketServer({ port: TCP_PORT });
+
+wss.on("connection", (ws) => {
+  console.log("Cliente conectado");
+
+  ws.on("message", (data) => {
+    console.log("MSG:", data.toString());
+  });
+
+  ws.on("close", () => {
+    console.log("Cliente desconectado");
+  });
+});
+
+// tcpServer.listen(TCP_PORT, () => {
+//   console.log("TCP listo:", TCP_PORT);
+// });
+
 // socket.io
 const io = socket(httpServer, {
   cors: {
