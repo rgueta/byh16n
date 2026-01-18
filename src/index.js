@@ -16,7 +16,6 @@ httpServer.listen(PORT, "0.0.0.0");
 // #endregion ------ http  ---------
 
 // Websocket --------
-import net from "net";
 import { WebSocketServer } from "ws";
 
 const TCP_PORT = process.env.TCP_PORT;
