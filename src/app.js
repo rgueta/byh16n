@@ -30,8 +30,20 @@ import backstageRoutes from "./routes/backstage.routes";
 import coreEvents from "./routes/coreEvents.routes";
 import currentStatusRoutes from "./routes/currentStatus.routes";
 import commentsAppRoutes from "./routes/commentsApp.routes";
+import net from "net"; // --> RAW TCP
 
 const app = express();
+
+//#region  -- middleware  -----------------------
+// Parse URL-encoded bodies when sent by HTML forms
+
+app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(express.json());
+app.use(morgan(":date[iso] :method :url :status (:response-time ms"));
+
+// #endregion --------------------------------------
 
 // Create change backstage watcher  ----------------------
 import backstage from "./models/backstage";
@@ -98,17 +110,65 @@ app.set("view engine", "ejs");
 app.set("pkg", pkg);
 
 // #endregion  Settings  ------------------------
+//
 
-//#region  -- middleware  -----------------------
-// Parse URL-encoded bodies when sent by HTML forms
+app.use((req, res, next) => {
+  console.log("➡️", req.method, req.url);
+  next();
+});
 
-app.use(express.static(path.join(__dirname, "/public")));
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-app.use(express.json());
-app.use(morgan(":date[iso] :method :url :status (:response-time ms"));
+//#region ------------- TCP    --------
 
-// #endregion --------------------------------------
+const TCP_PORT = process.env.TCP_PORT;
+let simSocket = null;
+
+const tcp = net.createServer((socket) => {
+  console.log("📡 SIM conectado");
+  simSocket = socket;
+  socket.setEncoding("utf8");
+
+  socket.on("data", (data) => {
+    console.log("SIM →....", data.trim());
+  });
+
+  socket.on("close", () => {
+    console.log("SIM desconectado");
+    simSocket = null;
+  });
+
+  socket.on("error", (err) => {
+    console.error("SIM socket error:", err);
+    simSocket = null;
+  });
+});
+
+tcp.listen(TCP_PORT, "0.0.0.0", () => {
+  console.log(`🚀 TCP server listo en ${TCP_PORT}`);
+});
+
+app.post("/sim/send", (req, res) => {
+  if (!simSocket || simSocket.destroyed) {
+    return res.status(503).json({ error: "SIM no conectado" });
+  }
+
+  const payload = JSON.stringify(req.body) + "\n";
+  try {
+    console.log("Socket writable:", simSocket.writable);
+    console.log("Socket destroyed:", simSocket.destroyed);
+
+    simSocket.write(payload);
+    console.log("➡️ TCP → SIM:", payload);
+    // ✅ RESPONDER INMEDIATAMENTE
+    return res.json({ status: "sent" });
+  } catch (e) {
+    console.error("TCP error:", err);
+    return res.status(500).json({ error: "TCP write failed" });
+  }
+
+  res.json({ status: "sent" });
+});
+
+//#endregion -------- TCP  --------------
 
 // ---- routes ----
 app.get("/", (req, res) => {
